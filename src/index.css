@@ -1,0 +1,40 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer utilities {
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+  .animate-in {
+    animation: animateIn 0.35s ease both;
+  }
+  .fade-in {
+    --tw-enter-opacity: 0;
+  }
+  .slide-in-from-bottom-4 {
+    --tw-enter-translate-y: 1rem;
+  }
+  .slide-in-from-right {
+    --tw-enter-translate-x: 100%;
+  }
+  .zoom-in {
+    --tw-enter-scale: 0.95;
+  }
+  @keyframes animateIn {
+    from {
+      opacity: var(--tw-enter-opacity, 1);
+      transform: translate(var(--tw-enter-translate-x, 0), var(--tw-enter-translate-y, 0)) scale(var(--tw-enter-scale, 1));
+    }
+    to {
+      opacity: 1;
+      transform: translate(0, 0) scale(1);
+    }
+  }
+}
+
+* { -webkit-tap-highlight-color: transparent; }

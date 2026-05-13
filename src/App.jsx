@@ -1,0 +1,869 @@
+import React, { useState } from 'react';
+import {
+  Home, BookOpen, Heart, ClipboardList, Sparkles, XCircle, Award,
+  Calendar, ChevronLeft, Search, MapPin, QrCode, Coffee, Clock,
+  Users, Star, Image as ImageIcon, Bell, ShieldCheck, Camera,
+  Video, Activity, Lock, Trophy, Brain, PlusCircle, CheckCircle2,
+} from 'lucide-react';
+
+// ─────────────────────────────────────────────
+// 資料庫
+// ─────────────────────────────────────────────
+const ANIMALS = [
+  { id: 1, name: '飛飛', type: 'small_animal', typeName: '小動物', breed: '蜜袋鼯', status: '準備租借中', minLevel: 3,
+    img: 'https://images.unsplash.com/photo-1574870111867-089730e5a72b?auto=format&fit=crop&w=600&q=80',
+    tags: ['#口袋精靈', '#夜行性', '#大眼萌物', '#A 級專屬'],
+    story: '「啾！我是飛飛！水汪汪的大眼睛是我的招牌。我最喜歡在主人的口袋裡睡覺，因為我需要高蛋白飲食與攀爬空間，只有通過 A 級認證的飼主才能帶我回家喔！」' },
+  { id: 2, name: '月亮', type: 'cat', typeName: '貓咪', breed: '黑白貓', status: '可認養', minLevel: 1,
+    img: 'https://images.unsplash.com/photo-1533738363-b7f9aef128ce?auto=format&fit=crop&w=400&q=80',
+    tags: ['#優雅淑女', '#慢熟', '#靜態陪伴'],
+    story: '「你好，我是月亮。我不需要太大空間，最適合高壓環境下工作的研究人員。給我一個窗台和溫柔的主人，我就很滿足了。」' },
+  { id: 3, name: '小福', type: 'cat', typeName: '貓咪', breed: '橘貓', status: '試養中', minLevel: 1,
+    img: 'https://images.unsplash.com/photo-1513360371669-4adf3dd7dff8?auto=format&fit=crop&w=400&q=80',
+    tags: ['#貪吃大叔', '#呼嚕聲超大', '#治癒系'],
+    story: '「喵～只要聽到罐頭打開的聲音，我會用光速衝過來。我的呼嚕聲是全店最響的，可以舒緩你的考前焦慮！」' },
+  { id: 4, name: '豆豆', type: 'dog', typeName: '犬隻', breed: '米格魯', status: '可認養', minLevel: 2,
+    img: 'https://images.unsplash.com/photo-1543466835-00a7907e9de1?auto=format&fit=crop&w=400&q=80',
+    tags: ['#精力充沛', '#嗅覺達人', '#戶外型'],
+    story: '「汪！我有全世界最靈敏的鼻子，可以聞到 300 公尺外的零食。我需要每天散步，適合喜歡戶外活動的人！」' },
+  { id: 5, name: '小綠', type: 'reptile', typeName: '爬蟲展示', breed: '鬃獅蜥', status: '展示中', minLevel: 2,
+    img: 'https://images.unsplash.com/photo-1548550023-2bdb3c5beed7?auto=format&fit=crop&w=400&q=80',
+    tags: ['#冷靜達人', '#親人', '#適合初學者'],
+    story: '「嗨，我是小綠。我是爬蟲界最親人的存在，喜歡被人抱著曬太陽。來門市摸摸我，說不定我們就有緣分！」' },
+  { id: 6, name: '小白', type: 'reptile', typeName: '爬蟲展示', breed: '白化球蟒', status: '店長飼養', minLevel: 3,
+    img: 'https://images.unsplash.com/photo-1518020382113-a7e8fc38eac9?auto=format&fit=crop&w=400&q=80',
+    tags: ['#稀有品種', '#溫馴', '#長壽夥伴'],
+    story: '「我是小白，店長的珍貴夥伴。我可以活到 30 年，是一輩子的承諾。來門市體驗與蛇相處的奇妙感受吧！」' },
+];
+
+const CERT_LEVELS = [
+  { level: 'C', title: 'C 級基礎認證 (Lv.1)', desc: '掌握基本營養、環境安全。', color: 'bg-slate-200 text-slate-700', privileges: ['門市內互動權', '基礎講座參與', '貓咪試養申請'] },
+  { level: 'B', title: 'B 級專業認證 (Lv.2)', desc: '通過行為學測驗與實操考核。', color: 'bg-[#534ab7] text-white', privileges: ['14 天居家試養', '領養費 9 折', '犬隻/爬蟲互動'] },
+  { level: 'A', title: 'A 級大師認證 (Lv.3)', desc: '具備醫療處置與高階品種知識。', color: 'bg-yellow-500 text-white', privileges: ['蜜袋鼯租借權', '金牌導師頭銜', '領養費 8 折'] },
+];
+
+const COURSES = [
+  { id: 1, tag: '貓咪基礎', title: '貓咪營養學',     desc: '主食、零食與補充品的選擇', duration: '45 分鐘', progress: 100, score: 85,  locked: false, paid: false },
+  { id: 2, tag: '貓咪基礎', title: '行為解讀',       desc: '讀懂肢體語言與聲音溝通', duration: '50 分鐘', progress: 100, score: 90,  locked: false, paid: false },
+  { id: 3, tag: '貓咪基礎', title: '環境安全設計',   desc: '打造貓咪友善的居家空間', duration: '40 分鐘', progress: 60,  score: null, locked: false, paid: false },
+  { id: 4, tag: '貓咪進階', title: '醫療照護基礎',   desc: '識別常見症狀與緊急處置', duration: '90 分鐘', progress: 0,   score: null, locked: true,  paid: false },
+  { id: 5, tag: '貓咪進階', title: '行為矯正技術',   desc: '正向強化訓練方法',       duration: '75 分鐘', progress: 0,   score: null, locked: true,  paid: false },
+  { id: 6, tag: '爬蟲特別課程', title: '爬蟲飼育認證', desc: '鬃獅蜥、球蟒的完整照護', duration: '120 分鐘', progress: 0, score: null, locked: false, paid: true, price: 'NT$299' },
+  { id: 7, tag: '犬隻認證', title: '犬隻基礎服從',   desc: '基本口令訓練與社交化',   duration: '60 分鐘', progress: 30,  score: null, locked: false, paid: false },
+];
+
+const QUIZ_QUESTIONS = [
+  { q: '貓咪每日所需水分（以體重計）約為？',   options: ['每公斤 20ml', '每公斤 40-60ml', '每公斤 100ml', '每公斤 10ml'],        ans: 1 },
+  { q: '以下哪種植物對貓咪有毒？',             options: ['薰衣草', '百合花', '薄荷', '貓薄荷'],                                   ans: 1 },
+  { q: '貓咪「慢眨眼」通常代表什麼？',         options: ['不舒服', '飢餓', '信任與放鬆', '準備攻擊'],                              ans: 2 },
+  { q: '成年貓咪一天應吃幾餐比較理想？',       options: ['1 餐', '2-3 餐', '4-5 餐', '自由採食'],                                  ans: 1 },
+  { q: '貓咪尿液哪種顏色需立即就醫？',         options: ['淡黃色', '深黃色', '粉紅/紅色', '幾乎無色'],                             ans: 2 },
+];
+
+const POINTS_HISTORY = [
+  { id: 1, desc: '完成「貓咪營養學」測驗', pts: 100,  date: '05/12', type: 'earn' },
+  { id: 2, desc: '門市掃碼打卡',           pts: 20,   date: '05/13', type: 'earn' },
+  { id: 3, desc: '完成「行為解讀」課程',   pts: 100,  date: '05/11', type: 'earn' },
+  { id: 4, desc: 'AR 濾鏡社群分享',        pts: 10,   date: '05/10', type: 'earn' },
+  { id: 5, desc: '領養費折抵使用',         pts: -200, date: '05/08', type: 'spend' },
+];
+
+const DIARY_ENTRIES = [
+  { day: 10, date: '05/13', title: '第一次爬到肩膀！',   content: '飛飛今天超勇敢，從手臂慢慢爬到我肩膀，停了好久。心跳加速但超感動…', mood: 5 },
+  { day: 9,  date: '05/12', title: '飲食調整第一天',     content: '開始添加木瓜泥，飛飛有點猶豫但還是吃了一些。體重微增 2g，好兆頭。',  mood: 4 },
+  { day: 8,  date: '05/11', title: '夜間活動觀察',       content: '用紅外線燈拍到飛飛在 3am 滑翔，牠果然是夜行性的！太神奇了。',        mood: 5 },
+];
+
+const AI_QUESTIONS = [
+  { q: '你的居住環境是？',         opts: ['套房/小公寓', '一般公寓', '獨立房屋', '宿舍'] },
+  { q: '你一天在家的時間大約？',   opts: ['不到 4 小時', '4~8 小時', '8~12 小時', '幾乎整天'] },
+  { q: '你希望的互動方式？',       opts: ['靜靜陪伴就好', '偶爾互動玩耍', '頻繁互動', '戶外運動型'] },
+];
+
+// ─────────────────────────────────────────────
+// 根元件
+// ─────────────────────────────────────────────
+export default function App() {
+  const [tab, setTab] = useState('home');
+  const [showCertInfo, setShowCertInfo] = useState(false);
+  const [showPortrait, setShowPortrait] = useState(false);
+  const [points, setPoints] = useState(1280);
+  const addPoints = (n) => setPoints(p => p + n);
+
+  return (
+    <div className="bg-slate-300 min-h-screen flex items-center justify-center font-sans">
+      <div className="bg-white w-full max-w-md h-[850px] max-h-screen relative overflow-hidden shadow-2xl sm:rounded-[2.5rem] sm:border-[10px] border-gray-900 flex flex-col">
+
+        {/* 頂部狀態列 */}
+        <div className="bg-[#0f6e56] text-white pt-6 pb-4 px-6 shadow-lg z-30 shrink-0">
+          <div className="flex justify-between items-center mt-2">
+            <div>
+              <h1 className="text-xl font-black tracking-tighter flex items-center gap-2">
+                <Sparkles size={20} className="text-yellow-300 animate-pulse" /> PawCert
+              </h1>
+              <p className="text-[10px] opacity-70 font-bold uppercase tracking-widest">Premium Bio-Med Club</p>
+            </div>
+            <div className="flex items-center gap-3">
+              <div className="bg-white/10 px-3 py-1 rounded-full text-sm font-bold flex items-center gap-1 border border-white/20 cursor-pointer active:scale-95 transition" onClick={() => setShowCertInfo(true)}>
+                <Award size={16} className="text-yellow-400" /> Lv.3
+              </div>
+              <div className="bg-yellow-400 text-[#0f6e56] px-3 py-1 rounded-full text-xs font-black shadow-inner">
+                {points.toLocaleString()} pt
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* 內容區 */}
+        <div className="flex-1 overflow-y-auto bg-slate-50 scrollbar-hide">
+          {tab === 'home'      && <PassportScreen setShowCertInfo={setShowCertInfo} setShowPortrait={setShowPortrait} addPoints={addPoints} />}
+          {tab === 'animals'   && <AnimalsScreen />}
+          {tab === 'courses'   && <CoursesScreen addPoints={addPoints} />}
+          {tab === 'community' && <CommunityScreen />}
+          {tab === 'diary'     && <DiaryScreen points={points} />}
+        </div>
+
+        {/* 底部 Tab Bar */}
+        <div className="shrink-0 w-full bg-white/95 backdrop-blur-md border-t border-gray-200 px-4 pt-3 pb-6 flex justify-between items-center z-40">
+          <TabBtn icon={<Home />}        label="首頁" active={tab === 'home'}      onClick={() => setTab('home')} />
+          <TabBtn icon={<Heart />}       label="圖鑑" active={tab === 'animals'}   onClick={() => setTab('animals')} />
+          <TabBtn icon={<BookOpen />}    label="課程" active={tab === 'courses'}   onClick={() => setTab('courses')} />
+          <TabBtn icon={<Users />}       label="社群" active={tab === 'community'} onClick={() => setTab('community')} />
+          <TabBtn icon={<ClipboardList />} label="日記" active={tab === 'diary'}  onClick={() => setTab('diary')} />
+        </div>
+
+        {showCertInfo && <CertificationModal onClose={() => setShowCertInfo(false)} />}
+        {showPortrait && <PortraitModal      onClose={() => setShowPortrait(false)} />}
+      </div>
+    </div>
+  );
+}
+
+function TabBtn({ icon, label, active, onClick }) {
+  return (
+    <button onClick={onClick} className={`flex flex-col items-center justify-center w-14 transition-all duration-300 ${active ? 'text-[#0f6e56] scale-110' : 'text-slate-400'}`}>
+      {React.cloneElement(icon, { size: 24, strokeWidth: active ? 2.5 : 2 })}
+      <span className={`text-[10px] mt-1 font-black ${active ? 'opacity-100' : 'opacity-60'}`}>{label}</span>
+    </button>
+  );
+}
+
+// ─────────────────────────────────────────────
+// Tab 1 — 認證護照頁
+// ─────────────────────────────────────────────
+function PassportScreen({ setShowCertInfo, setShowPortrait, addPoints }) {
+  const [showQR, setShowQR] = useState(false);
+  const [showBooking, setShowBooking] = useState(false);
+  const [checkedIn, setCheckedIn] = useState(false);
+
+  const handleCheckIn = () => {
+    if (!checkedIn) { addPoints(20); setCheckedIn(true); }
+    setShowQR(true);
+  };
+
+  return (
+    <div className="p-5 space-y-5 pb-6 animate-in fade-in slide-in-from-bottom-4">
+
+      {/* 數位護照卡 */}
+      <div className="rounded-[2.5rem] p-6 text-white shadow-2xl relative overflow-hidden bg-gradient-to-br from-[#d4af37] to-[#8a7322] border-2 border-white/20">
+        <div className="absolute -right-6 -top-6 opacity-10 rotate-12"><Award size={160} /></div>
+        <div className="flex justify-between items-start mb-5">
+          <div className="z-10">
+            <div className="bg-white/20 w-fit px-2 py-0.5 rounded text-[9px] font-black tracking-widest mb-1 uppercase">A-Class Gold Mentor</div>
+            <h3 className="text-3xl font-black tracking-tight">陳瑭原</h3>
+            <p className="text-xs opacity-80 mt-1">成大生醫卓群店 · 榮譽導師</p>
+          </div>
+          <div className="flex flex-col gap-2 z-10">
+            <button onClick={() => setShowPortrait(true)} className="bg-white/20 p-2.5 rounded-2xl border border-white/30 active:scale-95 transition"><Camera size={20} /></button>
+            <button onClick={() => setShowCertInfo(true)} className="bg-black/20 p-2.5 rounded-2xl border border-white/10 active:scale-95 transition text-[10px] font-black">說明</button>
+          </div>
+        </div>
+
+        {/* 三數據卡 */}
+        <div className="grid grid-cols-3 gap-2 relative z-10 mb-4">
+          {[['已修課程','7'],['試養次數','3'],['累積積分','1280']].map(([k,v]) => (
+            <div key={k} className="bg-black/10 rounded-2xl p-3 border border-white/10 text-center">
+              <p className="text-[9px] opacity-60 mb-0.5">{k}</p>
+              <p className="text-xl font-black">{v}</p>
+            </div>
+          ))}
+        </div>
+
+        {/* 升級進度條 */}
+        <div className="relative z-10 space-y-2">
+          {[['進階課程完成度', 70], ['總試養天數 (目標 30 天)', 60], ['持有認證時間 (目標 6 個月)', 85]].map(([label, val]) => (
+            <div key={label}>
+              <div className="flex justify-between text-[9px] text-white/70 font-bold mb-1"><span>{label}</span><span>{val}%</span></div>
+              <div className="h-1.5 bg-black/20 rounded-full overflow-hidden">
+                <div className="h-full bg-white/70 rounded-full" style={{ width: `${val}%` }} />
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* 直播 + AR */}
+      <section className="grid grid-cols-2 gap-4">
+        <div className="bg-white rounded-3xl p-4 shadow-sm border border-slate-100 flex flex-col items-center gap-2 group cursor-pointer hover:border-[#0f6e56] transition-all">
+          <div className="relative w-full h-24 rounded-2xl overflow-hidden mb-1">
+            <img src={ANIMALS[0].img} className="w-full h-full object-cover group-hover:scale-110 transition duration-500" alt="直播" />
+            <div className="absolute top-2 left-2 bg-red-600 text-white text-[8px] px-1.5 py-0.5 rounded-full flex items-center gap-1 font-black animate-pulse">
+              <Video size={8} /> LIVE
+            </div>
+          </div>
+          <p className="text-xs font-black text-slate-800">飛飛正在睡覺中...</p>
+        </div>
+        <div onClick={() => addPoints(10)} className="bg-[#534ab7]/5 rounded-3xl p-4 border-2 border-dashed border-[#534ab7]/20 flex flex-col items-center justify-center gap-2 group cursor-pointer hover:bg-[#534ab7]/10 transition-all">
+          <div className="bg-white p-3 rounded-full text-[#534ab7] shadow-sm"><Camera size={24} /></div>
+          <p className="text-xs font-black text-[#534ab7] text-center leading-tight">萌寵 AR 濾鏡<br /><span className="text-[9px] font-bold opacity-60">賺 10pt 社交積分</span></p>
+        </div>
+      </section>
+
+      {/* 租借整備進度 */}
+      <section className="bg-orange-50 rounded-[2rem] p-5 border-2 border-orange-100 shadow-sm">
+        <h4 className="font-black text-orange-700 flex items-center gap-2 text-sm mb-4">
+          <Bell size={16} className="animate-bounce" /> 瑭原同學：租借整備進度
+        </h4>
+        <div className="flex gap-4 items-center bg-white p-4 rounded-2xl shadow-sm border border-orange-100">
+          <img src={ANIMALS[0].img} className="w-16 h-16 rounded-xl object-cover ring-4 ring-orange-50" alt="飛飛" />
+          <div className="flex-1">
+            <p className="text-[11px] text-slate-500 font-bold leading-snug">環境審核已通過。明日 14:00 請至「成大門市」領取專屬租借箱並完成飛飛的抓握練習。</p>
+            <div className="h-1.5 bg-slate-100 w-full rounded-full mt-3 overflow-hidden">
+              <div className="h-full bg-[#0f6e56] rounded-full" style={{ width: '90%' }} />
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* 門市導流 */}
+      <section className="grid grid-cols-2 gap-4 pb-2">
+        <button onClick={handleCheckIn} className="bg-white rounded-3xl p-5 shadow-sm border border-slate-100 flex flex-col items-center gap-3 hover:border-[#0f6e56] transition-all group">
+          <div className="bg-[#0f6e56]/5 p-4 rounded-2xl text-[#0f6e56] group-hover:bg-[#0f6e56] group-hover:text-white transition-colors"><QrCode size={28} /></div>
+          <p className="text-sm font-black text-slate-800">門市掃碼打卡</p>
+        </button>
+        <button onClick={() => setShowBooking(true)} className="bg-white rounded-3xl p-5 shadow-sm border border-slate-100 flex flex-col items-center gap-3 hover:border-orange-500 transition-all group">
+          <div className="bg-orange-50 p-4 rounded-2xl text-orange-600 group-hover:bg-orange-500 group-hover:text-white transition-colors"><Coffee size={28} /></div>
+          <p className="text-sm font-black text-slate-800">預約空間讀書</p>
+        </button>
+      </section>
+
+      {showQR      && <QRModal      onClose={() => setShowQR(false)}      checkedIn={checkedIn} />}
+      {showBooking && <BookingModal onClose={() => setShowBooking(false)} />}
+    </div>
+  );
+}
+
+// ─────────────────────────────────────────────
+// Tab 2 — 動物圖鑑
+// ─────────────────────────────────────────────
+const FILTERS = [
+  { key: 'all',          label: '全部' },
+  { key: 'cat',          label: '貓咪' },
+  { key: 'dog',          label: '犬隻' },
+  { key: 'reptile',      label: '爬蟲' },
+  { key: 'small_animal', label: '小動物' },
+];
+
+function AnimalsScreen() {
+  const [selected, setSelected] = useState(null);
+  const [filter, setFilter]     = useState('all');
+  const [showAI, setShowAI]     = useState(false);
+
+  const list = filter === 'all' ? ANIMALS : ANIMALS.filter(a => a.type === filter);
+
+  if (selected) return (
+    <div className="animate-in slide-in-from-right pb-6">
+      <div className="relative h-72 overflow-hidden">
+        <img src={selected.img} className="w-full h-full object-cover" alt={selected.name} />
+        <button onClick={() => setSelected(null)} className="absolute top-5 left-5 bg-white/90 p-3 rounded-full shadow-lg"><ChevronLeft /></button>
+        <div className="absolute bottom-5 right-5 bg-white/95 px-4 py-1.5 rounded-full text-xs font-black shadow-md border border-slate-100">{selected.status}</div>
+      </div>
+      <div className="p-5 space-y-5">
+        <div>
+          <p className="text-[#534ab7] text-xs font-black tracking-widest uppercase mb-1">{selected.breed}</p>
+          <h2 className="text-4xl font-black text-slate-900 tracking-tighter">{selected.name}</h2>
+        </div>
+        <div className="flex flex-wrap gap-2">
+          {selected.tags.map(t => <span key={t} className="bg-orange-50 text-orange-600 px-3 py-1 rounded-full text-[10px] font-black border border-orange-100">{t}</span>)}
+        </div>
+        {selected.minLevel > 1 && (
+          <div className="bg-amber-50 border border-amber-200 rounded-2xl p-3 flex items-center gap-2 text-xs font-black text-amber-700">
+            <Lock size={13} /> 需達到 Lv.{selected.minLevel} 認證才可申請
+          </div>
+        )}
+        <div className="bg-slate-50 p-5 rounded-[2rem] border border-slate-100">
+          <p className="text-[10px] font-black text-slate-400 mb-2 tracking-[0.3em] uppercase">My Story</p>
+          <p className="text-slate-600 leading-relaxed text-sm font-bold">{selected.story}</p>
+        </div>
+        <div className="grid gap-3 pb-4">
+          <button className={`w-full py-4 rounded-3xl font-black text-base shadow-xl active:scale-95 transition flex items-center justify-center gap-2 ${
+            selected.status === '展示中' || selected.status === '店長飼養'
+              ? 'bg-slate-200 text-slate-500 cursor-not-allowed'
+              : 'bg-[#0f6e56] text-white shadow-[#0f6e56]/20'}`}>
+            <ShieldCheck size={20} />
+            {selected.status === '展示中' || selected.status === '店長飼養' ? '僅供門市展示' : '申請試養 / 認養'}
+          </button>
+          <button className="w-full bg-white text-[#534ab7] border-2 border-[#534ab7]/20 py-4 rounded-3xl font-black flex items-center justify-center gap-2">
+            <MapPin size={18} /> 到門市看看牠
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+
+  return (
+    <div className="p-5 space-y-5 pb-6 animate-in fade-in">
+      <div className="flex items-center justify-between">
+        <h2 className="text-3xl font-black text-slate-800 tracking-tighter">毛夥伴圖鑑</h2>
+        <button onClick={() => setShowAI(true)} className="bg-[#534ab7] text-white px-3 py-2 rounded-2xl text-xs font-black flex items-center gap-1 shadow-md active:scale-95 transition">
+          <Brain size={14} /> AI 配對
+        </button>
+      </div>
+
+      {/* 篩選列 */}
+      <div className="flex gap-2 overflow-x-auto scrollbar-hide pb-1">
+        {FILTERS.map(f => (
+          <button key={f.key} onClick={() => setFilter(f.key)}
+            className={`shrink-0 px-4 py-2 rounded-full text-xs font-black transition-all ${filter === f.key ? 'bg-[#0f6e56] text-white shadow-md' : 'bg-white text-slate-500 border border-slate-200'}`}>
+            {f.label}
+          </button>
+        ))}
+      </div>
+
+      <div className="grid grid-cols-2 gap-4">
+        {list.map(a => (
+          <div key={a.id} onClick={() => setSelected(a)} className="bg-white rounded-[2rem] overflow-hidden shadow-sm border border-slate-100 active:scale-95 transition group hover:border-[#0f6e56]/30 cursor-pointer">
+            <div className="relative h-44 overflow-hidden">
+              <img src={a.img} className="h-full w-full object-cover group-hover:scale-110 transition duration-700" alt={a.name} />
+              <div className="absolute top-2.5 right-2.5 bg-white/85 backdrop-blur-sm px-2 py-0.5 rounded-lg text-[9px] font-black">{a.status}</div>
+              {a.minLevel > 1 && <div className="absolute top-2.5 left-2.5 bg-amber-400/90 p-1 rounded-lg"><Lock size={10} /></div>}
+            </div>
+            <div className="p-4 text-center">
+              <h3 className="font-black text-slate-800 text-base tracking-tighter">{a.name}</h3>
+              <p className="text-[10px] text-slate-400 font-bold tracking-widest uppercase mt-0.5">{a.breed}</p>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      {showAI && <AIMatchModal onClose={() => setShowAI(false)} />}
+    </div>
+  );
+}
+
+// ─────────────────────────────────────────────
+// Tab 3 — 課程頁
+// ─────────────────────────────────────────────
+function CoursesScreen({ addPoints }) {
+  const [activeQuiz, setActiveQuiz]     = useState(null);
+  const [done, setDone]                 = useState(new Set([1, 2]));
+
+  const handlePass = (id) => { setDone(prev => new Set([...prev, id])); addPoints(100); setActiveQuiz(null); };
+
+  const groups = ['貓咪基礎', '貓咪進階', '爬蟲特別課程', '犬隻認證'].map(tag => ({
+    tag, items: COURSES.filter(c => c.tag === tag),
+  }));
+
+  return (
+    <div className="p-5 space-y-6 pb-6 animate-in fade-in">
+      {/* 頭部 Banner */}
+      <div className="bg-[#0f6e56] text-white p-6 rounded-[2.5rem] relative overflow-hidden shadow-xl">
+        <div className="absolute right-0 top-0 opacity-10"><BookOpen size={100} /></div>
+        <h2 className="text-2xl font-black tracking-tight">認證課程中心</h2>
+        <p className="text-sm opacity-80 mt-1 font-medium">完成測驗，累積積分解鎖高等認證</p>
+        <div className="flex gap-3 mt-4">
+          {[['已完成', done.size], ['總課程', COURSES.length], ['可獲 pt', (COURSES.length - done.size) * 100]].map(([k, v]) => (
+            <div key={k} className="bg-white/20 rounded-2xl px-4 py-2 text-center">
+              <p className="text-xs opacity-70">{k}</p>
+              <p className="text-xl font-black">{v}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {groups.map(({ tag, items }) => (
+        <section key={tag}>
+          <h3 className="font-black text-slate-700 text-sm mb-3 flex items-center gap-2">
+            <span className="w-1.5 h-5 bg-[#0f6e56] rounded-full" />{tag}
+          </h3>
+          <div className="space-y-3">
+            {items.map(course => (
+              <div key={course.id} className={`bg-white rounded-3xl p-5 border shadow-sm transition ${course.locked ? 'opacity-55 border-slate-100' : 'border-slate-100 hover:border-[#0f6e56]/30'}`}>
+                <div className="flex items-start justify-between gap-3">
+                  <div className="flex-1">
+                    <div className="flex items-center gap-2 mb-1 flex-wrap">
+                      {course.locked && <Lock size={12} className="text-slate-400" />}
+                      {course.paid && !course.locked && <span className="bg-purple-100 text-purple-600 text-[9px] font-black px-2 py-0.5 rounded-full">付費 {course.price}</span>}
+                      <span className="font-black text-slate-800 text-sm">{course.title}</span>
+                    </div>
+                    <p className="text-[11px] text-slate-400 font-bold">{course.desc}</p>
+                    <div className="flex items-center gap-3 mt-1.5">
+                      <span className="text-[10px] text-slate-400 font-bold flex items-center gap-1"><Clock size={10} />{course.duration}</span>
+                      {course.score && <span className="text-[10px] text-[#0f6e56] font-black">測驗 {course.score} 分</span>}
+                    </div>
+                  </div>
+                  <div className="shrink-0">
+                    {done.has(course.id)
+                      ? <CheckCircle2 size={28} className="text-[#0f6e56]" />
+                      : course.locked
+                        ? <div className="bg-slate-100 p-2 rounded-xl"><Lock size={16} className="text-slate-400" /></div>
+                        : <button onClick={() => setActiveQuiz(course)} className="bg-[#0f6e56] text-white px-3 py-2 rounded-xl text-xs font-black active:scale-95 transition shadow-md">開始</button>
+                    }
+                  </div>
+                </div>
+                {!course.locked && (
+                  <div className="mt-3 h-1.5 bg-slate-100 rounded-full overflow-hidden">
+                    <div className={`h-full rounded-full transition-all duration-700 ${done.has(course.id) ? 'bg-[#0f6e56]' : 'bg-[#534ab7]'}`}
+                      style={{ width: `${done.has(course.id) ? 100 : course.progress}%` }} />
+                  </div>
+                )}
+              </div>
+            ))}
+          </div>
+        </section>
+      ))}
+
+      {activeQuiz && <QuizModal course={activeQuiz} onClose={() => setActiveQuiz(null)} onPass={() => handlePass(activeQuiz.id)} />}
+    </div>
+  );
+}
+
+// ─────────────────────────────────────────────
+// Tab 4 — 社群頁
+// ─────────────────────────────────────────────
+function CommunityScreen() {
+  const feed = [
+    { icon: '🌟', text: '陳瑭原導師 回覆了「蜜袋鼯換毛問題」：建議檢查蛋白質攝取量…', time: '5 分鐘前' },
+    { icon: '📸', text: '新進學員分享了與飛飛的 AR 合照！獲得了 128 個讚。', time: '1 小時前' },
+    { icon: '🎓', text: '林小美 通過了「貓咪進階行為矯正」測驗，獲得 B 級認證！', time: '3 小時前' },
+    { icon: '💬', text: '蜜袋鼯飼主交流群 新增了 5 則回覆，快去看看！', time: '昨天' },
+  ];
+
+  return (
+    <div className="p-5 space-y-6 pb-6 animate-in fade-in">
+      {/* 旗艦講座 Banner */}
+      <div className="bg-gradient-to-br from-emerald-600 to-teal-900 rounded-[2.5rem] p-7 text-white shadow-2xl relative overflow-hidden">
+        <div className="absolute right-0 top-0 opacity-10 scale-150 translate-x-4"><Sparkles size={120} /></div>
+        <div className="relative z-10 space-y-4">
+          <span className="bg-yellow-400 text-teal-900 px-3 py-0.5 rounded-full text-[10px] font-black animate-pulse">🔥 旗艦跨界講座</span>
+          <h2 className="text-xl font-black leading-tight">「萬物皆陪伴」：<br />昆蟲與寵物的奇幻視界</h2>
+          <div className="flex items-center gap-3 py-3 border-y border-white/10">
+            <img src="https://images.unsplash.com/photo-1438761681033-6461ffad8d80?auto=format&fit=crop&w=150&q=80" className="w-12 h-12 rounded-full border-4 border-white/20 object-cover" alt="講師" />
+            <div>
+              <p className="text-sm font-black">主講：昆蟲擾師 吳沁婕</p>
+              <p className="text-[10px] opacity-70 font-bold italic">Dee the bugbuff</p>
+            </div>
+          </div>
+          <div className="grid grid-cols-2 gap-2 text-[10px] font-black">
+            <div className="bg-black/20 p-2.5 rounded-2xl flex items-center gap-2"><Calendar size={13} className="text-yellow-400" /> 05/18 (一) 19:00</div>
+            <div className="bg-black/20 p-2.5 rounded-2xl flex items-center gap-2"><MapPin size={13} className="text-yellow-400" /> 成大門市 B 區</div>
+          </div>
+          <button onClick={() => alert('報名成功！獲得 50pt！')} className="w-full bg-white text-teal-900 py-3.5 rounded-2xl font-black text-sm shadow-xl active:scale-95 transition">
+            立即報名 (Lv.2 以上 0 pt)
+          </button>
+        </div>
+      </div>
+
+      {/* 社群動態 */}
+      <section className="bg-white p-5 rounded-[2.5rem] border border-slate-100 shadow-sm space-y-4">
+        <h3 className="font-black text-slate-800 flex items-center gap-2 text-lg tracking-tighter"><Activity size={22} className="text-[#534ab7]" /> 成大社群互動</h3>
+        <div className="space-y-3">
+          {feed.map((item, i) => (
+            <div key={i} className="p-4 bg-slate-50 rounded-2xl border border-slate-100 flex items-start gap-3">
+              <span className="text-lg shrink-0">{item.icon}</span>
+              <div>
+                <p className="font-bold text-slate-600 text-sm leading-snug">{item.text}</p>
+                <p className="text-[10px] text-slate-400 mt-1">{item.time}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+      </section>
+    </div>
+  );
+}
+
+// ─────────────────────────────────────────────
+// Tab 5 — 試養日記 + 積分
+// ─────────────────────────────────────────────
+function DiaryScreen({ points }) {
+  const [section, setSection]       = useState('health');
+  const [showAdd, setShowAdd]       = useState(false);
+
+  return (
+    <div className="p-5 space-y-5 pb-6 animate-in fade-in">
+      {/* 試養進度橫幅 */}
+      <div className="bg-orange-500 text-white p-6 rounded-[2.5rem] shadow-xl relative overflow-hidden">
+        <ClipboardList className="absolute right-2 top-2 opacity-10" size={100} />
+        <div className="relative z-10">
+          <div className="flex items-center justify-between mb-4">
+            <div className="flex items-center gap-3">
+              <div className="bg-white/20 p-3 rounded-2xl"><Activity size={22} /></div>
+              <div>
+                <h2 className="text-xl font-black tracking-tight">飛飛日記</h2>
+                <p className="text-[10px] opacity-70 font-bold tracking-widest uppercase">Foster Progress</p>
+              </div>
+            </div>
+            <div className="text-right">
+              <p className="text-3xl font-black">第 10 天</p>
+              <p className="text-xs opacity-70 font-bold">共 14 天</p>
+            </div>
+          </div>
+          <div className="h-2 bg-black/20 rounded-full overflow-hidden">
+            <div className="h-full bg-white rounded-full" style={{ width: '71%' }} />
+          </div>
+          <p className="text-xs opacity-70 mt-2 font-bold">距試養期結束還有 4 天</p>
+        </div>
+      </div>
+
+      {/* 分頁切換 */}
+      <div className="flex bg-slate-100 rounded-2xl p-1 gap-1">
+        {[['health', '健康追蹤'], ['diary', '日記紀錄'], ['points', '積分帳戶']].map(([key, label]) => (
+          <button key={key} onClick={() => setSection(key)}
+            className={`flex-1 py-2 rounded-xl text-xs font-black transition-all ${section === key ? 'bg-white text-[#0f6e56] shadow-sm' : 'text-slate-500'}`}>
+            {label}
+          </button>
+        ))}
+      </div>
+
+      {/* 健康追蹤 */}
+      {section === 'health' && (
+        <div className="bg-white p-6 rounded-[2.5rem] border-2 border-orange-100 shadow-sm space-y-5">
+          <div className="flex justify-between items-center border-b border-slate-50 pb-4">
+            <h3 className="font-black text-slate-800">今日健康紀錄</h3>
+            <span className="text-[10px] font-black text-orange-500 bg-orange-50 px-2 py-0.5 rounded-full">2026/05/14</span>
+          </div>
+          <div className="space-y-5">
+            <div className="flex justify-between items-center">
+              <p className="font-black text-slate-500">當前體重</p>
+              <p className="text-xl font-black text-[#0f6e56]">128g <span className="text-[10px] text-slate-300">(+2g)</span></p>
+            </div>
+            <div className="flex justify-between items-center">
+              <p className="font-black text-slate-500">飲水量</p>
+              <p className="text-xl font-black text-[#0f6e56]">正常</p>
+            </div>
+            <div className="flex justify-between items-center">
+              <p className="font-black text-slate-500">活力程度</p>
+              <div className="flex gap-1">{[1,2,3,4,5].map(i => <Star key={i} size={16} className="text-yellow-400 fill-yellow-400" />)}</div>
+            </div>
+          </div>
+          <button className="w-full bg-orange-500 text-white py-4 rounded-[2rem] font-black text-base shadow-xl active:scale-95 transition">更新今日紀錄</button>
+        </div>
+      )}
+
+      {/* 日記紀錄 */}
+      {section === 'diary' && (
+        <div className="space-y-4">
+          <button onClick={() => setShowAdd(true)} className="w-full bg-white border-2 border-dashed border-[#0f6e56]/30 rounded-3xl p-4 flex items-center justify-center gap-2 text-[#0f6e56] font-black text-sm hover:bg-[#0f6e56]/5 transition">
+            <PlusCircle size={20} /> 新增今日日記
+          </button>
+          {DIARY_ENTRIES.map(entry => (
+            <div key={entry.day} className="bg-white rounded-[2rem] p-5 border border-slate-100 shadow-sm space-y-3">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <div className="bg-orange-100 text-orange-600 px-3 py-1 rounded-full text-xs font-black">第 {entry.day} 天</div>
+                  <span className="text-[10px] text-slate-400 font-bold">{entry.date}</span>
+                </div>
+                <div className="flex gap-0.5">{Array.from({ length: entry.mood }).map((_, i) => <Star key={i} size={12} className="text-yellow-400 fill-yellow-400" />)}</div>
+              </div>
+              <h4 className="font-black text-slate-800">{entry.title}</h4>
+              <p className="text-sm text-slate-500 font-bold leading-snug">{entry.content}</p>
+              <div className="h-20 bg-slate-50 rounded-2xl border border-slate-100 flex items-center justify-center text-slate-300 text-xs font-black">📷 點擊上傳照片</div>
+            </div>
+          ))}
+        </div>
+      )}
+
+      {/* 積分帳戶 */}
+      {section === 'points' && (
+        <div className="space-y-4">
+          <div className="bg-[#534ab7] text-white rounded-[2.5rem] p-6 shadow-xl relative overflow-hidden">
+            <div className="absolute right-0 top-0 opacity-10"><Trophy size={100} /></div>
+            <p className="text-sm opacity-70 font-bold mb-1">累積積分</p>
+            <p className="text-6xl font-black tracking-tighter">{points.toLocaleString()}<span className="text-xl opacity-50 ml-1">pt</span></p>
+            <div className="mt-4">
+              <div className="flex justify-between text-[10px] opacity-70 font-bold mb-1">
+                <span>領養費折抵進度（目標 2000 pt）</span>
+                <span>{Math.min(points, 2000)} / 2000</span>
+              </div>
+              <div className="h-2 bg-black/20 rounded-full overflow-hidden">
+                <div className="h-full bg-white rounded-full" style={{ width: `${Math.min((points / 2000) * 100, 100)}%` }} />
+              </div>
+            </div>
+          </div>
+          <div className="bg-white rounded-[2rem] border border-slate-100 shadow-sm overflow-hidden">
+            <h4 className="font-black text-slate-700 px-5 pt-5 pb-3 text-sm border-b border-slate-50">交易紀錄</h4>
+            {POINTS_HISTORY.map(item => (
+              <div key={item.id} className="flex items-center justify-between px-5 py-4 border-b border-slate-50 last:border-0">
+                <div>
+                  <p className="text-sm font-black text-slate-700">{item.desc}</p>
+                  <p className="text-[10px] text-slate-400 font-bold mt-0.5">{item.date}</p>
+                </div>
+                <span className={`font-black text-base ${item.pts > 0 ? 'text-[#0f6e56]' : 'text-red-500'}`}>
+                  {item.pts > 0 ? `+${item.pts}` : item.pts}
+                </span>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* 新增日記 Modal */}
+      {showAdd && (
+        <div className="fixed inset-0 bg-black/70 z-50 flex items-end animate-in fade-in">
+          <div className="bg-white rounded-t-[3rem] w-full p-8 space-y-4">
+            <div className="flex justify-between items-center">
+              <h3 className="text-2xl font-black">新增日記</h3>
+              <button onClick={() => setShowAdd(false)}><XCircle /></button>
+            </div>
+            <input className="w-full border-2 border-slate-100 rounded-2xl p-4 font-bold text-sm focus:outline-none focus:border-[#0f6e56]" placeholder="今天的標題..." />
+            <textarea rows={4} className="w-full border-2 border-slate-100 rounded-2xl p-4 font-bold text-sm focus:outline-none focus:border-[#0f6e56]" placeholder="記錄今天與飛飛的點滴..." />
+            <button onClick={() => setShowAdd(false)} className="w-full bg-[#0f6e56] text-white py-4 rounded-2xl font-black shadow-xl">儲存日記</button>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
+// ─────────────────────────────────────────────
+// Modals
+// ─────────────────────────────────────────────
+function CertificationModal({ onClose }) {
+  return (
+    <div className="fixed inset-0 bg-black/80 z-[60] flex items-center justify-center p-6 animate-in fade-in">
+      <div className="bg-white rounded-[3rem] w-full max-w-sm p-8 relative shadow-2xl">
+        <button onClick={onClose} className="absolute top-7 right-7 text-slate-400"><XCircle /></button>
+        <div className="text-center mb-6"><ShieldCheck size={44} className="text-[#0f6e56] mx-auto mb-3" /><h2 className="text-2xl font-black">認證等級說明</h2></div>
+        <div className="space-y-3">
+          {CERT_LEVELS.map((c, i) => (
+            <div key={i} className={`flex gap-4 p-4 rounded-3xl border-2 ${c.level === 'A' ? 'bg-yellow-50 border-yellow-300/30' : 'bg-slate-50 border-slate-100'}`}>
+              <div className={`font-black w-10 h-10 rounded-xl flex items-center justify-center shrink-0 text-sm ${c.color}`}>{c.level}</div>
+              <div>
+                <p className="font-black text-sm">{c.title}</p>
+                <p className="text-[10px] text-slate-500 mt-0.5">{c.desc}</p>
+                <div className="flex flex-wrap gap-1 mt-2">
+                  {c.privileges.map(p => <span key={p} className="text-[9px] bg-white border border-slate-200 px-2 py-0.5 rounded-full font-bold text-slate-600">{p}</span>)}
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+        <button onClick={onClose} className="w-full bg-slate-900 text-white py-4 rounded-2xl font-black mt-6 shadow-xl">我了解了</button>
+      </div>
+    </div>
+  );
+}
+
+function PortraitModal({ onClose }) {
+  return (
+    <div className="fixed inset-0 bg-black/95 z-[70] flex items-center justify-center p-8 animate-in zoom-in">
+      <div className="bg-[#f4ebd0] rounded-[4rem] w-full max-w-sm p-4 shadow-2xl relative border-[14px] border-[#3c2a21]">
+        <button onClick={onClose} className="absolute -top-14 right-0 text-white"><XCircle size={36} /></button>
+        <div className="border-4 border-dashed border-[#8a7322]/30 rounded-[3rem] p-8 text-center flex flex-col items-center">
+          <h2 className="text-xl font-black text-[#3c2a21] mb-2 tracking-[0.3em] uppercase" style={{ fontFamily: 'serif' }}>時間的扉頁</h2>
+          <div className="w-48 h-64 mb-6 rounded-t-full overflow-hidden border-[8px] border-[#5c4033] shadow-2xl">
+            <img src="https://images.unsplash.com/photo-1543852786-1cf6624b9987?auto=format&fit=crop&w=400" className="w-full h-full object-cover grayscale brightness-90 contrast-125" alt="portrait" />
+          </div>
+          <h3 className="font-black text-[#3c2a21] text-xl mb-1">陳瑭原 & 飛飛</h3>
+          <p className="text-[11px] text-[#5c4033] font-serif italic mb-6">Sugar Glider Master · Certified 2026</p>
+          <button className="bg-[#3c2a21] text-[#f4ebd0] px-8 py-3 rounded-full font-black text-xs flex items-center gap-2 shadow-2xl uppercase tracking-widest">
+            <ImageIcon size={16} /> Share to Threads
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function QRModal({ onClose, checkedIn }) {
+  return (
+    <div className="fixed inset-0 bg-black/70 z-50 flex items-center justify-center p-8 animate-in fade-in">
+      <div className="bg-white rounded-[3rem] p-8 w-full max-w-sm flex flex-col items-center relative shadow-2xl">
+        <button onClick={onClose} className="absolute top-7 right-7 text-slate-400"><XCircle /></button>
+        <div className="bg-slate-50 p-8 rounded-[2.5rem] border-4 border-[#0f6e56] mb-6 shadow-inner">
+          <QrCode size={160} className="text-[#0f6e56]" />
+        </div>
+        <p className="font-black text-slate-800 text-2xl">門市打卡成功！</p>
+        {checkedIn && <p className="text-[11px] text-[#0f6e56] font-bold mt-2 tracking-widest uppercase">+20 Points Credited</p>}
+      </div>
+    </div>
+  );
+}
+
+function BookingModal({ onClose }) {
+  return (
+    <div className="fixed inset-0 bg-black/80 z-50 flex items-end justify-center animate-in fade-in">
+      <div className="bg-white rounded-t-[4rem] w-full p-8 space-y-6 shadow-2xl border-t-8 border-orange-100">
+        <div className="flex justify-between items-center">
+          <div>
+            <h2 className="text-2xl font-black text-slate-800">預約讀書艙</h2>
+            <p className="text-xs text-slate-400 font-bold mt-1 tracking-widest uppercase">Bio-Med Building 1F</p>
+          </div>
+          <button onClick={onClose} className="p-3 bg-slate-100 rounded-full"><XCircle /></button>
+        </div>
+        <div className="space-y-3">
+          {[
+            { time: '明日 09:00 - 13:00', pt: '50 pt / hr', badge: 'Off-Peak 0.5x', color: 'border-green-100 bg-green-50/50', badgeColor: 'bg-green-600' },
+            { time: '明日 18:30 - 21:30', pt: '150 pt / hr', badge: 'Hot 1.5x',      color: 'border-orange-100 bg-orange-50/50', badgeColor: 'bg-orange-500' },
+          ].map(s => (
+            <button key={s.time} className={`w-full text-left p-5 rounded-[2rem] border-2 ${s.color} relative`}>
+              <div className={`absolute right-5 top-5 ${s.badgeColor} text-white text-[9px] font-black px-2.5 py-1 rounded-full`}>{s.badge}</div>
+              <p className="font-black text-slate-800 text-lg">{s.time}</p>
+              <p className="text-sm text-slate-500 font-black mt-1">{s.pt}</p>
+            </button>
+          ))}
+        </div>
+        <button onClick={onClose} className="w-full bg-[#0f6e56] text-white py-5 rounded-[2rem] font-black text-xl shadow-2xl">確認預約</button>
+      </div>
+    </div>
+  );
+}
+
+// ── 課程測驗 Modal ──
+function QuizModal({ course, onClose, onPass }) {
+  const [cur, setCur]         = useState(0);
+  const [sel, setSel]         = useState(null);
+  const [answers, setAnswers] = useState([]);
+  const [done, setDone]       = useState(false);
+
+  const q = QUIZ_QUESTIONS[cur];
+
+  const next = () => {
+    const all = [...answers, { correct: sel === q.ans }];
+    if (cur < QUIZ_QUESTIONS.length - 1) { setAnswers(all); setCur(c => c + 1); setSel(null); }
+    else { setAnswers(all); setDone(true); }
+  };
+
+  const score   = done ? Math.round((answers.filter(a => a.correct).length / QUIZ_QUESTIONS.length) * 100) : 0;
+  const passed  = score >= 70;
+
+  return (
+    <div className="fixed inset-0 bg-black/85 z-[60] flex items-center justify-center p-5 animate-in fade-in">
+      <div className="bg-white rounded-[3rem] w-full max-w-sm p-7 relative shadow-2xl">
+        <button onClick={onClose} className="absolute top-7 right-7 text-slate-400"><XCircle /></button>
+
+        {!done ? (
+          <>
+            <p className="text-xs text-slate-400 font-black tracking-widest mb-2 uppercase">{course.title} 測驗</p>
+            <div className="flex gap-1 mb-4">
+              {QUIZ_QUESTIONS.map((_, i) => (
+                <div key={i} className={`flex-1 h-1.5 rounded-full ${i < cur ? 'bg-[#0f6e56]' : i === cur ? 'bg-[#534ab7]' : 'bg-slate-100'}`} />
+              ))}
+            </div>
+            <p className="font-black text-slate-800 text-base leading-snug mb-5">Q{cur + 1}. {q.q}</p>
+            <div className="space-y-3 mb-5">
+              {q.options.map((opt, i) => {
+                let cls = 'border-slate-100 bg-slate-50 text-slate-700';
+                if (sel !== null) {
+                  if (i === q.ans) cls = 'border-green-400 bg-green-50 text-green-700';
+                  else if (i === sel) cls = 'border-red-300 bg-red-50 text-red-600';
+                }
+                return (
+                  <button key={i} onClick={() => sel === null && setSel(i)}
+                    className={`w-full text-left p-4 rounded-2xl border-2 font-bold text-sm transition-all ${cls}`}>
+                    <span className="text-[10px] font-black opacity-50 mr-2">{String.fromCharCode(65 + i)}.</span>{opt}
+                  </button>
+                );
+              })}
+            </div>
+            <button onClick={next} disabled={sel === null}
+              className={`w-full py-4 rounded-2xl font-black text-sm shadow-lg transition-all ${sel !== null ? 'bg-[#0f6e56] text-white active:scale-95' : 'bg-slate-100 text-slate-400 cursor-not-allowed'}`}>
+              {cur < QUIZ_QUESTIONS.length - 1 ? '下一題' : '查看結果'}
+            </button>
+          </>
+        ) : (
+          <div className="text-center py-4">
+            <div className={`w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-4 ${passed ? 'bg-[#0f6e56]' : 'bg-red-500'}`}>
+              {passed ? <Trophy size={36} className="text-white" /> : <XCircle size={36} className="text-white" />}
+            </div>
+            <p className="text-5xl font-black mb-2">{score}<span className="text-xl text-slate-400">分</span></p>
+            <p className={`font-black text-lg mb-1 ${passed ? 'text-[#0f6e56]' : 'text-red-500'}`}>{passed ? '恭喜通過！' : '差一點！'}</p>
+            <p className="text-slate-500 text-sm font-bold mb-6">{passed ? '已獲得 +100pt，課程認證完成！' : '70 分以上才能取得認證，再試一次！'}</p>
+            {passed
+              ? <button onClick={onPass} className="w-full bg-[#0f6e56] text-white py-4 rounded-2xl font-black shadow-xl">領取認證 +100pt</button>
+              : <button onClick={onClose} className="w-full bg-slate-900 text-white py-4 rounded-2xl font-black shadow-xl">重新作答</button>}
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+
+// ── AI 配對 Modal ──
+function AIMatchModal({ onClose }) {
+  const [step, setStep]     = useState(0);
+  const [picks, setPicks]   = useState([]);
+  const [result, setResult] = useState(null);
+
+  const pick = (i) => {
+    const next = [...picks, i];
+    if (step < AI_QUESTIONS.length - 1) { setPicks(next); setStep(s => s + 1); }
+    else {
+      const recs = [
+        { animal: next[0] <= 1 ? ANIMALS[0] : ANIMALS[1], match: next[0] <= 1 ? 92 : 85 },
+        { animal: ANIMALS[next[1] >= 2 ? 2 : 1],          match: next[1] >= 2 ? 88 : 72 },
+        { animal: next[2] === 3 ? ANIMALS[3] : ANIMALS[4], match: next[2] === 3 ? 85 : 78 },
+      ];
+      setResult(recs); setPicks(next);
+    }
+  };
+
+  return (
+    <div className="fixed inset-0 bg-black/85 z-50 flex items-center justify-center p-5 animate-in fade-in">
+      <div className="bg-white rounded-[3rem] w-full max-w-sm p-7 relative shadow-2xl">
+        <button onClick={onClose} className="absolute top-7 right-7 text-slate-400"><XCircle /></button>
+
+        {!result ? (
+          <>
+            <div className="flex items-center gap-2 mb-5">
+              <div className="bg-[#534ab7] p-2 rounded-xl text-white"><Brain size={20} /></div>
+              <div>
+                <h3 className="font-black text-slate-800">AI 配對媒合</h3>
+                <p className="text-[10px] text-slate-400 font-bold">第 {step + 1} / {AI_QUESTIONS.length} 題</p>
+              </div>
+            </div>
+            <div className="flex gap-1 mb-5">
+              {AI_QUESTIONS.map((_, i) => <div key={i} className={`flex-1 h-1.5 rounded-full ${i < step ? 'bg-[#534ab7]' : i === step ? 'bg-purple-300' : 'bg-slate-100'}`} />)}
+            </div>
+            <p className="font-black text-slate-800 text-base mb-5">{AI_QUESTIONS[step].q}</p>
+            <div className="space-y-2">
+              {AI_QUESTIONS[step].opts.map((opt, i) => (
+                <button key={i} onClick={() => pick(i)}
+                  className="w-full text-left p-4 rounded-2xl border-2 border-slate-100 bg-slate-50 font-bold text-sm text-slate-700 hover:border-[#534ab7]/40 hover:bg-[#534ab7]/5 active:scale-95 transition-all">
+                  {opt}
+                </button>
+              ))}
+            </div>
+          </>
+        ) : (
+          <>
+            <div className="text-center mb-5">
+              <div className="bg-[#534ab7] p-3 rounded-full w-fit mx-auto mb-3"><Brain size={28} className="text-white" /></div>
+              <h3 className="font-black text-slate-800 text-xl">為你推薦的毛夥伴</h3>
+            </div>
+            <div className="space-y-3">
+              {result.map((r, i) => (
+                <div key={i} className={`flex items-center gap-4 p-4 rounded-2xl border-2 ${i === 0 ? 'border-[#0f6e56]/30 bg-[#0f6e56]/5' : 'border-slate-100 bg-slate-50'}`}>
+                  <img src={r.animal.img} className="w-14 h-14 rounded-2xl object-cover" alt={r.animal.name} />
+                  <div className="flex-1">
+                    <div className="flex items-center justify-between">
+                      <p className="font-black text-slate-800">{r.animal.name}</p>
+                      <span className={`text-sm font-black ${i === 0 ? 'text-[#0f6e56]' : 'text-slate-500'}`}>{r.match}%</span>
+                    </div>
+                    <p className="text-[10px] text-slate-400 font-bold">{r.animal.breed}</p>
+                    <div className="h-1.5 bg-slate-200 rounded-full mt-1.5 overflow-hidden">
+                      <div className={`h-full rounded-full ${i === 0 ? 'bg-[#0f6e56]' : 'bg-slate-400'}`} style={{ width: `${r.match}%` }} />
+                    </div>
+                  </div>
+                  {i === 0 && <Trophy size={16} className="text-yellow-500 shrink-0" />}
+                </div>
+              ))}
+            </div>
+            <button onClick={onClose} className="w-full bg-[#534ab7] text-white py-4 rounded-2xl font-black mt-5 shadow-xl">去圖鑑看看牠們</button>
+          </>
+        )}
+      </div>
+    </div>
+  );
+}
