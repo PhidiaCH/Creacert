@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 192 192">
+  <!-- 背景圓 -->
+  <circle cx="96" cy="96" r="96" fill="#0f6e56"/>
+  <!-- 外圈裝飾 -->
+  <circle cx="96" cy="96" r="80" fill="none" stroke="#d4af37" stroke-width="4" stroke-dasharray="8 4"/>
+  <!-- CC 文字 -->
+  <text x="96" y="78" font-family="Arial Black, sans-serif" font-size="42" font-weight="900"
+        text-anchor="middle" fill="white" letter-spacing="-2">CC</text>
+  <!-- 小標 -->
+  <text x="96" y="106" font-family="Arial, sans-serif" font-size="14" font-weight="700"
+        text-anchor="middle" fill="#d4af37" letter-spacing="2">CREA</text>
+  <!-- 動物emoji列 -->
+  <text x="96" y="140" font-size="26" text-anchor="middle">🦎🐱🐶</text>
+</svg>

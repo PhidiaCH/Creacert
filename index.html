@@ -2,12 +2,44 @@
 <html lang="zh-TW">
   <head>
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🐾</text></svg>" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>PawCert 行銷期末報告</title>
+
+    <!-- PWA Manifest -->
+    <link rel="manifest" href="/manifest.json" />
+
+    <!-- Favicon（爬蟲代表）-->
+    <link rel="icon" type="image/svg+xml" href="/icon-192.svg" />
+
+    <!-- iOS PWA 支援 -->
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="apple-mobile-web-app-title" content="CreaCert" />
+    <link rel="apple-touch-icon" href="/icon-192.svg" />
+
+    <!-- Android / Chrome PWA -->
+    <meta name="theme-color" content="#0f6e56" />
+    <meta name="mobile-web-app-capable" content="yes" />
+
+    <!-- SEO & Social -->
+    <meta name="description" content="CreaCert — Know Every Creature. 寵物認證 x 動物福利平台，貓狗爬蟲小動物一站涵蓋。" />
+    <meta property="og:title" content="CreaCert" />
+    <meta property="og:description" content="Know Every Creature — 寵物認證平台" />
+    <meta property="og:type" content="website" />
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <title>CreaCert — Know Every Creature</title>
   </head>
   <body>
     <div id="root"></div>
     <script type="module" src="/src/main.jsx"></script>
+    <!-- 註冊 Service Worker -->
+    <script>
+      if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+          navigator.serviceWorker.register('/sw.js')
+            .then(r => console.log('[CreaCert SW] registered', r.scope))
+            .catch(e => console.warn('[CreaCert SW] failed', e));
+        });
+      }
+    </script>
   </body>
 </html>

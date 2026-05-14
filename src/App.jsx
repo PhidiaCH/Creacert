@@ -1,39 +1,48 @@
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import {
   Home, BookOpen, Heart, ClipboardList, Sparkles, XCircle, Award,
   Calendar, ChevronLeft, Search, MapPin, QrCode, Coffee, Clock,
   Users, Star, Image as ImageIcon, Bell, ShieldCheck, Camera,
   Video, Activity, Lock, Trophy, Brain, PlusCircle, CheckCircle2,
+  Play, PlayCircle, Tv2, Eye,
 } from 'lucide-react';
 
 // ─────────────────────────────────────────────
 // 資料庫
 // ─────────────────────────────────────────────
+const PX = (id) => `https://images.pexels.com/photos/${id}/pexels-photo-${id}.jpeg?auto=compress&cs=tinysrgb&w=480`;
+
 const ANIMALS = [
   { id: 1, name: '飛飛', type: 'small_animal', typeName: '小動物', breed: '蜜袋鼯', status: '準備租借中', minLevel: 3,
-    img: 'https://images.unsplash.com/photo-1574870111867-089730e5a72b?auto=format&fit=crop&w=600&q=80',
+    img: PX(29993579),
     tags: ['#口袋精靈', '#夜行性', '#大眼萌物', '#A 級專屬'],
-    story: '「啾！我是飛飛！水汪汪的大眼睛是我的招牌。我最喜歡在主人的口袋裡睡覺，因為我需要高蛋白飲食與攀爬空間，只有通過 A 級認證的飼主才能帶我回家喔！」' },
+    story: '「啾！我是飛飛！水汪汪的大眼睛是我的招牌。我最喜歡在主人的口袋裡睡覺，因為我需要高蛋白飲食與攀爬空間，只有通過 A 級認證的飼主才能帶我回家喔！」',
+    care: 4, lifespan: '10–15 年', trialFee: 1200, size: '迷你', careNote: '需高蛋白飲食，夜行性，需滑翔空間', videoId: 'CmFA3cEJpDc' },
   { id: 2, name: '月亮', type: 'cat', typeName: '貓咪', breed: '黑白貓', status: '可認養', minLevel: 1,
-    img: 'https://images.unsplash.com/photo-1533738363-b7f9aef128ce?auto=format&fit=crop&w=400&q=80',
+    img: PX(29561296),
     tags: ['#優雅淑女', '#慢熟', '#靜態陪伴'],
-    story: '「你好，我是月亮。我不需要太大空間，最適合高壓環境下工作的研究人員。給我一個窗台和溫柔的主人，我就很滿足了。」' },
+    story: '「你好，我是月亮。我不需要太大空間，最適合高壓環境下工作的研究人員。給我一個窗台和溫柔的主人，我就很滿足了。」',
+    care: 2, lifespan: '12–16 年', trialFee: 800, size: '中型', careNote: '慢熟型，需安靜環境，適合獨居', videoId: 'Ni7bNOCBs0I' },
   { id: 3, name: '小福', type: 'cat', typeName: '貓咪', breed: '橘貓', status: '試養中', minLevel: 1,
-    img: 'https://images.unsplash.com/photo-1513360371669-4adf3dd7dff8?auto=format&fit=crop&w=400&q=80',
+    img: PX(4641440),
     tags: ['#貪吃大叔', '#呼嚕聲超大', '#治癒系'],
-    story: '「喵～只要聽到罐頭打開的聲音，我會用光速衝過來。我的呼嚕聲是全店最響的，可以舒緩你的考前焦慮！」' },
+    story: '「喵～只要聽到罐頭打開的聲音，我會用光速衝過來。我的呼嚕聲是全店最響的，可以舒緩你的考前焦慮！」',
+    care: 2, lifespan: '13–17 年', trialFee: 800, size: '中型', careNote: '親人貪吃，注意飲食控制避免肥胖', videoId: 'Q6ORyRHyof4' },
   { id: 4, name: '豆豆', type: 'dog', typeName: '犬隻', breed: '米格魯', status: '可認養', minLevel: 2,
-    img: 'https://images.unsplash.com/photo-1543466835-00a7907e9de1?auto=format&fit=crop&w=400&q=80',
+    img: PX(8706369),
     tags: ['#精力充沛', '#嗅覺達人', '#戶外型'],
-    story: '「汪！我有全世界最靈敏的鼻子，可以聞到 300 公尺外的零食。我需要每天散步，適合喜歡戶外活動的人！」' },
+    story: '「汪！我有全世界最靈敏的鼻子，可以聞到 300 公尺外的零食。我需要每天散步，適合喜歡戶外活動的人！」',
+    care: 3, lifespan: '12–15 年', trialFee: 1000, size: '中型', careNote: '需每日散步 30 分鐘以上，嗅覺敏銳', videoId: 'KPkYRXyRBnI' },
   { id: 5, name: '小綠', type: 'reptile', typeName: '爬蟲展示', breed: '鬃獅蜥', status: '展示中', minLevel: 2,
-    img: 'https://images.unsplash.com/photo-1548550023-2bdb3c5beed7?auto=format&fit=crop&w=400&q=80',
+    img: PX(6002806),
     tags: ['#冷靜達人', '#親人', '#適合初學者'],
-    story: '「嗨，我是小綠。我是爬蟲界最親人的存在，喜歡被人抱著曬太陽。來門市摸摸我，說不定我們就有緣分！」' },
+    story: '「嗨，我是小綠。我是爬蟲界最親人的存在，喜歡被人抱著曬太陽。來門市摸摸我，說不定我們就有緣分！」',
+    care: 3, lifespan: '10–15 年', trialFee: 900, size: '小型', careNote: '需 UVB 燈源，每日溫度 28–38°C', videoId: 'T_AhqN0r9Ys' },
   { id: 6, name: '小白', type: 'reptile', typeName: '爬蟲展示', breed: '白化球蟒', status: '店長飼養', minLevel: 3,
-    img: 'https://images.unsplash.com/photo-1518020382113-a7e8fc38eac9?auto=format&fit=crop&w=400&q=80',
+    img: PX(29378244),
     tags: ['#稀有品種', '#溫馴', '#長壽夥伴'],
-    story: '「我是小白，店長的珍貴夥伴。我可以活到 30 年，是一輩子的承諾。來門市體驗與蛇相處的奇妙感受吧！」' },
+    story: '「我是小白，店長的珍貴夥伴。我可以活到 30 年，是一輩子的承諾。來門市體驗與蛇相處的奇妙感受吧！」',
+    care: 4, lifespan: '20–30 年', trialFee: 1500, size: '中型', careNote: '溫馴無毒，需 28°C 恆溫環境，月餵一次', videoId: '4hpojHpdDRg' },
 ];
 
 const CERT_LEVELS = [
@@ -43,13 +52,13 @@ const CERT_LEVELS = [
 ];
 
 const COURSES = [
-  { id: 1, tag: '貓咪基礎', title: '貓咪營養學',     desc: '主食、零食與補充品的選擇', duration: '45 分鐘', progress: 100, score: 85,  locked: false, paid: false },
-  { id: 2, tag: '貓咪基礎', title: '行為解讀',       desc: '讀懂肢體語言與聲音溝通', duration: '50 分鐘', progress: 100, score: 90,  locked: false, paid: false },
-  { id: 3, tag: '貓咪基礎', title: '環境安全設計',   desc: '打造貓咪友善的居家空間', duration: '40 分鐘', progress: 60,  score: null, locked: false, paid: false },
-  { id: 4, tag: '貓咪進階', title: '醫療照護基礎',   desc: '識別常見症狀與緊急處置', duration: '90 分鐘', progress: 0,   score: null, locked: true,  paid: false },
-  { id: 5, tag: '貓咪進階', title: '行為矯正技術',   desc: '正向強化訓練方法',       duration: '75 分鐘', progress: 0,   score: null, locked: true,  paid: false },
-  { id: 6, tag: '爬蟲特別課程', title: '爬蟲飼育認證', desc: '鬃獅蜥、球蟒的完整照護', duration: '120 分鐘', progress: 0, score: null, locked: false, paid: true, price: 'NT$299' },
-  { id: 7, tag: '犬隻認證', title: '犬隻基礎服從',   desc: '基本口令訓練與社交化',   duration: '60 分鐘', progress: 30,  score: null, locked: false, paid: false },
+  { id: 1, tag: '貓咪基礎', title: '貓咪營養學',     desc: '主食、零食與補充品的選擇', duration: '45 分鐘', progress: 100, score: 85,  locked: false, paid: false, videoId: 'EfSwdHESDDk' },
+  { id: 2, tag: '貓咪基礎', title: '行為解讀',       desc: '讀懂肢體語言與聲音溝通', duration: '50 分鐘', progress: 100, score: 90,  locked: false, paid: false, videoId: 'MnRO0P2pFoA' },
+  { id: 3, tag: '貓咪基礎', title: '環境安全設計',   desc: '打造貓咪友善的居家空間', duration: '40 分鐘', progress: 60,  score: null, locked: false, paid: false, videoId: 'G5D8pFwVG6A' },
+  { id: 4, tag: '貓咪進階', title: '醫療照護基礎',   desc: '識別常見症狀與緊急處置', duration: '90 分鐘', progress: 0,   score: null, locked: true,  paid: false, videoId: 'DaC5IfBRSrQ' },
+  { id: 5, tag: '貓咪進階', title: '行為矯正技術',   desc: '正向強化訓練方法',       duration: '75 分鐘', progress: 0,   score: null, locked: true,  paid: false, videoId: 'P6hPWABGE8E' },
+  { id: 6, tag: '爬蟲特別課程', title: '爬蟲飼育認證', desc: '鬃獅蜥、球蟒的完整照護', duration: '120 分鐘', progress: 0, score: null, locked: false, paid: true, price: 'NT$299', videoId: 'Kf2xjW7YNAU' },
+  { id: 7, tag: '犬隻認證', title: '犬隻基礎服從',   desc: '基本口令訓練與社交化',   duration: '60 分鐘', progress: 30,  score: null, locked: false, paid: false, videoId: 'btBhGJJveXQ' },
 ];
 
 const QUIZ_QUESTIONS = [
@@ -80,6 +89,15 @@ const AI_QUESTIONS = [
   { q: '你希望的互動方式？',       opts: ['靜靜陪伴就好', '偶爾互動玩耍', '頻繁互動', '戶外運動型'] },
 ];
 
+// 短影音 Reels 資料
+const REELS = [
+  { id: 1, videoId: 'CmFA3cEJpDc', title: '飛飛第一次爬上肩膀 🦘',  creator: '陳瑭原',  views: '2.3萬', animal: '蜜袋鼯', cover: PX(29993579) },
+  { id: 2, videoId: 'Q6ORyRHyof4', title: '小福的週日賴床日常 ☀️',  creator: '小美',    views: '8.1萬', animal: '橘貓',   cover: PX(4641440) },
+  { id: 3, videoId: 'KPkYRXyRBnI', title: '豆豆學會「坐下」啦！🐶', creator: '志豪',    views: '1.2萬', animal: '米格魯', cover: PX(8706369) },
+  { id: 4, videoId: 'T_AhqN0r9Ys', title: '小綠曬太陽超享受 🦎',    creator: '雅婷',    views: '4.5萬', animal: '鬃獅蜥', cover: PX(6002806) },
+  { id: 5, videoId: '4hpojHpdDRg', title: '摸蛇其實不可怕！🐍',     creator: '店長Leo', views: '15萬',  animal: '球蟒',   cover: PX(29378244) },
+];
+
 // ─────────────────────────────────────────────
 // 根元件
 // ─────────────────────────────────────────────
@@ -99,9 +117,9 @@ export default function App() {
           <div className="flex justify-between items-center mt-2">
             <div>
               <h1 className="text-xl font-black tracking-tighter flex items-center gap-2">
-                <Sparkles size={20} className="text-yellow-300 animate-pulse" /> PawCert
+                <Sparkles size={20} className="text-yellow-300 animate-pulse" /> CreaCert
               </h1>
-              <p className="text-[10px] opacity-70 font-bold uppercase tracking-widest">Premium Bio-Med Club</p>
+              <p className="text-[10px] opacity-70 font-bold uppercase tracking-widest">Know Every Creature</p>
             </div>
             <div className="flex items-center gap-3">
               <div className="bg-white/10 px-3 py-1 rounded-full text-sm font-bold flex items-center gap-1 border border-white/20 cursor-pointer active:scale-95 transition" onClick={() => setShowCertInfo(true)}>
@@ -155,11 +173,53 @@ function PassportScreen({ setShowCertInfo, setShowPortrait, addPoints }) {
   const [showQR, setShowQR] = useState(false);
   const [showBooking, setShowBooking] = useState(false);
   const [checkedIn, setCheckedIn] = useState(false);
+  const [liveOn, setLiveOn] = useState(false);
+  const [liveError, setLiveError] = useState('');
+  const videoRef = useRef(null);
+  const streamRef = useRef(null);
 
   const handleCheckIn = () => {
     if (!checkedIn) { addPoints(20); setCheckedIn(true); }
     setShowQR(true);
   };
+
+  const toggleLive = async () => {
+    if (liveOn) {
+      // 停止直播
+      if (streamRef.current) {
+        streamRef.current.getTracks().forEach(t => t.stop());
+        streamRef.current = null;
+      }
+      setLiveOn(false);
+      setLiveError('');
+    } else {
+      // 開啟視訊
+      try {
+        setLiveError('');
+        const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' }, audio: false });
+        streamRef.current = stream;
+        setLiveOn(true);
+        // 等 DOM 更新後才能拿到 videoRef
+        setTimeout(() => {
+          if (videoRef.current) {
+            videoRef.current.srcObject = stream;
+          }
+        }, 50);
+      } catch (err) {
+        setLiveError('無法開啟鏡頭，請允許相機權限');
+        console.error(err);
+      }
+    }
+  };
+
+  // 離開頁面時自動關閉鏡頭
+  useEffect(() => {
+    return () => {
+      if (streamRef.current) {
+        streamRef.current.getTracks().forEach(t => t.stop());
+      }
+    };
+  }, []);
 
   return (
     <div className="p-5 space-y-5 pb-6 animate-in fade-in slide-in-from-bottom-4">
@@ -204,14 +264,32 @@ function PassportScreen({ setShowCertInfo, setShowPortrait, addPoints }) {
 
       {/* 直播 + AR */}
       <section className="grid grid-cols-2 gap-4">
-        <div className="bg-white rounded-3xl p-4 shadow-sm border border-slate-100 flex flex-col items-center gap-2 group cursor-pointer hover:border-[#0f6e56] transition-all">
-          <div className="relative w-full h-24 rounded-2xl overflow-hidden mb-1">
-            <img src={ANIMALS[0].img} className="w-full h-full object-cover group-hover:scale-110 transition duration-500" alt="直播" />
-            <div className="absolute top-2 left-2 bg-red-600 text-white text-[8px] px-1.5 py-0.5 rounded-full flex items-center gap-1 font-black animate-pulse">
-              <Video size={8} /> LIVE
+        <div onClick={toggleLive} className={`bg-white rounded-3xl p-4 shadow-sm border flex flex-col items-center gap-2 cursor-pointer transition-all ${liveOn ? 'border-red-400 ring-2 ring-red-200' : 'border-slate-100 hover:border-[#0f6e56]'}`}>
+          <div className="relative w-full h-24 rounded-2xl overflow-hidden mb-1 bg-black">
+            {liveOn ? (
+              <video
+                ref={videoRef}
+                autoPlay
+                muted
+                playsInline
+                className="w-full h-full object-cover"
+              />
+            ) : (
+              <img src={ANIMALS[0].img} className="w-full h-full object-cover transition duration-500" alt="直播" />
+            )}
+            <div className={`absolute top-2 left-2 text-white text-[8px] px-1.5 py-0.5 rounded-full flex items-center gap-1 font-black ${liveOn ? 'bg-red-600 animate-pulse' : 'bg-gray-500'}`}>
+              <Video size={8} /> {liveOn ? 'LIVE' : '點擊開播'}
             </div>
+            {liveOn && (
+              <div className="absolute top-2 right-2 bg-black/50 text-white text-[8px] px-1.5 py-0.5 rounded-full font-bold">
+                📷 我的視訊
+              </div>
+            )}
           </div>
-          <p className="text-xs font-black text-slate-800">飛飛正在睡覺中...</p>
+          {liveError
+            ? <p className="text-[10px] font-bold text-red-500 text-center leading-tight">{liveError}</p>
+            : <p className="text-xs font-black text-slate-800">{liveOn ? '🔴 直播中・點擊停止' : '飛飛正在睡覺中...'}</p>
+          }
         </div>
         <div onClick={() => addPoints(10)} className="bg-[#534ab7]/5 rounded-3xl p-4 border-2 border-dashed border-[#534ab7]/20 flex flex-col items-center justify-center gap-2 group cursor-pointer hover:bg-[#534ab7]/10 transition-all">
           <div className="bg-white p-3 rounded-full text-[#534ab7] shadow-sm"><Camera size={24} /></div>
@@ -233,6 +311,36 @@ function PassportScreen({ setShowCertInfo, setShowPortrait, addPoints }) {
             </div>
           </div>
         </div>
+      </section>
+
+      {/* 下一個里程碑 */}
+      <section className="bg-gradient-to-br from-[#534ab7] to-purple-700 text-white rounded-[2rem] p-5 shadow-xl">
+        <p className="text-[10px] opacity-60 font-black tracking-widest uppercase mb-3">Next Milestone</p>
+        <div className="flex items-center gap-4 mb-4">
+          <div className="bg-yellow-400 w-14 h-14 rounded-2xl flex items-center justify-center text-[#534ab7] font-black text-2xl shadow-lg">A</div>
+          <div>
+            <p className="font-black text-lg">A 級大師認證</p>
+            <p className="text-xs opacity-70 font-bold">完成「爬蟲飼育認證」課程即可解鎖</p>
+          </div>
+        </div>
+        <div className="space-y-2">
+          {[
+            { label:'爬蟲飼育認證課程', done:false },
+            { label:'試養天數累積 ≥ 30 天', done:false },
+            { label:'持有 B 級認證 ≥ 3 個月', done:true },
+          ].map((m, i) => (
+            <div key={i} className="flex items-center gap-3">
+              <div className={`w-5 h-5 rounded-full flex items-center justify-center shrink-0 ${m.done ? 'bg-green-400' : 'bg-white/20'}`}>
+                {m.done && <CheckCircle2 size={12} className="text-white" />}
+              </div>
+              <p className={`text-xs font-bold ${m.done ? 'opacity-60 line-through' : 'opacity-90'}`}>{m.label}</p>
+            </div>
+          ))}
+        </div>
+        <div className="mt-4 h-2 bg-black/20 rounded-full overflow-hidden">
+          <div className="h-full bg-yellow-400 rounded-full" style={{ width: '33%' }} />
+        </div>
+        <p className="text-[10px] opacity-60 font-bold mt-1">1/3 項目完成</p>
       </section>
 
       {/* 門市導流 */}
@@ -268,6 +376,7 @@ function AnimalsScreen() {
   const [selected, setSelected] = useState(null);
   const [filter, setFilter]     = useState('all');
   const [showAI, setShowAI]     = useState(false);
+  const [activeVideo, setActiveVideo] = useState(null);
 
   const list = filter === 'all' ? ANIMALS : ANIMALS.filter(a => a.type === filter);
 
@@ -291,6 +400,44 @@ function AnimalsScreen() {
             <Lock size={13} /> 需達到 Lv.{selected.minLevel} 認證才可申請
           </div>
         )}
+        <div className="grid grid-cols-2 gap-3">
+          {[
+            ['🕐 壽命', selected.lifespan],
+            ['📐 體型', selected.size],
+            ['💪 照護難度', '●'.repeat(selected.care) + '○'.repeat(5-selected.care)],
+            ['💰 試養費', `NT$${selected.trialFee.toLocaleString()} / 14 天`],
+          ].map(([k,v]) => (
+            <div key={k} className="bg-slate-50 rounded-2xl p-3 border border-slate-100">
+              <p className="text-[10px] text-slate-400 font-bold mb-0.5">{k}</p>
+              <p className="text-sm font-black text-slate-800">{v}</p>
+            </div>
+          ))}
+        </div>
+        <div className="bg-amber-50 rounded-2xl p-4 border border-amber-100 flex gap-2 items-start">
+          <span className="text-lg">💡</span>
+          <p className="text-xs font-bold text-amber-800 leading-snug">{selected.careNote}</p>
+        </div>
+        {/* 影片預覽 */}
+        <button
+          onClick={() => setActiveVideo(selected)}
+          className="relative w-full h-44 rounded-[2rem] overflow-hidden group active:scale-[0.98] transition-transform"
+        >
+          <img
+            src={`https://img.youtube.com/vi/${selected.videoId}/hqdefault.jpg`}
+            className="w-full h-full object-cover group-hover:scale-105 transition duration-500"
+            alt="影片縮圖"
+          />
+          <div className="absolute inset-0 bg-black/40 flex flex-col items-center justify-center gap-2">
+            <div className="bg-red-600 p-4 rounded-full shadow-2xl group-hover:scale-110 transition">
+              <Play size={28} className="text-white fill-white ml-1" />
+            </div>
+            <p className="text-white font-black text-sm drop-shadow-lg">認識 {selected.name} · 影音介紹</p>
+          </div>
+          <div className="absolute top-3 right-3 bg-red-600 text-white text-[9px] font-black px-2 py-0.5 rounded-full flex items-center gap-1">
+            <Play size={7} className="fill-white" /> YouTube
+          </div>
+        </button>
+
         <div className="bg-slate-50 p-5 rounded-[2rem] border border-slate-100">
           <p className="text-[10px] font-black text-slate-400 mb-2 tracking-[0.3em] uppercase">My Story</p>
           <p className="text-slate-600 leading-relaxed text-sm font-bold">{selected.story}</p>
@@ -301,7 +448,9 @@ function AnimalsScreen() {
               ? 'bg-slate-200 text-slate-500 cursor-not-allowed'
               : 'bg-[#0f6e56] text-white shadow-[#0f6e56]/20'}`}>
             <ShieldCheck size={20} />
-            {selected.status === '展示中' || selected.status === '店長飼養' ? '僅供門市展示' : '申請試養 / 認養'}
+            {selected.status === '展示中' || selected.status === '店長飼養' ? '僅供門市展示' :
+             selected.status === '可認養' ? `申請試養 (NT$${selected.trialFee})` :
+             selected.status === '準備租借中' ? '申請租借' : '申請試養 / 認養'}
           </button>
           <button className="w-full bg-white text-[#534ab7] border-2 border-[#534ab7]/20 py-4 rounded-3xl font-black flex items-center justify-center gap-2">
             <MapPin size={18} /> 到門市看看牠
@@ -314,7 +463,7 @@ function AnimalsScreen() {
   return (
     <div className="p-5 space-y-5 pb-6 animate-in fade-in">
       <div className="flex items-center justify-between">
-        <h2 className="text-3xl font-black text-slate-800 tracking-tighter">毛夥伴圖鑑</h2>
+        <h2 className="text-3xl font-black text-slate-800 tracking-tighter">生物圖鑑</h2>
         <button onClick={() => setShowAI(true)} className="bg-[#534ab7] text-white px-3 py-2 rounded-2xl text-xs font-black flex items-center gap-1 shadow-md active:scale-95 transition">
           <Brain size={14} /> AI 配對
         </button>
@@ -335,18 +484,30 @@ function AnimalsScreen() {
           <div key={a.id} onClick={() => setSelected(a)} className="bg-white rounded-[2rem] overflow-hidden shadow-sm border border-slate-100 active:scale-95 transition group hover:border-[#0f6e56]/30 cursor-pointer">
             <div className="relative h-44 overflow-hidden">
               <img src={a.img} className="h-full w-full object-cover group-hover:scale-110 transition duration-700" alt={a.name} />
-              <div className="absolute top-2.5 right-2.5 bg-white/85 backdrop-blur-sm px-2 py-0.5 rounded-lg text-[9px] font-black">{a.status}</div>
+              <div className={`absolute top-2.5 right-2.5 backdrop-blur-sm px-2 py-0.5 rounded-lg text-[9px] font-black ${
+                a.status === '可認養' ? 'bg-green-100/90 text-green-700' :
+                a.status === '試養中' ? 'bg-blue-100/90 text-blue-700' :
+                a.status === '準備租借中' ? 'bg-orange-100/90 text-orange-700' :
+                a.status === '展示中' ? 'bg-purple-100/90 text-purple-700' :
+                'bg-slate-100/90 text-slate-700'
+              }`}>{a.status}</div>
               {a.minLevel > 1 && <div className="absolute top-2.5 left-2.5 bg-amber-400/90 p-1 rounded-lg"><Lock size={10} /></div>}
             </div>
             <div className="p-4 text-center">
               <h3 className="font-black text-slate-800 text-base tracking-tighter">{a.name}</h3>
               <p className="text-[10px] text-slate-400 font-bold tracking-widest uppercase mt-0.5">{a.breed}</p>
+              <div className="flex gap-0.5 justify-center mt-1">
+                {[1,2,3,4,5].map(i => (
+                  <div key={i} className={`w-1.5 h-1.5 rounded-full ${i <= a.care ? 'bg-orange-400' : 'bg-slate-200'}`} />
+                ))}
+              </div>
             </div>
           </div>
         ))}
       </div>
 
       {showAI && <AIMatchModal onClose={() => setShowAI(false)} />}
+      {activeVideo && <VideoModal videoId={activeVideo.videoId} title={`認識 ${activeVideo.name}`} subtitle={activeVideo.breed} onClose={() => setActiveVideo(null)} />}
     </div>
   );
 }
@@ -357,6 +518,7 @@ function AnimalsScreen() {
 function CoursesScreen({ addPoints }) {
   const [activeQuiz, setActiveQuiz]     = useState(null);
   const [done, setDone]                 = useState(new Set([1, 2]));
+  const [activeVideo, setActiveVideo]   = useState(null);
 
   const handlePass = (id) => { setDone(prev => new Set([...prev, id])); addPoints(100); setActiveQuiz(null); };
 
@@ -381,6 +543,36 @@ function CoursesScreen({ addPoints }) {
         </div>
       </div>
 
+      {/* 認證路徑圖 */}
+      <div className="bg-white rounded-[2rem] p-5 border border-slate-100 shadow-sm">
+        <p className="text-xs font-black text-slate-400 tracking-widest uppercase mb-4">認證升級路徑</p>
+        <div className="flex items-center justify-between">
+          {[
+            { level:'C', label:'基礎認證', desc:'貓咪課程', color:'bg-slate-600', done:true },
+            { level:'B', label:'專業認證', desc:'行為+犬隻', color:'bg-[#534ab7]', done:true },
+            { level:'A', label:'大師認證', desc:'高階物種', color:'bg-yellow-500', done:false },
+          ].map((c, i) => (
+            <React.Fragment key={c.level}>
+              <div className="flex flex-col items-center gap-1.5">
+                <div className={`w-12 h-12 rounded-2xl flex items-center justify-center font-black text-white text-lg shadow-md ${c.done ? c.color : 'bg-slate-200'} relative`}>
+                  {c.level}
+                  {c.done && <div className="absolute -top-1 -right-1 w-4 h-4 bg-green-500 rounded-full flex items-center justify-center"><CheckCircle2 size={10} className="text-white" /></div>}
+                </div>
+                <p className="text-[10px] font-black text-slate-700">{c.label}</p>
+                <p className="text-[9px] text-slate-400 font-bold">{c.desc}</p>
+              </div>
+              {i < 2 && (
+                <div className={`flex-1 h-1 mx-1 rounded-full ${i === 0 ? 'bg-gradient-to-r from-slate-600 to-[#534ab7]' : 'bg-slate-200'}`} />
+              )}
+            </React.Fragment>
+          ))}
+        </div>
+        <div className="mt-4 bg-yellow-50 rounded-2xl p-3 border border-yellow-100 flex items-center gap-2">
+          <Trophy size={16} className="text-yellow-600 shrink-0" />
+          <p className="text-[11px] font-bold text-yellow-800">完成爬蟲課程即可解鎖 <span className="font-black">A 級大師認證</span>，獲得蜜袋鼯租借資格！</p>
+        </div>
+      </div>
+
       {groups.map(({ tag, items }) => (
         <section key={tag}>
           <h3 className="font-black text-slate-700 text-sm mb-3 flex items-center gap-2">
@@ -402,12 +594,17 @@ function CoursesScreen({ addPoints }) {
                       {course.score && <span className="text-[10px] text-[#0f6e56] font-black">測驗 {course.score} 分</span>}
                     </div>
                   </div>
-                  <div className="shrink-0">
+                  <div className="shrink-0 flex flex-col gap-1.5 items-end">
+                    <button
+                      onClick={() => setActiveVideo(course)}
+                      className="bg-red-50 text-red-600 border border-red-100 px-2.5 py-1.5 rounded-xl text-[10px] font-black flex items-center gap-1 active:scale-95 transition">
+                      <Play size={10} className="fill-red-500" /> 影片
+                    </button>
                     {done.has(course.id)
-                      ? <CheckCircle2 size={28} className="text-[#0f6e56]" />
+                      ? <CheckCircle2 size={24} className="text-[#0f6e56]" />
                       : course.locked
-                        ? <div className="bg-slate-100 p-2 rounded-xl"><Lock size={16} className="text-slate-400" /></div>
-                        : <button onClick={() => setActiveQuiz(course)} className="bg-[#0f6e56] text-white px-3 py-2 rounded-xl text-xs font-black active:scale-95 transition shadow-md">開始</button>
+                        ? <div className="bg-slate-100 p-2 rounded-xl"><Lock size={14} className="text-slate-400" /></div>
+                        : <button onClick={() => setActiveQuiz(course)} className="bg-[#0f6e56] text-white px-3 py-1.5 rounded-xl text-[10px] font-black active:scale-95 transition shadow-md">測驗</button>
                     }
                   </div>
                 </div>
@@ -424,6 +621,7 @@ function CoursesScreen({ addPoints }) {
       ))}
 
       {activeQuiz && <QuizModal course={activeQuiz} onClose={() => setActiveQuiz(null)} onPass={() => handlePass(activeQuiz.id)} />}
+      {activeVideo && <VideoModal videoId={activeVideo.videoId} title={activeVideo.title} subtitle={activeVideo.desc} onClose={() => setActiveVideo(null)} />}
     </div>
   );
 }
@@ -432,15 +630,69 @@ function CoursesScreen({ addPoints }) {
 // Tab 4 — 社群頁
 // ─────────────────────────────────────────────
 function CommunityScreen() {
+  const [activeVideo, setActiveVideo] = useState(null);
   const feed = [
     { icon: '🌟', text: '陳瑭原導師 回覆了「蜜袋鼯換毛問題」：建議檢查蛋白質攝取量…', time: '5 分鐘前' },
     { icon: '📸', text: '新進學員分享了與飛飛的 AR 合照！獲得了 128 個讚。', time: '1 小時前' },
     { icon: '🎓', text: '林小美 通過了「貓咪進階行為矯正」測驗，獲得 B 級認證！', time: '3 小時前' },
     { icon: '💬', text: '蜜袋鼯飼主交流群 新增了 5 則回覆，快去看看！', time: '昨天' },
   ];
+  const [likes, setLikes] = useState({ 0: 128, 1: 47, 2: 203, 3: 31 });
+  const [liked, setLiked] = useState({});
+  const toggleLike = (i) => {
+    setLiked(prev => ({ ...prev, [i]: !prev[i] }));
+    setLikes(prev => ({ ...prev, [i]: prev[i] + (liked[i] ? -1 : 1) }));
+  };
 
   return (
     <div className="p-5 space-y-6 pb-6 animate-in fade-in">
+      {/* 社群統計 */}
+      <div className="grid grid-cols-3 gap-3">
+        {[['👥 成員','847 人'],['📝 本週貼文','23 則'],['🏅 本月認證','12 人']].map(([k,v]) => (
+          <div key={k} className="bg-white rounded-2xl p-3 text-center shadow-sm border border-slate-100">
+            <p className="text-[10px] text-slate-400 font-bold">{k}</p>
+            <p className="text-sm font-black text-slate-800">{v}</p>
+          </div>
+        ))}
+      </div>
+
+      {/* 🎬 短影音 Reels */}
+      <section>
+        <div className="flex items-center justify-between mb-3">
+          <h3 className="font-black text-slate-800 flex items-center gap-2 text-base">
+            <PlayCircle size={20} className="text-red-500" /> 萌寵短影音
+          </h3>
+          <span className="text-[10px] text-slate-400 font-bold flex items-center gap-1"><Eye size={10} /> {REELS.reduce((s,r)=>s+parseFloat(r.views),0).toFixed(1)}萬 次觀看</span>
+        </div>
+        <div className="flex gap-3 overflow-x-auto scrollbar-hide pb-2 -mx-1 px-1">
+          {REELS.map(reel => (
+            <button key={reel.id} onClick={() => setActiveVideo(reel)}
+              className="shrink-0 w-32 rounded-[1.5rem] overflow-hidden relative group active:scale-95 transition-transform shadow-md">
+              <div className="relative h-52">
+                <img src={reel.cover} className="w-full h-full object-cover group-hover:scale-105 transition duration-500" alt={reel.title} />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/10 to-transparent" />
+                {/* Play overlay */}
+                <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition">
+                  <div className="bg-red-600/90 p-3 rounded-full"><Play size={18} className="text-white fill-white ml-0.5" /></div>
+                </div>
+                {/* Always-visible play icon small */}
+                <div className="absolute top-2 right-2 bg-black/50 p-1.5 rounded-full">
+                  <Play size={10} className="text-white fill-white" />
+                </div>
+                {/* Bottom info */}
+                <div className="absolute bottom-0 left-0 right-0 p-2.5">
+                  <p className="text-white text-[10px] font-black leading-tight line-clamp-2">{reel.title}</p>
+                  <div className="flex items-center justify-between mt-1">
+                    <p className="text-white/60 text-[8px] font-bold">@{reel.creator}</p>
+                    <p className="text-white/60 text-[8px] font-bold">{reel.views}</p>
+                  </div>
+                </div>
+              </div>
+            </button>
+          ))}
+        </div>
+      </section>
+
       {/* 旗艦講座 Banner */}
       <div className="bg-gradient-to-br from-emerald-600 to-teal-900 rounded-[2.5rem] p-7 text-white shadow-2xl relative overflow-hidden">
         <div className="absolute right-0 top-0 opacity-10 scale-150 translate-x-4"><Sparkles size={120} /></div>
@@ -469,16 +721,48 @@ function CommunityScreen() {
         <h3 className="font-black text-slate-800 flex items-center gap-2 text-lg tracking-tighter"><Activity size={22} className="text-[#534ab7]" /> 成大社群互動</h3>
         <div className="space-y-3">
           {feed.map((item, i) => (
-            <div key={i} className="p-4 bg-slate-50 rounded-2xl border border-slate-100 flex items-start gap-3">
-              <span className="text-lg shrink-0">{item.icon}</span>
-              <div>
-                <p className="font-bold text-slate-600 text-sm leading-snug">{item.text}</p>
-                <p className="text-[10px] text-slate-400 mt-1">{item.time}</p>
+            <div key={i} className="p-4 bg-slate-50 rounded-2xl border border-slate-100">
+              <div className="flex items-start gap-3 mb-3">
+                <span className="text-lg shrink-0">{item.icon}</span>
+                <div className="flex-1">
+                  <p className="font-bold text-slate-600 text-sm leading-snug">{item.text}</p>
+                  <p className="text-[10px] text-slate-400 mt-1">{item.time}</p>
+                </div>
+              </div>
+              <div className="flex items-center justify-between">
+                <button onClick={() => toggleLike(i)} className={`flex items-center gap-1.5 text-xs font-black px-3 py-1.5 rounded-full transition-all ${liked[i] ? 'bg-rose-100 text-rose-600' : 'bg-slate-100 text-slate-500'}`}>
+                  <Heart size={12} className={liked[i] ? 'fill-rose-500' : ''} /> {likes[i]}
+                </button>
+                <button className="text-xs font-bold text-[#534ab7] px-3 py-1.5 rounded-full bg-[#534ab7]/5">💬 回覆</button>
               </div>
             </div>
           ))}
         </div>
       </section>
+
+      {/* 近期活動 */}
+      <section className="bg-white rounded-[2.5rem] p-5 border border-slate-100 shadow-sm space-y-3">
+        <h3 className="font-black text-slate-800 flex items-center gap-2 text-base"><Calendar size={18} className="text-orange-500" /> 近期活動</h3>
+        {[
+          { date:'06/07', title:'CreaCert 認證日', desc:'現場闖關通過即頒認證卡', tag:'免費', tagColor:'bg-green-100 text-green-700' },
+          { date:'06/18', title:'爬蟲飼育體驗營', desc:'8 小時密集實作課程', tag:'NT$299', tagColor:'bg-purple-100 text-purple-700' },
+          { date:'07/01', title:'暑假試養計畫啟動', desc:'14 天試養，畢業前最後機會', tag:'熱門', tagColor:'bg-orange-100 text-orange-700' },
+        ].map(e => (
+          <div key={e.date} className="flex items-center gap-4 p-4 bg-slate-50 rounded-2xl border border-slate-100">
+            <div className="bg-[#0f6e56] text-white rounded-xl px-3 py-2 text-center shrink-0 shadow-sm">
+              <p className="text-[9px] font-black opacity-70">{e.date.split('/')[0]}月</p>
+              <p className="text-lg font-black leading-none">{e.date.split('/')[1]}</p>
+            </div>
+            <div className="flex-1 min-w-0">
+              <p className="font-black text-slate-800 text-sm">{e.title}</p>
+              <p className="text-[10px] text-slate-400 font-bold truncate">{e.desc}</p>
+            </div>
+            <span className={`text-[9px] font-black px-2 py-1 rounded-full shrink-0 ${e.tagColor}`}>{e.tag}</span>
+          </div>
+        ))}
+      </section>
+
+      {activeVideo && <VideoModal videoId={activeVideo.videoId} title={activeVideo.title} subtitle={`@${activeVideo.creator} · ${activeVideo.views} 次觀看`} onClose={() => setActiveVideo(null)} />}
     </div>
   );
 }
@@ -489,6 +773,10 @@ function CommunityScreen() {
 function DiaryScreen({ points }) {
   const [section, setSection]       = useState('health');
   const [showAdd, setShowAdd]       = useState(false);
+  const weightData = [122, 124, 123, 126, 125, 127, 128];
+  const weightLabels = ['5/8','5/9','5/10','5/11','5/12','5/13','5/14'];
+  const maxW = Math.max(...weightData);
+  const minW = Math.min(...weightData) - 2;
 
   return (
     <div className="p-5 space-y-5 pb-6 animate-in fade-in">
@@ -538,6 +826,26 @@ function DiaryScreen({ points }) {
               <p className="font-black text-slate-500">當前體重</p>
               <p className="text-xl font-black text-[#0f6e56]">128g <span className="text-[10px] text-slate-300">(+2g)</span></p>
             </div>
+            {/* 體重趨勢 */}
+            <div>
+              <p className="font-black text-slate-500 mb-2">體重趨勢（7天）</p>
+              <div className="flex items-end gap-1.5 h-20 bg-slate-50 rounded-2xl p-3 border border-slate-100">
+                {weightData.map((w, i) => {
+                  const pct = ((w - minW) / (maxW - minW)) * 100;
+                  const isToday = i === weightData.length - 1;
+                  return (
+                    <div key={i} className="flex-1 flex flex-col items-center gap-1">
+                      <div className="w-full flex flex-col justify-end" style={{ height: '52px' }}>
+                        <div className={`w-full rounded-t-lg transition-all ${isToday ? 'bg-[#0f6e56]' : 'bg-slate-300'}`}
+                          style={{ height: `${Math.max(pct, 8)}%` }} />
+                      </div>
+                      <p className="text-[7px] text-slate-400 font-bold">{weightLabels[i].split('/')[1]}</p>
+                    </div>
+                  );
+                })}
+              </div>
+              <p className="text-[10px] text-slate-400 font-bold mt-1">📈 本週增重 6g，狀況良好！</p>
+            </div>
             <div className="flex justify-between items-center">
               <p className="font-black text-slate-500">飲水量</p>
               <p className="text-xl font-black text-[#0f6e56]">正常</p>
@@ -545,6 +853,22 @@ function DiaryScreen({ points }) {
             <div className="flex justify-between items-center">
               <p className="font-black text-slate-500">活力程度</p>
               <div className="flex gap-1">{[1,2,3,4,5].map(i => <Star key={i} size={16} className="text-yellow-400 fill-yellow-400" />)}</div>
+            </div>
+            {/* 今日飲食清單 */}
+            <div>
+              <p className="font-black text-slate-500 mb-2">今日飲食確認</p>
+              <div className="space-y-2">
+                {[
+                  { label:'蜜袋鼯專用飼料 10g', done:true },
+                  { label:'木瓜泥 5g', done:true },
+                  { label:'水份補充（葡萄 1 顆）', done:false },
+                ].map((m, i) => (
+                  <div key={i} className={`flex items-center gap-3 p-3 rounded-xl border ${m.done ? 'bg-green-50 border-green-100' : 'bg-slate-50 border-slate-100'}`}>
+                    <CheckCircle2 size={16} className={m.done ? 'text-green-500' : 'text-slate-300'} />
+                    <p className={`text-xs font-bold ${m.done ? 'text-green-700' : 'text-slate-500'}`}>{m.label}</p>
+                  </div>
+                ))}
+              </div>
             </div>
           </div>
           <button className="w-full bg-orange-500 text-white py-4 rounded-[2rem] font-black text-base shadow-xl active:scale-95 transition">更新今日紀錄</button>
@@ -591,6 +915,31 @@ function DiaryScreen({ points }) {
               </div>
             </div>
           </div>
+
+          {/* 積分兌換商城 */}
+          <div className="bg-white rounded-[2rem] border border-slate-100 shadow-sm p-5 space-y-3">
+            <h4 className="font-black text-slate-700 text-sm flex items-center gap-2"><Star size={16} className="text-yellow-500 fill-yellow-400" /> 積分兌換商城</h4>
+            {[
+              { name:'領養費折抵 NT$200', pts:500,  icon:'🏷️', enough: true },
+              { name:'爬蟲課程免費券',    pts:800,  icon:'📚', enough: true },
+              { name:'蜜袋鼯零食禮盒',   pts:1200, icon:'🎁', enough: true },
+              { name:'A 級認證加速券',   pts:2000, icon:'🥇', enough: false },
+            ].map(r => (
+              <div key={r.name} className="flex items-center justify-between py-2 border-b border-slate-50 last:border-0">
+                <div className="flex items-center gap-3">
+                  <span className="text-xl">{r.icon}</span>
+                  <div>
+                    <p className="text-sm font-black text-slate-700">{r.name}</p>
+                    <p className="text-[10px] text-[#534ab7] font-black">{r.pts.toLocaleString()} pt</p>
+                  </div>
+                </div>
+                <button className={`px-3 py-1.5 rounded-full text-xs font-black transition-all ${r.enough ? 'bg-[#534ab7] text-white active:scale-95' : 'bg-slate-100 text-slate-400 cursor-not-allowed'}`}>
+                  {r.enough ? '兌換' : '不足'}
+                </button>
+              </div>
+            ))}
+          </div>
+
           <div className="bg-white rounded-[2rem] border border-slate-100 shadow-sm overflow-hidden">
             <h4 className="font-black text-slate-700 px-5 pt-5 pb-3 text-sm border-b border-slate-50">交易紀錄</h4>
             {POINTS_HISTORY.map(item => (
@@ -671,6 +1020,44 @@ function PortraitModal({ onClose }) {
             <ImageIcon size={16} /> Share to Threads
           </button>
         </div>
+      </div>
+    </div>
+  );
+}
+
+// ── 影片播放 Modal ──
+function VideoModal({ videoId, title, subtitle, onClose }) {
+  return (
+    <div className="fixed inset-0 bg-black z-[100] flex flex-col animate-in fade-in">
+      {/* 頂部控制列 */}
+      <div className="shrink-0 flex items-center justify-between px-5 pt-10 pb-4 bg-gradient-to-b from-black/80 to-transparent">
+        <div>
+          <p className="text-white/50 text-[10px] font-black tracking-widest uppercase flex items-center gap-1.5">
+            <Tv2 size={10} /> CreaCert 影音
+          </p>
+          <h3 className="text-white font-black text-base leading-tight mt-0.5">{title}</h3>
+          {subtitle && <p className="text-white/50 text-xs font-bold mt-0.5">{subtitle}</p>}
+        </div>
+        <button onClick={onClose} className="bg-white/15 backdrop-blur-sm p-2.5 rounded-full border border-white/20 active:scale-90 transition">
+          <XCircle size={22} className="text-white" />
+        </button>
+      </div>
+
+      {/* YouTube 播放器 */}
+      <div className="flex-1 relative">
+        <iframe
+          src={`https://www.youtube-nocookie.com/embed/${videoId}?autoplay=1&playsinline=1&rel=0&modestbranding=1`}
+          className="absolute inset-0 w-full h-full"
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+          allowFullScreen
+          title={title}
+        />
+      </div>
+
+      {/* 底部資訊 */}
+      <div className="shrink-0 bg-gradient-to-t from-black/80 to-transparent px-5 pt-4 pb-8 flex items-center justify-between">
+        <p className="text-white/40 text-[10px] font-bold">YouTube 影片 · 僅供教育用途</p>
+        <button onClick={onClose} className="text-white/60 text-xs font-black px-4 py-2 bg-white/10 rounded-full">關閉</button>
       </div>
     </div>
   );
