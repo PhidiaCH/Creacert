@@ -48,7 +48,7 @@ const ANIMALS = [
 const CERT_LEVELS = [
   { level: 'C', title: 'C 級基礎認證 (Lv.1)', desc: '掌握基本營養、環境安全。', color: 'bg-slate-200 text-slate-700', privileges: ['門市內互動權', '基礎講座參與', '貓咪試養申請'] },
   { level: 'B', title: 'B 級專業認證 (Lv.2)', desc: '通過行為學測驗與實操考核。', color: 'bg-[#534ab7] text-white', privileges: ['14 天居家試養', '領養費 9 折', '犬隻/爬蟲互動'] },
-  { level: 'A', title: 'A 級大師認證 (Lv.3)', desc: '具備醫療處置與高階品種知識。', color: 'bg-yellow-500 text-white', privileges: ['蜜袋鼯租借權', '金牌導師頭銜', '領養費 8 折'] },
+  { level: 'A', title: 'A 級大師認證 (Lv.3)', desc: '具備醫療處置與高階品種知識。', color: 'bg-orange-500 text-white', privileges: ['蜜袋鼯租借權', '金牌導師頭銜', '領養費 8 折'] },
 ];
 
 const COURSES = [
@@ -98,6 +98,15 @@ const REELS = [
   { id: 5, videoId: '4hpojHpdDRg', title: '摸蛇其實不可怕！🐍',     creator: '店長Leo', views: '15萬',  animal: '球蟒',   cover: PX(29378244) },
 ];
 
+const PRODUCTS = [
+  { id:1, name:'蜜袋鼯高蛋白飼料', brand:'GlideNutrition', price:399, original:499, emoji:'🦘', tag:'熱銷No.1', tagColor:'bg-rose-100 text-rose-600' },
+  { id:2, name:'爬蟲 UVB 全光譜燈', brand:'ZooMed Pro', price:890, original:1200, emoji:'🦎', tag:'A級推薦', tagColor:'bg-orange-100 text-orange-600' },
+  { id:3, name:'貓咪益生菌凍乾', brand:'PetPro 台灣', price:299, original:350, emoji:'🐱', tag:'新品上市', tagColor:'bg-purple-100 text-purple-600' },
+  { id:4, name:'犬隻訓練零食包', brand:'TrainSnack', price:199, original:250, emoji:'🐶', tag:'認證推薦', tagColor:'bg-[#0f6e56]/10 text-[#0f6e56]' },
+  { id:5, name:'球蟒恆溫加熱墊', brand:'ReptileHeat', price:680, original:850, emoji:'🐍', tag:'必備', tagColor:'bg-slate-100 text-slate-600' },
+  { id:6, name:'全物種維生素滴劑', brand:'NutriAll', price:249, original:320, emoji:'💊', tag:'獸醫推薦', tagColor:'bg-blue-100 text-blue-600' },
+];
+
 // ─────────────────────────────────────────────
 // 根元件
 // ─────────────────────────────────────────────
@@ -109,7 +118,7 @@ export default function App() {
   const addPoints = (n) => setPoints(p => p + n);
 
   return (
-    <div className="bg-slate-300 min-h-screen flex items-center justify-center font-sans">
+    <div className="bg-gradient-to-br from-pink-100 via-purple-50 to-teal-50 min-h-screen flex items-center justify-center font-sans">
       <div className="bg-white w-full max-w-md h-[850px] max-h-screen relative overflow-hidden shadow-2xl sm:rounded-[2.5rem] sm:border-[10px] border-gray-900 flex flex-col">
 
         {/* 頂部狀態列 */}
@@ -117,15 +126,15 @@ export default function App() {
           <div className="flex justify-between items-center mt-2">
             <div>
               <h1 className="text-xl font-black tracking-tighter flex items-center gap-2">
-                <Sparkles size={20} className="text-yellow-300 animate-pulse" /> CreaCert
+                <Sparkles size={20} className="text-pink-200 animate-pulse" /> CreaCert
               </h1>
-              <p className="text-[10px] opacity-70 font-bold uppercase tracking-widest">Know Every Creature</p>
+              <p className="text-[10px] font-bold uppercase tracking-widest" style={{color:'#f9a8d4'}}>Know Every Creature ✿</p>
             </div>
             <div className="flex items-center gap-3">
               <div className="bg-white/10 px-3 py-1 rounded-full text-sm font-bold flex items-center gap-1 border border-white/20 cursor-pointer active:scale-95 transition" onClick={() => setShowCertInfo(true)}>
-                <Award size={16} className="text-yellow-400" /> Lv.3
+                <Award size={16} className="text-orange-300" /> Lv.3
               </div>
-              <div className="bg-yellow-400 text-[#0f6e56] px-3 py-1 rounded-full text-xs font-black shadow-inner">
+              <div className="bg-orange-300 text-orange-900 px-3 py-1 rounded-full text-xs font-black shadow-inner">
                 {points.toLocaleString()} pt
               </div>
             </div>
@@ -146,7 +155,7 @@ export default function App() {
           <TabBtn icon={<Home />}        label="首頁" active={tab === 'home'}      onClick={() => setTab('home')} />
           <TabBtn icon={<Heart />}       label="圖鑑" active={tab === 'animals'}   onClick={() => setTab('animals')} />
           <TabBtn icon={<BookOpen />}    label="課程" active={tab === 'courses'}   onClick={() => setTab('courses')} />
-          <TabBtn icon={<Users />}       label="社群" active={tab === 'community'} onClick={() => setTab('community')} />
+          <TabBtn icon={<Users />}       label="生態圈" active={tab === 'community'} onClick={() => setTab('community')} />
           <TabBtn icon={<ClipboardList />} label="日記" active={tab === 'diary'}  onClick={() => setTab('diary')} />
         </div>
 
@@ -225,7 +234,7 @@ function PassportScreen({ setShowCertInfo, setShowPortrait, addPoints }) {
     <div className="p-5 space-y-5 pb-6 animate-in fade-in slide-in-from-bottom-4">
 
       {/* 數位護照卡 */}
-      <div className="rounded-[2.5rem] p-6 text-white shadow-2xl relative overflow-hidden bg-gradient-to-br from-[#d4af37] to-[#8a7322] border-2 border-white/20">
+      <div className="rounded-[2.5rem] p-6 text-white shadow-2xl relative overflow-hidden bg-gradient-to-br from-rose-400 via-pink-500 to-fuchsia-600 border-2 border-white/20">
         <div className="absolute -right-6 -top-6 opacity-10 rotate-12"><Award size={160} /></div>
         <div className="flex justify-between items-start mb-5">
           <div className="z-10">
@@ -317,7 +326,7 @@ function PassportScreen({ setShowCertInfo, setShowPortrait, addPoints }) {
       <section className="bg-gradient-to-br from-[#534ab7] to-purple-700 text-white rounded-[2rem] p-5 shadow-xl">
         <p className="text-[10px] opacity-60 font-black tracking-widest uppercase mb-3">Next Milestone</p>
         <div className="flex items-center gap-4 mb-4">
-          <div className="bg-yellow-400 w-14 h-14 rounded-2xl flex items-center justify-center text-[#534ab7] font-black text-2xl shadow-lg">A</div>
+          <div className="bg-orange-400 w-14 h-14 rounded-2xl flex items-center justify-center text-[#534ab7] font-black text-2xl shadow-lg">A</div>
           <div>
             <p className="font-black text-lg">A 級大師認證</p>
             <p className="text-xs opacity-70 font-bold">完成「爬蟲飼育認證」課程即可解鎖</p>
@@ -338,7 +347,7 @@ function PassportScreen({ setShowCertInfo, setShowPortrait, addPoints }) {
           ))}
         </div>
         <div className="mt-4 h-2 bg-black/20 rounded-full overflow-hidden">
-          <div className="h-full bg-yellow-400 rounded-full" style={{ width: '33%' }} />
+          <div className="h-full bg-orange-400 rounded-full" style={{ width: '33%' }} />
         </div>
         <p className="text-[10px] opacity-60 font-bold mt-1">1/3 項目完成</p>
       </section>
@@ -550,7 +559,7 @@ function CoursesScreen({ addPoints }) {
           {[
             { level:'C', label:'基礎認證', desc:'貓咪課程', color:'bg-slate-600', done:true },
             { level:'B', label:'專業認證', desc:'行為+犬隻', color:'bg-[#534ab7]', done:true },
-            { level:'A', label:'大師認證', desc:'高階物種', color:'bg-yellow-500', done:false },
+            { level:'A', label:'大師認證', desc:'高階物種', color:'bg-orange-500', done:false },
           ].map((c, i) => (
             <React.Fragment key={c.level}>
               <div className="flex flex-col items-center gap-1.5">
@@ -567,9 +576,9 @@ function CoursesScreen({ addPoints }) {
             </React.Fragment>
           ))}
         </div>
-        <div className="mt-4 bg-yellow-50 rounded-2xl p-3 border border-yellow-100 flex items-center gap-2">
-          <Trophy size={16} className="text-yellow-600 shrink-0" />
-          <p className="text-[11px] font-bold text-yellow-800">完成爬蟲課程即可解鎖 <span className="font-black">A 級大師認證</span>，獲得蜜袋鼯租借資格！</p>
+        <div className="mt-4 bg-orange-50 rounded-2xl p-3 border border-orange-100 flex items-center gap-2">
+          <Trophy size={16} className="text-orange-600 shrink-0" />
+          <p className="text-[11px] font-bold text-orange-800">完成爬蟲課程即可解鎖 <span className="font-black">A 級大師認證</span>，獲得蜜袋鼯租借資格！</p>
         </div>
       </div>
 
@@ -631,6 +640,11 @@ function CoursesScreen({ addPoints }) {
 // ─────────────────────────────────────────────
 function CommunityScreen() {
   const [activeVideo, setActiveVideo] = useState(null);
+  const [showShop, setShowShop] = useState(false);
+  const [showDonate, setShowDonate] = useState(false);
+  const [donateAmt, setDonateAmt] = useState(null);
+  const [donated, setDonated] = useState(false);
+  const [cartCount, setCartCount] = useState(0);
   const feed = [
     { icon: '🌟', text: '陳瑭原導師 回覆了「蜜袋鼯換毛問題」：建議檢查蛋白質攝取量…', time: '5 分鐘前' },
     { icon: '📸', text: '新進學員分享了與飛飛的 AR 合照！獲得了 128 個讚。', time: '1 小時前' },
@@ -697,7 +711,7 @@ function CommunityScreen() {
       <div className="bg-gradient-to-br from-emerald-600 to-teal-900 rounded-[2.5rem] p-7 text-white shadow-2xl relative overflow-hidden">
         <div className="absolute right-0 top-0 opacity-10 scale-150 translate-x-4"><Sparkles size={120} /></div>
         <div className="relative z-10 space-y-4">
-          <span className="bg-yellow-400 text-teal-900 px-3 py-0.5 rounded-full text-[10px] font-black animate-pulse">🔥 旗艦跨界講座</span>
+          <span className="bg-orange-400 text-teal-900 px-3 py-0.5 rounded-full text-[10px] font-black animate-pulse">🔥 旗艦跨界講座</span>
           <h2 className="text-xl font-black leading-tight">「萬物皆陪伴」：<br />昆蟲與寵物的奇幻視界</h2>
           <div className="flex items-center gap-3 py-3 border-y border-white/10">
             <img src="https://images.unsplash.com/photo-1438761681033-6461ffad8d80?auto=format&fit=crop&w=150&q=80" className="w-12 h-12 rounded-full border-4 border-white/20 object-cover" alt="講師" />
@@ -707,8 +721,8 @@ function CommunityScreen() {
             </div>
           </div>
           <div className="grid grid-cols-2 gap-2 text-[10px] font-black">
-            <div className="bg-black/20 p-2.5 rounded-2xl flex items-center gap-2"><Calendar size={13} className="text-yellow-400" /> 05/18 (一) 19:00</div>
-            <div className="bg-black/20 p-2.5 rounded-2xl flex items-center gap-2"><MapPin size={13} className="text-yellow-400" /> 成大門市 B 區</div>
+            <div className="bg-black/20 p-2.5 rounded-2xl flex items-center gap-2"><Calendar size={13} className="text-orange-400" /> 05/18 (一) 19:00</div>
+            <div className="bg-black/20 p-2.5 rounded-2xl flex items-center gap-2"><MapPin size={13} className="text-orange-400" /> 成大門市 B 區</div>
           </div>
           <button onClick={() => alert('報名成功！獲得 50pt！')} className="w-full bg-white text-teal-900 py-3.5 rounded-2xl font-black text-sm shadow-xl active:scale-95 transition">
             立即報名 (Lv.2 以上 0 pt)
@@ -762,7 +776,143 @@ function CommunityScreen() {
         ))}
       </section>
 
+      {/* 🛍️ 商城 + 捐贈 入口 */}
+      <section className="grid grid-cols-2 gap-4">
+        <button onClick={() => setShowShop(true)}
+          className="bg-gradient-to-br from-orange-400 to-rose-500 text-white rounded-[2rem] p-5 flex flex-col items-start gap-3 shadow-xl active:scale-95 transition relative overflow-hidden">
+          <div className="absolute right-0 top-0 opacity-10 text-[80px] leading-none">🛍️</div>
+          <div className="bg-white/20 p-2.5 rounded-xl text-xl">🛍️</div>
+          <div>
+            <p className="font-black text-base leading-tight">寵物商城</p>
+            <p className="text-[11px] opacity-80 font-bold mt-0.5">飼料・用品・保健</p>
+          </div>
+          {cartCount > 0 && (
+            <div className="absolute top-3 right-3 bg-white text-rose-500 text-[10px] font-black w-5 h-5 rounded-full flex items-center justify-center shadow">{cartCount}</div>
+          )}
+        </button>
+        <button onClick={() => setShowDonate(true)}
+          className="bg-gradient-to-br from-[#0f6e56] to-teal-600 text-white rounded-[2rem] p-5 flex flex-col items-start gap-3 shadow-xl active:scale-95 transition relative overflow-hidden">
+          <div className="absolute right-0 top-0 opacity-10 text-[80px] leading-none">🐾</div>
+          <div className="bg-white/20 p-2.5 rounded-xl text-xl">💝</div>
+          <div>
+            <p className="font-black text-base leading-tight">流浪捐贈</p>
+            <p className="text-[11px] opacity-80 font-bold mt-0.5">幫助街頭毛孩</p>
+          </div>
+        </button>
+      </section>
+
       {activeVideo && <VideoModal videoId={activeVideo.videoId} title={activeVideo.title} subtitle={`@${activeVideo.creator} · ${activeVideo.views} 次觀看`} onClose={() => setActiveVideo(null)} />}
+
+      {/* 商城 Modal */}
+      {showShop && (
+        <div className="fixed inset-0 bg-black/70 z-50 flex flex-col animate-in slide-in-from-bottom">
+          <div className="mt-16 bg-white rounded-t-[3rem] flex-1 overflow-y-auto">
+            <div className="sticky top-0 bg-white/95 backdrop-blur-sm px-6 pt-6 pb-4 border-b border-slate-100 flex items-center justify-between z-10">
+              <div>
+                <h2 className="text-2xl font-black text-slate-900">🛍️ 寵物商城</h2>
+                <p className="text-xs text-slate-400 font-bold mt-0.5">CreaCert 認證推薦商品</p>
+              </div>
+              <button onClick={() => setShowShop(false)} className="bg-slate-100 p-2.5 rounded-full"><XCircle size={20} /></button>
+            </div>
+            <div className="p-5 space-y-4 pb-10">
+              <div className="bg-gradient-to-r from-[#534ab7] to-purple-600 text-white rounded-2xl p-4 flex items-center gap-3">
+                <span className="text-2xl">🏅</span>
+                <div>
+                  <p className="font-black text-sm">B 級會員 9 折優惠中</p>
+                  <p className="text-[10px] opacity-70 font-bold">認證等級越高，折扣越大</p>
+                </div>
+              </div>
+              <div className="grid grid-cols-2 gap-3">
+                {PRODUCTS.map(p => (
+                  <div key={p.id} className="bg-white border border-slate-100 rounded-[1.5rem] overflow-hidden shadow-sm">
+                    <div className="h-28 bg-gradient-to-br from-slate-50 to-slate-100 flex items-center justify-center text-5xl">{p.emoji}</div>
+                    <div className="p-3">
+                      <span className={`text-[9px] font-black px-2 py-0.5 rounded-full ${p.tagColor}`}>{p.tag}</span>
+                      <p className="font-black text-slate-800 text-xs mt-1.5 leading-snug">{p.name}</p>
+                      <p className="text-[10px] text-slate-400 font-bold">{p.brand}</p>
+                      <div className="flex items-center gap-2 mt-2">
+                        <span className="text-rose-500 font-black text-sm">NT${p.price}</span>
+                        <span className="text-slate-300 text-[10px] line-through">NT${p.original}</span>
+                      </div>
+                      <button onClick={() => setCartCount(c => c + 1)}
+                        className="w-full mt-2 bg-[#0f6e56] text-white py-2 rounded-xl text-[11px] font-black active:scale-95 transition">
+                        加入購物車
+                      </button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+              {cartCount > 0 && (
+                <div className="fixed bottom-6 left-1/2 -translate-x-1/2 bg-slate-900 text-white px-6 py-3 rounded-full font-black text-sm shadow-2xl flex items-center gap-3 z-50">
+                  🛒 購物車 {cartCount} 件
+                  <button onClick={() => { setCartCount(0); alert('結帳功能即將上線！'); }}
+                    className="bg-orange-400 text-white px-3 py-1 rounded-full text-xs font-black">結帳</button>
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* 捐贈 Modal */}
+      {showDonate && (
+        <div className="fixed inset-0 bg-black/70 z-50 flex items-end animate-in slide-in-from-bottom">
+          <div className="bg-white rounded-t-[3rem] w-full p-8 space-y-5 pb-12">
+            <div className="flex justify-between items-start">
+              <div>
+                <h2 className="text-2xl font-black text-slate-900">💝 流浪動物捐贈</h2>
+                <p className="text-xs text-slate-400 font-bold mt-1">每筆捐款直接用於台南街頭流浪動物照護</p>
+              </div>
+              <button onClick={() => { setShowDonate(false); setDonated(false); setDonateAmt(null); }} className="bg-slate-100 p-2.5 rounded-full"><XCircle size={20} /></button>
+            </div>
+            {!donated ? (<>
+              <div className="grid grid-cols-3 gap-2">
+                {[['NT$100','一週飼料'],['NT$300','醫療補助'],['NT$1000','絕育手術']].map(([a,d]) => (
+                  <div key={a} className="bg-slate-50 rounded-2xl p-3 text-center border border-slate-100">
+                    <p className="font-black text-[#0f6e56] text-sm">{a}</p>
+                    <p className="text-[9px] text-slate-500 font-bold mt-0.5">{d}</p>
+                  </div>
+                ))}
+              </div>
+              <div className="bg-orange-50 rounded-2xl p-4 border border-orange-100">
+                <div className="flex justify-between text-xs font-black text-orange-700 mb-2">
+                  <span>🎯 本月目標 NT$10,000</span><span>NT$6,840 已達成</span>
+                </div>
+                <div className="h-3 bg-orange-100 rounded-full overflow-hidden">
+                  <div className="h-full bg-gradient-to-r from-orange-400 to-rose-400 rounded-full" style={{ width: '68%' }} />
+                </div>
+                <p className="text-[10px] text-orange-600 font-bold mt-2">68% 達成 · 已幫助 23 隻流浪動物 🐾</p>
+              </div>
+              <div>
+                <p className="font-black text-slate-700 text-sm mb-3">選擇捐贈金額</p>
+                <div className="grid grid-cols-3 gap-2">
+                  {[50, 100, 300, 500, 1000, 3000].map(amt => (
+                    <button key={amt} onClick={() => setDonateAmt(amt)}
+                      className={`py-3 rounded-2xl font-black text-sm transition-all border-2 ${donateAmt === amt ? 'bg-[#0f6e56] text-white border-[#0f6e56]' : 'bg-white text-slate-700 border-slate-200'}`}>
+                      NT${amt}
+                    </button>
+                  ))}
+                </div>
+              </div>
+              <button onClick={() => { if (donateAmt) setDonated(true); }} disabled={!donateAmt}
+                className={`w-full py-4 rounded-2xl font-black text-base shadow-xl transition-all ${donateAmt ? 'bg-gradient-to-r from-[#0f6e56] to-teal-500 text-white active:scale-95' : 'bg-slate-100 text-slate-400 cursor-not-allowed'}`}>
+                {donateAmt ? `💝 捐贈 NT$${donateAmt}` : '請先選擇金額'}
+              </button>
+            </>) : (
+              <div className="text-center py-6 space-y-4">
+                <div className="text-6xl animate-bounce">🎉</div>
+                <h3 className="text-2xl font-black text-slate-900">謝謝你的愛心！</h3>
+                <p className="text-slate-500 font-bold text-sm leading-relaxed">NT${donateAmt} 已成功捐出<br />你幫助了台南街頭的流浪動物 🐾</p>
+                <div className="bg-[#0f6e56]/5 rounded-2xl p-4 border border-[#0f6e56]/10">
+                  <p className="text-[11px] text-[#0f6e56] font-bold leading-relaxed">你的捐款將用於：飼料補給、醫療照護、絕育手術，讓更多動物有機會等到領養的那一天。</p>
+                </div>
+                <button onClick={() => { setShowDonate(false); setDonated(false); setDonateAmt(null); }}
+                  className="w-full bg-[#0f6e56] text-white py-4 rounded-2xl font-black shadow-xl">關閉</button>
+              </div>
+            )}
+          </div>
+        </div>
+      )}
     </div>
   );
 }
@@ -986,7 +1136,7 @@ function CertificationModal({ onClose }) {
         <div className="text-center mb-6"><ShieldCheck size={44} className="text-[#0f6e56] mx-auto mb-3" /><h2 className="text-2xl font-black">認證等級說明</h2></div>
         <div className="space-y-3">
           {CERT_LEVELS.map((c, i) => (
-            <div key={i} className={`flex gap-4 p-4 rounded-3xl border-2 ${c.level === 'A' ? 'bg-yellow-50 border-yellow-300/30' : 'bg-slate-50 border-slate-100'}`}>
+            <div key={i} className={`flex gap-4 p-4 rounded-3xl border-2 ${c.level === 'A' ? 'bg-orange-50 border-orange-300/30' : 'bg-slate-50 border-slate-100'}`}>
               <div className={`font-black w-10 h-10 rounded-xl flex items-center justify-center shrink-0 text-sm ${c.color}`}>{c.level}</div>
               <div>
                 <p className="font-black text-sm">{c.title}</p>
@@ -1243,7 +1393,7 @@ function AIMatchModal({ onClose }) {
                       <div className={`h-full rounded-full ${i === 0 ? 'bg-[#0f6e56]' : 'bg-slate-400'}`} style={{ width: `${r.match}%` }} />
                     </div>
                   </div>
-                  {i === 0 && <Trophy size={16} className="text-yellow-500 shrink-0" />}
+                  {i === 0 && <Trophy size={16} className="text-orange-500 shrink-0" />}
                 </div>
               ))}
             </div>
