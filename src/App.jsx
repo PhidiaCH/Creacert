@@ -17,32 +17,32 @@ const ANIMALS = [
     img: PX(29993579),
     tags: ['#口袋精靈', '#夜行性', '#大眼萌物', '#A 級專屬'],
     story: '「啾！我是飛飛！水汪汪的大眼睛是我的招牌。我最喜歡在主人的口袋裡睡覺，因為我需要高蛋白飲食與攀爬空間，只有通過 A 級認證的飼主才能帶我回家喔！」',
-    care: 4, lifespan: '10–15 年', trialFee: 1200, size: '迷你', careNote: '需高蛋白飲食，夜行性，需滑翔空間', videoId: 'CmFA3cEJpDc' },
+    care: 4, lifespan: '10–15 年', trialFee: 1200, size: '迷你', careNote: '需高蛋白飲食，夜行性，需滑翔空間', videoQ: 'sugar glider care guide pet' },
   { id: 2, name: '月亮', type: 'cat', typeName: '貓咪', breed: '黑白貓', status: '可認養', minLevel: 1,
     img: PX(29561296),
     tags: ['#優雅淑女', '#慢熟', '#靜態陪伴'],
     story: '「你好，我是月亮。我不需要太大空間，最適合高壓環境下工作的研究人員。給我一個窗台和溫柔的主人，我就很滿足了。」',
-    care: 2, lifespan: '12–16 年', trialFee: 800, size: '中型', careNote: '慢熟型，需安靜環境，適合獨居', videoId: 'Ni7bNOCBs0I' },
+    care: 2, lifespan: '12–16 年', trialFee: 800, size: '中型', careNote: '慢熟型，需安靜環境，適合獨居', videoQ: 'black white cat care tips adopt' },
   { id: 3, name: '小福', type: 'cat', typeName: '貓咪', breed: '橘貓', status: '試養中', minLevel: 1,
     img: PX(4641440),
     tags: ['#貪吃大叔', '#呼嚕聲超大', '#治癒系'],
     story: '「喵～只要聽到罐頭打開的聲音，我會用光速衝過來。我的呼嚕聲是全店最響的，可以舒緩你的考前焦慮！」',
-    care: 2, lifespan: '13–17 年', trialFee: 800, size: '中型', careNote: '親人貪吃，注意飲食控制避免肥胖', videoId: 'Q6ORyRHyof4' },
+    care: 2, lifespan: '13–17 年', trialFee: 800, size: '中型', careNote: '親人貪吃，注意飲食控制避免肥胖', videoQ: 'orange tabby cat care daily routine' },
   { id: 4, name: '豆豆', type: 'dog', typeName: '犬隻', breed: '米格魯', status: '可認養', minLevel: 2,
     img: PX(8706369),
     tags: ['#精力充沛', '#嗅覺達人', '#戶外型'],
     story: '「汪！我有全世界最靈敏的鼻子，可以聞到 300 公尺外的零食。我需要每天散步，適合喜歡戶外活動的人！」',
-    care: 3, lifespan: '12–15 年', trialFee: 1000, size: '中型', careNote: '需每日散步 30 分鐘以上，嗅覺敏銳', videoId: 'KPkYRXyRBnI' },
+    care: 3, lifespan: '12–15 年', trialFee: 1000, size: '中型', careNote: '需每日散步 30 分鐘以上，嗅覺敏銳', videoQ: 'beagle dog care training exercise' },
   { id: 5, name: '小綠', type: 'reptile', typeName: '爬蟲展示', breed: '鬃獅蜥', status: '展示中', minLevel: 2,
     img: PX(6002806),
     tags: ['#冷靜達人', '#親人', '#適合初學者'],
     story: '「嗨，我是小綠。我是爬蟲界最親人的存在，喜歡被人抱著曬太陽。來門市摸摸我，說不定我們就有緣分！」',
-    care: 3, lifespan: '10–15 年', trialFee: 900, size: '小型', careNote: '需 UVB 燈源，每日溫度 28–38°C', videoId: 'T_AhqN0r9Ys' },
+    care: 3, lifespan: '10–15 年', trialFee: 900, size: '小型', careNote: '需 UVB 燈源，每日溫度 28–38°C', videoQ: 'bearded dragon care beginner guide UVB' },
   { id: 6, name: '小白', type: 'reptile', typeName: '爬蟲展示', breed: '白化球蟒', status: '店長飼養', minLevel: 3,
     img: PX(29378244),
     tags: ['#稀有品種', '#溫馴', '#長壽夥伴'],
     story: '「我是小白，店長的珍貴夥伴。我可以活到 30 年，是一輩子的承諾。來門市體驗與蛇相處的奇妙感受吧！」',
-    care: 4, lifespan: '20–30 年', trialFee: 1500, size: '中型', careNote: '溫馴無毒，需 28°C 恆溫環境，月餵一次', videoId: '4hpojHpdDRg' },
+    care: 4, lifespan: '20–30 年', trialFee: 1500, size: '中型', careNote: '溫馴無毒，需 28°C 恆溫環境，月餵一次', videoQ: 'ball python care guide handling feeding' },
 ];
 
 const CERT_LEVELS = [
@@ -52,13 +52,13 @@ const CERT_LEVELS = [
 ];
 
 const COURSES = [
-  { id: 1, tag: '貓咪基礎', title: '貓咪營養學',     desc: '主食、零食與補充品的選擇', duration: '45 分鐘', progress: 100, score: 85,  locked: false, paid: false, videoId: 'EfSwdHESDDk' },
-  { id: 2, tag: '貓咪基礎', title: '行為解讀',       desc: '讀懂肢體語言與聲音溝通', duration: '50 分鐘', progress: 100, score: 90,  locked: false, paid: false, videoId: 'MnRO0P2pFoA' },
-  { id: 3, tag: '貓咪基礎', title: '環境安全設計',   desc: '打造貓咪友善的居家空間', duration: '40 分鐘', progress: 60,  score: null, locked: false, paid: false, videoId: 'G5D8pFwVG6A' },
-  { id: 4, tag: '貓咪進階', title: '醫療照護基礎',   desc: '識別常見症狀與緊急處置', duration: '90 分鐘', progress: 0,   score: null, locked: true,  paid: false, videoId: 'DaC5IfBRSrQ' },
-  { id: 5, tag: '貓咪進階', title: '行為矯正技術',   desc: '正向強化訓練方法',       duration: '75 分鐘', progress: 0,   score: null, locked: true,  paid: false, videoId: 'P6hPWABGE8E' },
-  { id: 6, tag: '爬蟲特別課程', title: '爬蟲飼育認證', desc: '鬃獅蜥、球蟒的完整照護', duration: '120 分鐘', progress: 0, score: null, locked: false, paid: true, price: 'NT$299', videoId: 'Kf2xjW7YNAU' },
-  { id: 7, tag: '犬隻認證', title: '犬隻基礎服從',   desc: '基本口令訓練與社交化',   duration: '60 分鐘', progress: 30,  score: null, locked: false, paid: false, videoId: 'btBhGJJveXQ' },
+  { id: 1, tag: '貓咪基礎', title: '貓咪營養學',     desc: '主食、零食與補充品的選擇', duration: '45 分鐘', progress: 100, score: 85,  locked: false, paid: false, videoQ: 'cat nutrition food guide' },
+  { id: 2, tag: '貓咪基礎', title: '行為解讀',       desc: '讀懂肢體語言與聲音溝通', duration: '50 分鐘', progress: 100, score: 90,  locked: false, paid: false, videoQ: 'cat body language behavior guide' },
+  { id: 3, tag: '貓咪基礎', title: '環境安全設計',   desc: '打造貓咪友善的居家空間', duration: '40 分鐘', progress: 60,  score: null, locked: false, paid: false, videoQ: 'cat proof home environment setup' },
+  { id: 4, tag: '貓咪進階', title: '醫療照護基礎',   desc: '識別常見症狀與緊急處置', duration: '90 分鐘', progress: 0,   score: null, locked: true,  paid: false, videoQ: 'cat health symptoms veterinary care' },
+  { id: 5, tag: '貓咪進階', title: '行為矯正技術',   desc: '正向強化訓練方法',       duration: '75 分鐘', progress: 0,   score: null, locked: true,  paid: false, videoQ: 'cat positive reinforcement training clicker' },
+  { id: 6, tag: '爬蟲特別課程', title: '爬蟲飼育認證', desc: '鬃獅蜥、球蟒的完整照護', duration: '120 分鐘', progress: 0, score: null, locked: false, paid: true, price: 'NT$299', videoQ: 'bearded dragon ball python reptile care guide' },
+  { id: 7, tag: '犬隻認證', title: '犬隻基礎服從',   desc: '基本口令訓練與社交化',   duration: '60 分鐘', progress: 30,  score: null, locked: false, paid: false, videoQ: 'dog basic obedience training sit stay' },
 ];
 
 const QUIZ_QUESTIONS = [
@@ -91,11 +91,11 @@ const AI_QUESTIONS = [
 
 // 短影音 Reels 資料
 const REELS = [
-  { id: 1, videoId: 'CmFA3cEJpDc', title: '飛飛第一次爬上肩膀 🦘',  creator: '陳瑭原',  views: '2.3萬', animal: '蜜袋鼯', cover: PX(29993579) },
-  { id: 2, videoId: 'Q6ORyRHyof4', title: '小福的週日賴床日常 ☀️',  creator: '小美',    views: '8.1萬', animal: '橘貓',   cover: PX(4641440) },
-  { id: 3, videoId: 'KPkYRXyRBnI', title: '豆豆學會「坐下」啦！🐶', creator: '志豪',    views: '1.2萬', animal: '米格魯', cover: PX(8706369) },
-  { id: 4, videoId: 'T_AhqN0r9Ys', title: '小綠曬太陽超享受 🦎',    creator: '雅婷',    views: '4.5萬', animal: '鬃獅蜥', cover: PX(6002806) },
-  { id: 5, videoId: '4hpojHpdDRg', title: '摸蛇其實不可怕！🐍',     creator: '店長Leo', views: '15萬',  animal: '球蟒',   cover: PX(29378244) },
+  { id: 1, videoQ: 'sugar glider cute pet shoulder', title: '飛飛第一次爬上肩膀 🦘',  creator: '陳瑭原',  views: '2.3萬', animal: '蜜袋鼯', cover: PX(29993579) },
+  { id: 2, videoQ: 'orange tabby cat funny daily',   title: '小福的週日賴床日常 ☀️',  creator: '小美',    views: '8.1萬', animal: '橘貓',   cover: PX(4641440) },
+  { id: 3, videoQ: 'beagle dog training sit command', title: '豆豆學會「坐下」啦！🐶', creator: '志豪',    views: '1.2萬', animal: '米格魯', cover: PX(8706369) },
+  { id: 4, videoQ: 'bearded dragon sunbathing basking', title: '小綠曬太陽超享受 🦎',    creator: '雅婷',    views: '4.5萬', animal: '鬃獅蜥', cover: PX(6002806) },
+  { id: 5, videoQ: 'ball python handling friendly snake', title: '摸蛇其實不可怕！🐍',     creator: '店長Leo', views: '15萬',  animal: '球蟒',   cover: PX(29378244) },
 ];
 
 const PRODUCTS = [
@@ -432,7 +432,7 @@ function AnimalsScreen() {
           className="relative w-full h-44 rounded-[2rem] overflow-hidden group active:scale-[0.98] transition-transform"
         >
           <img
-            src={`https://img.youtube.com/vi/${selected.videoId}/hqdefault.jpg`}
+            src={selected.img}
             className="w-full h-full object-cover group-hover:scale-105 transition duration-500"
             alt="影片縮圖"
           />
@@ -516,7 +516,7 @@ function AnimalsScreen() {
       </div>
 
       {showAI && <AIMatchModal onClose={() => setShowAI(false)} />}
-      {activeVideo && <VideoModal videoId={activeVideo.videoId} title={`認識 ${activeVideo.name}`} subtitle={activeVideo.breed} onClose={() => setActiveVideo(null)} />}
+      {activeVideo && <VideoModal videoQ={activeVideo.videoQ} title={`認識 ${activeVideo.name}`} subtitle={activeVideo.breed} onClose={() => setActiveVideo(null)} />}
     </div>
   );
 }
@@ -630,7 +630,7 @@ function CoursesScreen({ addPoints }) {
       ))}
 
       {activeQuiz && <QuizModal course={activeQuiz} onClose={() => setActiveQuiz(null)} onPass={() => handlePass(activeQuiz.id)} />}
-      {activeVideo && <VideoModal videoId={activeVideo.videoId} title={activeVideo.title} subtitle={activeVideo.desc} onClose={() => setActiveVideo(null)} />}
+      {activeVideo && <VideoModal videoQ={activeVideo.videoQ} title={activeVideo.title} subtitle={activeVideo.desc} onClose={() => setActiveVideo(null)} />}
     </div>
   );
 }
@@ -801,7 +801,7 @@ function CommunityScreen() {
         </button>
       </section>
 
-      {activeVideo && <VideoModal videoId={activeVideo.videoId} title={activeVideo.title} subtitle={`@${activeVideo.creator} · ${activeVideo.views} 次觀看`} onClose={() => setActiveVideo(null)} />}
+      {activeVideo && <VideoModal videoQ={activeVideo.videoQ} title={activeVideo.title} subtitle={`@${activeVideo.creator} · ${activeVideo.views} 次觀看`} onClose={() => setActiveVideo(null)} />}
 
       {/* 商城 Modal */}
       {showShop && (
@@ -1176,7 +1176,7 @@ function PortraitModal({ onClose }) {
 }
 
 // ── 影片播放 Modal ──
-function VideoModal({ videoId, title, subtitle, onClose }) {
+function VideoModal({ videoQ, title, subtitle, onClose }) {
   return (
     <div className="fixed inset-0 bg-black z-[100] flex flex-col animate-in fade-in">
       {/* 頂部控制列 */}
@@ -1196,7 +1196,7 @@ function VideoModal({ videoId, title, subtitle, onClose }) {
       {/* YouTube 播放器 */}
       <div className="flex-1 relative">
         <iframe
-          src={`https://www.youtube-nocookie.com/embed/${videoId}?autoplay=1&playsinline=1&rel=0&modestbranding=1`}
+          src={`https://www.youtube.com/embed?listType=search&list=${encodeURIComponent(videoQ)}&controls=1&autoplay=1&playsinline=1&rel=0`}
           className="absolute inset-0 w-full h-full"
           allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
           allowFullScreen
