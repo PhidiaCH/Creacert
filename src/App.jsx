@@ -126,11 +126,11 @@ const PLANS = [
 const PX = (id) => `https://images.pexels.com/photos/${id}/pexels-photo-${id}.jpeg?auto=compress&cs=tinysrgb&w=480`;
 
 const ANIMALS = [
-  { id: 1, name: '飛飛', type: 'small_animal', typeName: '小動物', breed: '蜜袋鼯', status: '準備租借中', minLevel: 3,
+  { id: 1, name: '飛飛', type: 'small_animal', typeName: '小動物', breed: '蜜袋鼯', status: '可預約互動', minLevel: 3,
     img: PX(29993579),
     tags: ['#口袋精靈', '#夜行性', '#大眼萌物', '#A 級專屬'],
     story: '「啾！我是飛飛！水汪汪的大眼睛是我的招牌。我最喜歡在主人的口袋裡睡覺，因為我需要高蛋白飲食與攀爬空間，只有通過 A 級認證的飼主才能帶我回家喔！」',
-    care: 4, lifespan: '10–15 年', trialFee: 1200, size: '迷你', careNote: '需高蛋白飲食，夜行性，需滑翔空間', videoQ: 'sugar glider care guide pet' },
+    care: 4, lifespan: '10–15 年', trialFee: 1200, size: '迷你', careNote: '需高蛋白飲食，夜行性，需滑翔空間', videoQ: 'sugar glider care guide pet', buyPrice: 8500, buyNote: '蜜袋鼯 · 需A級認證' },
   { id: 2, name: '月亮', type: 'cat', typeName: '貓咪', breed: '黑白貓', status: '可認養', minLevel: 1,
     img: PX(29561296),
     tags: ['#優雅淑女', '#慢熟', '#靜態陪伴'],
@@ -146,16 +146,16 @@ const ANIMALS = [
     tags: ['#精力充沛', '#嗅覺達人', '#戶外型'],
     story: '「汪！我有全世界最靈敏的鼻子，可以聞到 300 公尺外的零食。我需要每天散步，適合喜歡戶外活動的人！」',
     care: 3, lifespan: '12–15 年', trialFee: 1000, size: '中型', careNote: '需每日散步 30 分鐘以上，嗅覺敏銳', videoQ: 'beagle dog care training exercise' },
-  { id: 5, name: '小綠', type: 'reptile', typeName: '爬蟲展示', breed: '鬃獅蜥', status: '展示中', minLevel: 2,
+  { id: 5, name: '小綠', type: 'reptile', typeName: '爬蟲展示', breed: '鬃獅蜥', status: '可預約體驗', minLevel: 2,
     img: PX(6002806),
     tags: ['#冷靜達人', '#親人', '#適合初學者'],
     story: '「嗨，我是小綠。我是爬蟲界最親人的存在，喜歡被人抱著曬太陽。來門市摸摸我，說不定我們就有緣分！」',
-    care: 3, lifespan: '10–15 年', trialFee: 900, size: '小型', careNote: '需 UVB 燈源，每日溫度 28–38°C', videoQ: 'bearded dragon care beginner guide UVB' },
+    care: 3, lifespan: '10–15 年', trialFee: 900, size: '小型', careNote: '需 UVB 燈源，每日溫度 28–38°C', videoQ: 'bearded dragon care beginner guide UVB', buyPrice: 5800, buyNote: '寄賣合作 · 店家認證' },
   { id: 6, name: '小白', type: 'reptile', typeName: '爬蟲展示', breed: '白化球蟒', status: '店長飼養', minLevel: 3,
     img: PX(29378244),
     tags: ['#稀有品種', '#溫馴', '#長壽夥伴'],
     story: '「我是小白，店長的珍貴夥伴。我可以活到 30 年，是一輩子的承諾。來門市體驗與蛇相處的奇妙感受吧！」',
-    care: 4, lifespan: '20–30 年', trialFee: 1500, size: '中型', careNote: '溫馴無毒，需 28°C 恆溫環境，月餵一次', videoQ: 'ball python care guide handling feeding' },
+    care: 4, lifespan: '20–30 年', trialFee: 1500, size: '中型', careNote: '溫馴無毒，需 28°C 恆溫環境，月餵一次', videoQ: 'ball python care guide handling feeding', buyPrice: 15000, buyNote: '稀有白化 · 洽詢購買' },
 ];
 
 const CERT_LEVELS = [
@@ -389,6 +389,7 @@ function TabBtn({ icon, label, active, onClick, theme }) {
 function PassportScreen({ setShowCertInfo, setShowPortrait, addPoints, setShowPlans, streak }) {
   const [showQR, setShowQR] = useState(false);
   const [showBooking, setShowBooking] = useState(false);
+  const [showCafeMenu, setShowCafeMenu] = useState(false);
   const [checkedIn, setCheckedIn] = useState(false);
   const [liveOn, setLiveOn] = useState(false);
   const [liveError, setLiveError] = useState('');
@@ -586,14 +587,15 @@ function PassportScreen({ setShowCertInfo, setShowPortrait, addPoints, setShowPl
           <div className="bg-[#0f6e56]/5 p-4 rounded-2xl text-[#0f6e56] group-hover:bg-[#0f6e56] group-hover:text-white transition-colors"><QrCode size={28} /></div>
           <p className="text-sm font-black text-slate-800">門市掃碼打卡</p>
         </button>
-        <button onClick={() => setShowBooking(true)} className="bg-white rounded-3xl p-5 shadow-sm border border-slate-100 flex flex-col items-center gap-3 hover:border-orange-500 transition-all group">
+        <button onClick={() => setShowCafeMenu(true)} className="bg-white rounded-3xl p-5 shadow-sm border border-slate-100 flex flex-col items-center gap-3 hover:border-orange-500 transition-all group">
           <div className="bg-orange-50 p-4 rounded-2xl text-orange-600 group-hover:bg-orange-500 group-hover:text-white transition-colors"><Coffee size={28} /></div>
-          <p className="text-sm font-black text-slate-800">預約空間讀書</p>
+          <p className="text-sm font-black text-slate-800">今日點餐</p>
         </button>
       </section>
 
       {showQR      && <QRModal      onClose={() => setShowQR(false)}      checkedIn={checkedIn} />}
       {showBooking && <BookingModal onClose={() => setShowBooking(false)} />}
+      {showCafeMenu && <CafeMenuModal onClose={() => setShowCafeMenu(false)} />}
     </div>
   );
 }
@@ -680,15 +682,26 @@ function AnimalsScreen() {
           <p className="text-slate-600 leading-relaxed text-sm font-bold">{selected.story}</p>
         </div>
         <div className="grid gap-3 pb-4">
-          <button className={`w-full py-4 rounded-3xl font-black text-base shadow-xl active:scale-95 transition flex items-center justify-center gap-2 ${
-            selected.status === '展示中' || selected.status === '店長飼養'
-              ? 'bg-slate-200 text-slate-500 cursor-not-allowed'
-              : 'bg-[#0f6e56] text-white shadow-[#0f6e56]/20'}`}>
-            <ShieldCheck size={20} />
-            {selected.status === '展示中' || selected.status === '店長飼養' ? '僅供門市展示' :
-             selected.status === '可認養' ? `申請試養 (NT$${selected.trialFee})` :
-             selected.status === '準備租借中' ? '申請租借' : '申請試養 / 認養'}
-          </button>
+          {(selected.type === 'reptile' || selected.type === 'small_animal') ? (
+            <button className="w-full py-4 rounded-3xl font-black text-base shadow-xl active:scale-95 transition flex items-center justify-center gap-2 bg-[#0f6e56] text-white shadow-[#0f6e56]/20">
+              <Calendar size={20} /> 預約到店體驗（免費）
+            </button>
+          ) : (
+            <button className={`w-full py-4 rounded-3xl font-black text-base shadow-xl active:scale-95 transition flex items-center justify-center gap-2 ${
+              selected.status === '可認養' ? 'bg-[#0f6e56] text-white shadow-[#0f6e56]/20' : 'bg-slate-200 text-slate-500 cursor-not-allowed'}`}>
+              <ShieldCheck size={20} />
+              {selected.status === '可認養' ? `申請試養 (NT$${selected.trialFee})` : selected.status}
+            </button>
+          )}
+          {selected.buyPrice && (
+            <div className="bg-amber-50 border-2 border-amber-200 rounded-3xl p-4 flex items-center justify-between">
+              <div>
+                <p className="text-xs text-amber-600 font-bold">{selected.buyNote}</p>
+                <p className="text-xl font-black text-amber-800">NT${selected.buyPrice.toLocaleString()}</p>
+              </div>
+              <button onClick={() => alert(`洽詢購買「${selected.name}」\n\n💰 售價：NT$${selected.buyPrice.toLocaleString()}\n📋 ${selected.buyNote}\n\n請至門市或LINE洽詢`)} className="bg-amber-500 text-white px-4 py-2 rounded-2xl font-black text-sm active:scale-95 transition shadow-md">洽詢購買</button>
+            </div>
+          )}
           <button className="w-full bg-white text-[#534ab7] border-2 border-[#534ab7]/20 py-4 rounded-3xl font-black flex items-center justify-center gap-2">
             <MapPin size={18} /> 到門市看看牠
           </button>
@@ -841,7 +854,9 @@ function CoursesScreen({ addPoints }) {
                       ? <CheckCircle2 size={24} className="text-[#0f6e56]" />
                       : course.locked
                         ? <div className="bg-slate-100 p-2 rounded-xl"><Lock size={14} className="text-slate-400" /></div>
-                        : <button onClick={() => setActiveQuiz(course)} className="bg-[#0f6e56] text-white px-3 py-1.5 rounded-xl text-[10px] font-black active:scale-95 transition shadow-md">測驗</button>
+                        : course.paid && !done.has(course.id)
+                          ? <button onClick={() => alert(`購買課程：${course.title}\n費用：${course.price}\n\n付款後即可開始測驗`)} className="bg-purple-600 text-white px-3 py-1.5 rounded-xl text-[10px] font-black active:scale-95 transition shadow-md">購買解鎖</button>
+                          : <button onClick={() => setActiveQuiz(course)} className="bg-[#0f6e56] text-white px-3 py-1.5 rounded-xl text-[10px] font-black active:scale-95 transition shadow-md">測驗</button>
                     }
                   </div>
                 </div>
@@ -897,6 +912,29 @@ function CommunityScreen() {
           </div>
         ))}
       </div>
+
+      {/* ☕ 今日特飲 + 寵物食品預購 */}
+      <section className="grid grid-cols-2 gap-3">
+        <div className="bg-gradient-to-br from-amber-500 to-orange-600 rounded-[2rem] p-4 text-white shadow-lg relative overflow-hidden">
+          <div className="absolute right-0 top-0 opacity-10 text-[70px] leading-none">☕</div>
+          <p className="text-[10px] font-black opacity-70 tracking-widest uppercase mb-1">今日推薦</p>
+          <p className="font-black text-base leading-tight">爬蟲拿鐵</p>
+          <p className="text-orange-100 text-xs mt-1 font-bold">加爬蟲拉花 +NT$20</p>
+          <div className="flex items-end justify-between mt-3">
+            <p className="text-2xl font-black">NT$130</p>
+            <button onClick={() => alert('已加入！前往首頁「今日點餐」結帳')} className="bg-white/25 text-white text-[10px] font-black px-3 py-1.5 rounded-full active:scale-95 transition border border-white/30">點餐</button>
+          </div>
+        </div>
+        <div className="bg-gradient-to-br from-[#0f6e56] to-teal-600 rounded-[2rem] p-4 text-white shadow-lg relative overflow-hidden">
+          <div className="absolute right-0 top-0 opacity-10 text-[70px] leading-none">🐾</div>
+          <p className="text-[10px] font-black opacity-70 tracking-widest uppercase mb-1">合作品牌</p>
+          <p className="font-black text-base leading-tight">寵物食品<br />預購到店取</p>
+          <div className="flex items-end justify-between mt-3">
+            <p className="text-[10px] font-bold opacity-80">週三到貨・免運費</p>
+            <button onClick={() => alert('前往預購！\n每週三到店取貨，免運費，現省快遞費')} className="bg-white/25 text-white text-[10px] font-black px-3 py-1.5 rounded-full active:scale-95 transition border border-white/30">預購</button>
+          </div>
+        </div>
+      </section>
 
       {/* 🎬 短影音 Reels */}
       <section>
@@ -2084,6 +2122,105 @@ function ThemePickerModal({ onClose, current, onSelect }) {
             🌸 關懷 → 溫暖大字風，適合長輩使用
           </p>
         </div>
+      </div>
+    </div>
+  );
+}
+
+// ── 今日點餐 Modal ──
+function CafeMenuModal({ onClose }) {
+  const [cart, setCart] = useState([]);
+  const [ordered, setOrdered] = useState(false);
+
+  const MENU = {
+    drinks: [
+      { id:'d1', name:'招牌爬蟲拿鐵', sub:'爬蟲拉花・義式濃縮', price:130, emoji:'☕' },
+      { id:'d2', name:'蜜袋鼯燕麥奶', sub:'特選燕麥奶・微甜', price:140, emoji:'🥛' },
+      { id:'d3', name:'鬃獅蜥美式', sub:'深焙單品・無糖', price:100, emoji:'🖤' },
+      { id:'d4', name:'球蟒抹茶拿鐵', sub:'宇治抹茶・牛奶', price:145, emoji:'🍵' },
+    ],
+    food: [
+      { id:'f1', name:'野生感早午餐', sub:'半熟蛋・吐司・沙拉', price:180, emoji:'🍳' },
+      { id:'f2', name:'爬蟲形狀鬆餅', sub:'原味・附楓糖', price:150, emoji:'🧇' },
+      { id:'f3', name:'輕食沙拉盤', sub:'季節蔬菜・油醋醬', price:120, emoji:'🥗' },
+    ],
+  };
+
+  const addItem = (item) => setCart(c => {
+    const exist = c.find(x => x.id === item.id);
+    if (exist) return c.map(x => x.id === item.id ? {...x, qty: x.qty+1} : x);
+    return [...c, {...item, qty:1}];
+  });
+
+  const total = cart.reduce((sum, x) => sum + x.price * x.qty, 0);
+
+  if (ordered) return (
+    <div className="fixed inset-0 bg-black/80 z-[60] flex items-center justify-center p-6 animate-in fade-in">
+      <div className="bg-white rounded-[3rem] w-full max-w-sm p-10 text-center shadow-2xl">
+        <div className="text-6xl mb-4">☕</div>
+        <h2 className="text-2xl font-black text-slate-900 mb-2">點餐成功！</h2>
+        <p className="text-slate-500 font-bold text-sm mb-2">預計 10–15 分鐘備餐</p>
+        <div className="bg-[#0f6e56]/5 rounded-2xl p-4 border border-[#0f6e56]/10 mb-6">
+          <p className="text-sm font-black text-[#0f6e56]">NT${total.toLocaleString()} · {cart.length} 項</p>
+          {cart.map(x => <p key={x.id} className="text-xs text-slate-500 font-bold mt-1">{x.emoji} {x.name} ×{x.qty}</p>)}
+        </div>
+        <button onClick={onClose} className="w-full bg-[#0f6e56] text-white py-4 rounded-2xl font-black shadow-xl">好的！</button>
+      </div>
+    </div>
+  );
+
+  return (
+    <div className="fixed inset-0 bg-black/80 z-[60] flex flex-col animate-in slide-in-from-bottom">
+      <div className="mt-10 bg-white rounded-t-[3rem] flex-1 overflow-y-auto">
+        <div className="sticky top-0 bg-white/95 backdrop-blur-sm px-6 pt-6 pb-4 border-b border-slate-100 flex items-center justify-between z-10">
+          <div>
+            <h2 className="text-2xl font-black text-slate-900">☕ 今日點餐</h2>
+            <p className="text-xs text-slate-400 font-bold mt-0.5">到店取餐 · 成大生醫卓群門市</p>
+          </div>
+          <button onClick={onClose} className="bg-slate-100 p-2.5 rounded-full"><XCircle size={20} /></button>
+        </div>
+        <div className="p-5 space-y-5 pb-36">
+          {[['飲品', MENU.drinks, '☕'],['輕食', MENU.food, '🍽️']].map(([label, items, icon]) => (
+            <section key={label}>
+              <h3 className="font-black text-slate-700 text-sm mb-3 flex items-center gap-2">
+                <span>{icon}</span> {label}
+              </h3>
+              <div className="space-y-2">
+                {items.map(item => {
+                  const inCart = cart.find(x => x.id === item.id);
+                  return (
+                    <div key={item.id} className="bg-slate-50 rounded-2xl p-4 flex items-center justify-between border border-slate-100">
+                      <div className="flex items-center gap-3">
+                        <span className="text-2xl">{item.emoji}</span>
+                        <div>
+                          <p className="font-black text-slate-800 text-sm">{item.name}</p>
+                          <p className="text-[10px] text-slate-400 font-bold">{item.sub}</p>
+                        </div>
+                      </div>
+                      <div className="flex items-center gap-3">
+                        <p className="font-black text-slate-700">NT${item.price}</p>
+                        <button onClick={() => addItem(item)}
+                          className={`w-8 h-8 rounded-full flex items-center justify-center font-black text-lg transition-all active:scale-90 ${inCart ? 'bg-[#0f6e56] text-white' : 'bg-white border-2 border-slate-200 text-slate-500'}`}>
+                          {inCart ? inCart.qty : '+'}
+                        </button>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            </section>
+          ))}
+        </div>
+
+        {cart.length > 0 && (
+          <div className="fixed bottom-0 left-0 right-0 max-w-md mx-auto bg-white border-t-2 border-slate-100 px-5 py-4 z-20">
+            <button onClick={() => setOrdered(true)}
+              className="w-full bg-[#0f6e56] text-white py-4 rounded-2xl font-black text-base shadow-xl active:scale-95 transition flex items-center justify-between px-6">
+              <span>確認點餐</span>
+              <span>NT${total.toLocaleString()} ({cart.reduce((s,x)=>s+x.qty,0)} 項)</span>
+            </button>
+          </div>
+        )}
       </div>
     </div>
   );
