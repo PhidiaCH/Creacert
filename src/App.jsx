@@ -1,11 +1,124 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect, useContext, createContext } from 'react';
 import {
   Home, BookOpen, Heart, ClipboardList, Sparkles, XCircle, Award,
   Calendar, ChevronLeft, Search, MapPin, QrCode, Coffee, Clock,
   Users, Star, Image as ImageIcon, Bell, ShieldCheck, Camera,
   Video, Activity, Lock, Trophy, Brain, PlusCircle, CheckCircle2,
-  Play, PlayCircle, Tv2, Eye,
+  Play, PlayCircle, Tv2, Eye, Zap, Crown, Gift, TrendingUp,
+  Flame, Target, Share2, ThumbsUp, MessageCircle, Bookmark,
+  ChevronRight, Check, Palette,
 } from 'lucide-react';
+
+// ─────────────────────────────────────────────
+// 主題系統
+// ─────────────────────────────────────────────
+const THEMES = {
+  young: {
+    key: 'young',
+    label: '🔥 潮流',
+    desc: '深色潮流風',
+    headerBg: 'bg-gradient-to-r from-violet-900 via-purple-900 to-indigo-900',
+    appBg: 'bg-gradient-to-br from-violet-950 via-slate-900 to-black',
+    tabBg: 'bg-black/90 backdrop-blur-xl border-t border-white/10',
+    tabActive: 'text-violet-400',
+    tabInactive: 'text-white/30',
+    ptBadge: 'bg-violet-400 text-violet-950',
+    lvBadge: 'bg-white/10 border border-white/20',
+    cardBg: 'bg-white/8 backdrop-blur border border-white/10',
+    sectionBg: 'bg-slate-900',
+    headingColor: 'text-white',
+    subColor: 'text-white/50',
+    accentColor: '#7c3aed',
+    preview: 'from-violet-900 to-indigo-900',
+  },
+  pro: {
+    key: 'pro',
+    label: '💼 專業',
+    desc: '清爽專業風',
+    headerBg: 'bg-[#0f6e56]',
+    appBg: 'bg-gradient-to-br from-pink-100 via-purple-50 to-teal-50',
+    tabBg: 'bg-white/95 backdrop-blur-md border-t border-gray-200',
+    tabActive: 'text-[#0f6e56]',
+    tabInactive: 'text-slate-400',
+    ptBadge: 'bg-orange-300 text-orange-900',
+    lvBadge: 'bg-white/10 border border-white/20',
+    cardBg: 'bg-white shadow-sm',
+    sectionBg: 'bg-slate-50',
+    headingColor: 'text-slate-800',
+    subColor: 'text-slate-500',
+    accentColor: '#0f6e56',
+    preview: 'from-[#0f6e56] to-teal-600',
+  },
+  senior: {
+    key: 'senior',
+    label: '🌸 關懷',
+    desc: '大字溫暖風',
+    headerBg: 'bg-gradient-to-r from-amber-600 to-orange-600',
+    appBg: 'bg-amber-50',
+    tabBg: 'bg-white border-t-4 border-amber-200',
+    tabActive: 'text-amber-600',
+    tabInactive: 'text-slate-400',
+    ptBadge: 'bg-amber-400 text-amber-900',
+    lvBadge: 'bg-white/20 border border-white/30',
+    cardBg: 'bg-white border-2 border-amber-100',
+    sectionBg: 'bg-white',
+    headingColor: 'text-slate-900 text-lg',
+    subColor: 'text-slate-600',
+    accentColor: '#d97706',
+    preview: 'from-amber-500 to-orange-500',
+  },
+};
+
+const ThemeCtx = createContext(THEMES.pro);
+
+// 定價方案
+const PLANS = [
+  {
+    id: 'free', name: '基礎探索', nameEn: 'FREE',
+    price: 0, unit: '',
+    color: 'from-slate-400 to-slate-600',
+    badge: null,
+    features: [
+      '✅ 動物圖鑑瀏覽',
+      '✅ 基礎課程 3 堂',
+      '✅ 生態圈社群',
+      '✅ 到店打卡集點',
+      '❌ 進階課程',
+      '❌ 認證考試',
+      '❌ 爬蟲預訂優先',
+    ],
+  },
+  {
+    id: 'premium', name: '達人月票', nameEn: 'PREMIUM',
+    price: 199, unit: '/月',
+    color: 'from-violet-500 to-purple-700',
+    badge: '最受歡迎',
+    features: [
+      '✅ 全部課程無限看',
+      '✅ C / B 級認證考試',
+      '✅ 門市飲品 9 折',
+      '✅ 爬蟲體驗優先預約',
+      '✅ 寵物食品 9 折',
+      '✅ 每月贈 200 點',
+      '❌ A / S / M 級認證',
+    ],
+  },
+  {
+    id: 'pro', name: '認證師年票', nameEn: 'PRO',
+    price: 1680, unit: '/年',
+    color: 'from-amber-400 to-orange-600',
+    badge: '省最多',
+    features: [
+      '✅ 全部課程 + 所有認證',
+      '✅ 門市消費 8 折',
+      '✅ 爬蟲 VIP 預約通道',
+      '✅ 寵物食品 85 折',
+      '✅ 每月贈 500 點',
+      '✅ 專屬徽章 + 頭銜',
+      '✅ 優先新品體驗資格',
+    ],
+  },
+];
 
 // ─────────────────────────────────────────────
 // 資料庫
@@ -89,6 +202,28 @@ const AI_QUESTIONS = [
   { q: '你希望的互動方式？',       opts: ['靜靜陪伴就好', '偶爾互動玩耍', '頻繁互動', '戶外運動型'] },
 ];
 
+// 每日挑戰題庫
+const DAILY_CHALLENGES = [
+  { id:1, emoji:'🦎', q:'鬃獅蜥每日需要多少小時的 UVB 燈照射？', opts:['2小時','6-8小時','12小時','24小時'], ans:1, pts:30 },
+  { id:2, emoji:'🐍', q:'球蟒多久餵食一次最適合？', opts:['每天','每週','每兩週','每月'], ans:1, pts:30 },
+  { id:3, emoji:'🦘', q:'蜜袋鼯是哪個國家的原生動物？', opts:['巴西','澳洲','印尼','馬來西亞'], ans:1, pts:30 },
+  { id:4, emoji:'🐱', q:'貓咪「慢眨眼」代表什麼？', opts:['攻擊警告','信任與愛','飢餓','生病'], ans:1, pts:30 },
+  { id:5, emoji:'🐶', q:'米格魯每天至少需要多少分鐘運動？', opts:['10分鐘','30分鐘','60分鐘','90分鐘'], ans:1, pts:30 },
+];
+
+// 社群貼文資料（加強版）
+const COMMUNITY_POSTS = [
+  { id:1, user:'陳瑭原', avatar:'🧑', tag:'蜜袋鼯新手', img: PX(29993579),
+    caption:'飛飛今天第一次自己爬到我肩膀！三個月的耐心終於換來這一刻 🥹',
+    likes:247, comments:38, shares:12, saved:89, time:'2小時前', challenge:'#萌寵日記' },
+  { id:2, user:'雅婷', avatar:'👩', tag:'爬蟲飼主', img: PX(6002806),
+    caption:'小綠曬太陽超享受！UVB 12小時是關鍵，爬蟲新手必看 🦎☀️',
+    likes:512, comments:67, shares:45, saved:203, time:'5小時前', challenge:'#爬蟲日常' },
+  { id:3, user:'店長 Leo', avatar:'🧑‍💼', tag:'CreaCert官方', img: PX(29378244),
+    caption:'小白今天狀態超好！來門市的朋友都說摸了之後不再怕蛇了 🐍✨',
+    likes:1203, comments:156, shares:89, saved:445, time:'1天前', challenge:'#克服恐懼' },
+];
+
 // 短影音 Reels 資料
 const REELS = [
   { id: 1, videoQ: 'sugar glider cute pet shoulder', title: '飛飛第一次爬上肩膀 🦘',  creator: '陳瑭原',  views: '2.3萬', animal: '蜜袋鼯', cover: PX(29993579) },
@@ -151,10 +286,21 @@ export default function App() {
   const [showCertInfo, setShowCertInfo] = useState(false);
   const [showPortrait, setShowPortrait] = useState(false);
   const [showInvestor, setShowInvestor] = useState(false);
+  const [showPlans, setShowPlans] = useState(false);
+  const [showThemePicker, setShowThemePicker] = useState(false);
+  const [themeKey, setThemeKey] = useState(() => localStorage.getItem('cc_theme') || 'pro');
+  const theme = THEMES[themeKey] || THEMES.pro;
   const [logoTaps, setLogoTaps] = useState(0);
+  const [streak, setStreak] = useState(7);
   const tapTimer = useRef(null);
   const [points, setPoints] = useState(1280);
   const addPoints = (n) => setPoints(p => p + n);
+
+  const switchTheme = (key) => {
+    setThemeKey(key);
+    localStorage.setItem('cc_theme', key);
+    setShowThemePicker(false);
+  };
 
   const handleLogoTap = () => {
     const next = logoTaps + 1;
@@ -165,11 +311,12 @@ export default function App() {
   };
 
   return (
-    <div className="bg-gradient-to-br from-pink-100 via-purple-50 to-teal-50 min-h-screen flex items-center justify-center font-sans">
-      <div className="bg-white w-full max-w-md h-[850px] max-h-screen relative overflow-hidden shadow-2xl sm:rounded-[2.5rem] sm:border-[10px] border-gray-900 flex flex-col">
+    <ThemeCtx.Provider value={theme}>
+    <div className={`${theme.appBg} min-h-screen flex items-center justify-center font-sans`}>
+      <div className={`w-full max-w-md h-[850px] max-h-screen relative overflow-hidden shadow-2xl sm:rounded-[2.5rem] sm:border-[10px] border-gray-900 flex flex-col ${themeKey === 'young' ? 'bg-slate-900' : 'bg-white'}`}>
 
         {/* 頂部狀態列 */}
-        <div className="bg-[#0f6e56] text-white pt-6 pb-4 px-6 shadow-lg z-30 shrink-0">
+        <div className={`${theme.headerBg} text-white pt-6 pb-4 px-6 shadow-lg z-30 shrink-0`}>
           <div className="flex justify-between items-center mt-2">
             <div onClick={handleLogoTap} className="cursor-pointer select-none">
               <h1 className="text-xl font-black tracking-tighter flex items-center gap-2">
@@ -177,20 +324,29 @@ export default function App() {
               </h1>
               <p className="text-[10px] font-bold uppercase tracking-widest" style={{color:'#f9a8d4'}}>Know Every Creature ✿</p>
             </div>
-            <div className="flex items-center gap-3">
-              <div className="bg-white/10 px-3 py-1 rounded-full text-sm font-bold flex items-center gap-1 border border-white/20 cursor-pointer active:scale-95 transition" onClick={() => setShowCertInfo(true)}>
+            <div className="flex items-center gap-2">
+              {/* 連續天數 */}
+              <div className="flex items-center gap-1 bg-white/10 px-2 py-1 rounded-full border border-white/20">
+                <Flame size={13} className="text-orange-300" />
+                <span className="text-white text-[11px] font-black">{streak}</span>
+              </div>
+              <div className={`${theme.lvBadge} px-3 py-1 rounded-full text-sm font-bold flex items-center gap-1 cursor-pointer active:scale-95 transition`} onClick={() => setShowCertInfo(true)}>
                 <Award size={16} className="text-orange-300" /> Lv.3
               </div>
-              <div className="bg-orange-300 text-orange-900 px-3 py-1 rounded-full text-xs font-black shadow-inner">
+              <div className={`${theme.ptBadge} px-3 py-1 rounded-full text-xs font-black shadow-inner`}>
                 {points.toLocaleString()} pt
               </div>
+              {/* 主題切換 */}
+              <button onClick={() => setShowThemePicker(true)} className="bg-white/10 p-1.5 rounded-full border border-white/20">
+                <Palette size={14} className="text-white/80" />
+              </button>
             </div>
           </div>
         </div>
 
         {/* 內容區 */}
-        <div className="flex-1 overflow-y-auto bg-slate-50 scrollbar-hide">
-          {tab === 'home'      && <PassportScreen setShowCertInfo={setShowCertInfo} setShowPortrait={setShowPortrait} addPoints={addPoints} />}
+        <div className={`flex-1 overflow-y-auto scrollbar-hide ${themeKey === 'young' ? 'bg-slate-900' : themeKey === 'senior' ? 'bg-amber-50' : 'bg-slate-50'}`}>
+          {tab === 'home'      && <PassportScreen setShowCertInfo={setShowCertInfo} setShowPortrait={setShowPortrait} addPoints={addPoints} setShowPlans={setShowPlans} streak={streak} />}
           {tab === 'animals'   && <AnimalsScreen />}
           {tab === 'courses'   && <CoursesScreen addPoints={addPoints} />}
           {tab === 'community' && <CommunityScreen />}
@@ -198,27 +354,31 @@ export default function App() {
         </div>
 
         {/* 底部 Tab Bar */}
-        <div className="shrink-0 w-full bg-white/95 backdrop-blur-md border-t border-gray-200 px-4 pt-3 pb-6 flex justify-between items-center z-40">
-          <TabBtn icon={<Home />}        label="首頁" active={tab === 'home'}      onClick={() => setTab('home')} />
-          <TabBtn icon={<Heart />}       label="圖鑑" active={tab === 'animals'}   onClick={() => setTab('animals')} />
-          <TabBtn icon={<BookOpen />}    label="課程" active={tab === 'courses'}   onClick={() => setTab('courses')} />
-          <TabBtn icon={<Users />}       label="生態圈" active={tab === 'community'} onClick={() => setTab('community')} />
-          <TabBtn icon={<ClipboardList />} label="日記" active={tab === 'diary'}  onClick={() => setTab('diary')} />
+        <div className={`shrink-0 w-full px-4 pt-3 pb-6 flex justify-between items-center z-40 ${theme.tabBg}`}>
+          <TabBtn icon={<Home />}          label="首頁"  active={tab==='home'}      onClick={() => setTab('home')}      theme={theme} />
+          <TabBtn icon={<Heart />}         label="圖鑑"  active={tab==='animals'}   onClick={() => setTab('animals')}   theme={theme} />
+          <TabBtn icon={<BookOpen />}      label="課程"  active={tab==='courses'}   onClick={() => setTab('courses')}   theme={theme} />
+          <TabBtn icon={<Users />}         label="生態圈" active={tab==='community'} onClick={() => setTab('community')} theme={theme} />
+          <TabBtn icon={<ClipboardList />} label="日記"  active={tab==='diary'}     onClick={() => setTab('diary')}     theme={theme} />
         </div>
 
-        {showCertInfo  && <CertificationModal  onClose={() => setShowCertInfo(false)} />}
-        {showPortrait  && <PortraitModal       onClose={() => setShowPortrait(false)} />}
-        {showInvestor  && <InvestorDashboard   onClose={() => setShowInvestor(false)} />}
+        {showCertInfo    && <CertificationModal onClose={() => setShowCertInfo(false)} />}
+        {showPortrait    && <PortraitModal      onClose={() => setShowPortrait(false)} />}
+        {showInvestor    && <InvestorDashboard  onClose={() => setShowInvestor(false)} />}
+        {showPlans       && <PlansModal         onClose={() => setShowPlans(false)} />}
+        {showThemePicker && <ThemePickerModal   onClose={() => setShowThemePicker(false)} current={themeKey} onSelect={switchTheme} />}
       </div>
     </div>
+    </ThemeCtx.Provider>
   );
 }
 
-function TabBtn({ icon, label, active, onClick }) {
+function TabBtn({ icon, label, active, onClick, theme }) {
+  const t = theme || THEMES.pro;
   return (
-    <button onClick={onClick} className={`flex flex-col items-center justify-center w-14 transition-all duration-300 ${active ? 'text-[#0f6e56] scale-110' : 'text-slate-400'}`}>
+    <button onClick={onClick} className={`flex flex-col items-center justify-center w-14 transition-all duration-300 ${active ? `${t.tabActive} scale-110` : t.tabInactive}`}>
       {React.cloneElement(icon, { size: 24, strokeWidth: active ? 2.5 : 2 })}
-      <span className={`text-[10px] mt-1 font-black ${active ? 'opacity-100' : 'opacity-60'}`}>{label}</span>
+      <span className={`text-[10px] mt-1 font-black ${active ? 'opacity-100' : 'opacity-50'}`}>{label}</span>
     </button>
   );
 }
@@ -226,7 +386,7 @@ function TabBtn({ icon, label, active, onClick }) {
 // ─────────────────────────────────────────────
 // Tab 1 — 認證護照頁
 // ─────────────────────────────────────────────
-function PassportScreen({ setShowCertInfo, setShowPortrait, addPoints }) {
+function PassportScreen({ setShowCertInfo, setShowPortrait, addPoints, setShowPlans, streak }) {
   const [showQR, setShowQR] = useState(false);
   const [showBooking, setShowBooking] = useState(false);
   const [checkedIn, setCheckedIn] = useState(false);
@@ -352,6 +512,26 @@ function PassportScreen({ setShowCertInfo, setShowPortrait, addPoints }) {
           <div className="bg-white p-3 rounded-full text-[#534ab7] shadow-sm"><Camera size={24} /></div>
           <p className="text-xs font-black text-[#534ab7] text-center leading-tight">萌寵 AR 濾鏡<br /><span className="text-[9px] font-bold opacity-60">賺 10pt 社交積分</span></p>
         </div>
+      </section>
+
+      {/* 連續學習 + 升級方案 */}
+      <section className="grid grid-cols-2 gap-4">
+        <div className="bg-gradient-to-br from-orange-400 to-rose-500 rounded-3xl p-4 text-white flex flex-col gap-2 shadow-lg">
+          <div className="flex items-center gap-2">
+            <Flame size={20} className="text-white" />
+            <span className="font-black text-sm">連續學習</span>
+          </div>
+          <p className="text-4xl font-black leading-none">{streak}<span className="text-base opacity-70"> 天</span></p>
+          <p className="text-[10px] opacity-80 font-bold">堅持就是力量 💪 明天繼續！</p>
+        </div>
+        <button onClick={() => setShowPlans(true)} className="bg-gradient-to-br from-violet-500 to-purple-700 rounded-3xl p-4 text-white flex flex-col gap-2 shadow-lg active:scale-95 transition">
+          <div className="flex items-center gap-2">
+            <Crown size={20} className="text-yellow-300" />
+            <span className="font-black text-sm">升級方案</span>
+          </div>
+          <p className="text-xs font-bold opacity-80 leading-snug">解鎖全課程<br />所有認證考試</p>
+          <span className="text-[10px] bg-white/20 rounded-full px-2 py-0.5 font-black w-fit">查看方案 →</span>
+        </button>
       </section>
 
       {/* 租借整備進度 */}
@@ -772,6 +952,17 @@ function CommunityScreen() {
           ))}
         </div>
         <p className="text-[10px] text-slate-400 text-center mt-2 font-bold">點擊選擇平台觀看 · YouTube / TikTok / Instagram</p>
+      </section>
+
+      {/* 📱 社群貼文（Instagram 風格） */}
+      <section className="space-y-4">
+        <div className="flex items-center justify-between">
+          <h3 className="font-black text-slate-800 text-base flex items-center gap-2">
+            <Heart size={18} className="text-rose-500" /> 飼主分享
+          </h3>
+          <span className="text-[10px] text-slate-400 font-bold">最新動態</span>
+        </div>
+        {COMMUNITY_POSTS.map(post => <CommunityPostCard key={post.id} post={post} />)}
       </section>
 
       {/* 旗艦講座 Banner */}
@@ -1687,6 +1878,212 @@ function AIMatchModal({ onClose }) {
             <button onClick={onClose} className="w-full bg-[#534ab7] text-white py-4 rounded-2xl font-black mt-5 shadow-xl">去圖鑑看看牠們</button>
           </>
         )}
+      </div>
+    </div>
+  );
+}
+
+// ── 社群貼文卡 ──
+function CommunityPostCard({ post }) {
+  const [liked, setLiked] = useState(false);
+  const [saved, setSaved] = useState(false);
+  const [likeCount, setLikeCount] = useState(post.likes);
+
+  const toggleLike = () => {
+    setLiked(p => !p);
+    setLikeCount(c => c + (liked ? -1 : 1));
+  };
+
+  return (
+    <div className="bg-white rounded-[2rem] overflow-hidden border border-slate-100 shadow-sm">
+      {/* 貼文頭部 */}
+      <div className="flex items-center gap-3 p-4 pb-3">
+        <div className="w-10 h-10 rounded-full bg-gradient-to-br from-pink-400 to-violet-500 flex items-center justify-center text-lg shadow-sm shrink-0">
+          {post.avatar}
+        </div>
+        <div className="flex-1 min-w-0">
+          <p className="font-black text-slate-800 text-sm leading-none">{post.user}</p>
+          <p className="text-[10px] text-slate-400 font-bold mt-0.5">{post.tag} · {post.time}</p>
+        </div>
+        <span className="text-[9px] bg-orange-50 text-orange-500 font-black px-2 py-0.5 rounded-full border border-orange-100">{post.challenge}</span>
+      </div>
+
+      {/* 圖片 */}
+      <div className="relative w-full h-52 overflow-hidden">
+        <img src={post.img} className="w-full h-full object-cover" alt="" />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent" />
+      </div>
+
+      {/* 互動列 */}
+      <div className="px-4 pt-3 pb-1 flex items-center justify-between">
+        <div className="flex items-center gap-4">
+          <button onClick={toggleLike} className="flex items-center gap-1.5 active:scale-90 transition-transform">
+            <Heart size={20} className={`transition-colors ${liked ? 'fill-rose-500 text-rose-500' : 'text-slate-400'}`} />
+            <span className={`text-sm font-black ${liked ? 'text-rose-500' : 'text-slate-500'}`}>{likeCount.toLocaleString()}</span>
+          </button>
+          <button className="flex items-center gap-1.5">
+            <MessageCircle size={20} className="text-slate-400" />
+            <span className="text-sm font-black text-slate-500">{post.comments}</span>
+          </button>
+          <button className="flex items-center gap-1.5">
+            <Share2 size={20} className="text-slate-400" />
+            <span className="text-sm font-black text-slate-500">{post.shares}</span>
+          </button>
+        </div>
+        <button onClick={() => setSaved(p => !p)} className="active:scale-90 transition-transform">
+          <Bookmark size={20} className={saved ? 'fill-violet-500 text-violet-500' : 'text-slate-400'} />
+        </button>
+      </div>
+
+      {/* 說明文字 */}
+      <div className="px-4 pb-4 pt-1">
+        <p className="text-sm text-slate-700 leading-snug font-bold">{post.caption}</p>
+      </div>
+    </div>
+  );
+}
+
+// ── 定價方案 Modal ──
+function PlansModal({ onClose }) {
+  const [selected, setSelected] = useState('premium');
+  const [done, setDone] = useState(false);
+
+  if (done) return (
+    <div className="fixed inset-0 bg-black/80 z-[60] flex items-center justify-center p-6 animate-in fade-in">
+      <div className="bg-white rounded-[3rem] w-full max-w-sm p-10 text-center shadow-2xl">
+        <div className="text-6xl mb-4">🎉</div>
+        <h2 className="text-2xl font-black text-slate-900 mb-2">方案選擇成功！</h2>
+        <p className="text-slate-500 font-bold text-sm mb-8">
+          {PLANS.find(p => p.id === selected)?.name} 已啟用<br />享受你的 CreaCert 體驗 🐾
+        </p>
+        <button onClick={onClose} className="w-full bg-[#0f6e56] text-white py-4 rounded-2xl font-black shadow-xl">開始探索</button>
+      </div>
+    </div>
+  );
+
+  return (
+    <div className="fixed inset-0 bg-black/80 z-[60] flex flex-col animate-in slide-in-from-bottom">
+      <div className="mt-10 bg-white rounded-t-[3rem] flex-1 overflow-y-auto">
+        <div className="sticky top-0 bg-white/95 backdrop-blur-sm px-6 pt-6 pb-4 border-b border-slate-100 flex items-center justify-between z-10">
+          <div>
+            <h2 className="text-2xl font-black text-slate-900 flex items-center gap-2"><Crown className="text-yellow-500" size={24} /> 選擇方案</h2>
+            <p className="text-xs text-slate-400 font-bold mt-0.5">解鎖全課程與認證考試資格</p>
+          </div>
+          <button onClick={onClose} className="bg-slate-100 p-2.5 rounded-full"><XCircle size={20} /></button>
+        </div>
+
+        <div className="p-5 space-y-4 pb-10">
+          {/* 年費省錢說明 */}
+          <div className="bg-amber-50 border border-amber-200 rounded-2xl p-3 flex items-center gap-2">
+            <span className="text-xl">💡</span>
+            <p className="text-xs font-bold text-amber-800">選擇年票每月只需 <span className="font-black text-amber-600">NT$140</span>，比月票省 30%！</p>
+          </div>
+
+          {PLANS.map(plan => (
+            <div
+              key={plan.id}
+              onClick={() => setSelected(plan.id)}
+              className={`relative rounded-[2rem] overflow-hidden cursor-pointer transition-all active:scale-[0.98] ${
+                selected === plan.id ? 'ring-4 ring-violet-400 shadow-xl scale-[1.01]' : 'shadow-sm'
+              }`}
+            >
+              {/* 漸層頭部 */}
+              <div className={`bg-gradient-to-r ${plan.color} p-5 text-white`}>
+                <div className="flex items-start justify-between">
+                  <div>
+                    {plan.badge && (
+                      <span className="bg-white/25 text-white text-[10px] font-black px-2 py-0.5 rounded-full mb-2 inline-block">
+                        🔥 {plan.badge}
+                      </span>
+                    )}
+                    <p className="text-[10px] font-black opacity-70 tracking-widest uppercase">{plan.nameEn}</p>
+                    <h3 className="text-xl font-black">{plan.name}</h3>
+                  </div>
+                  <div className="text-right">
+                    {plan.price === 0
+                      ? <p className="text-3xl font-black">免費</p>
+                      : <>
+                          <p className="text-3xl font-black leading-none">NT${plan.price.toLocaleString()}</p>
+                          <p className="text-sm opacity-70 font-bold">{plan.unit}</p>
+                        </>
+                    }
+                  </div>
+                </div>
+                {/* 選中標記 */}
+                <div className={`absolute top-4 right-4 w-6 h-6 rounded-full border-2 border-white flex items-center justify-center transition-all ${selected === plan.id ? 'bg-white' : 'bg-white/20'}`}>
+                  {selected === plan.id && <Check size={14} className="text-violet-600 font-black" strokeWidth={3} />}
+                </div>
+              </div>
+
+              {/* 功能列表 */}
+              <div className="bg-white p-4 space-y-1.5 border border-slate-100 rounded-b-[2rem]">
+                {plan.features.map((f, i) => (
+                  <p key={i} className={`text-xs font-bold ${f.startsWith('✅') ? 'text-slate-700' : 'text-slate-300 line-through'}`}>{f}</p>
+                ))}
+              </div>
+            </div>
+          ))}
+
+          <button
+            onClick={() => setDone(true)}
+            className="w-full bg-gradient-to-r from-violet-500 to-purple-700 text-white py-5 rounded-[2rem] font-black text-base shadow-2xl active:scale-95 transition flex items-center justify-center gap-2"
+          >
+            <Crown size={20} className="text-yellow-300" />
+            確認選擇「{PLANS.find(p => p.id === selected)?.name}」
+          </button>
+
+          <p className="text-center text-[10px] text-slate-400 font-bold">可隨時取消 · 無隱藏費用 · 支援 Line Pay / 信用卡</p>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ── 主題切換 Modal ──
+function ThemePickerModal({ onClose, current, onSelect }) {
+  return (
+    <div className="fixed inset-0 bg-black/70 z-[60] flex items-end animate-in slide-in-from-bottom" onClick={onClose}>
+      <div className="bg-white rounded-t-[3rem] w-full p-6 pb-10 space-y-5" onClick={e => e.stopPropagation()}>
+        <div className="flex items-center justify-between">
+          <div>
+            <h3 className="text-xl font-black text-slate-900 flex items-center gap-2"><Palette size={20} className="text-violet-500" /> 選擇介面主題</h3>
+            <p className="text-xs text-slate-400 font-bold mt-0.5">依照你的使用習慣選擇風格</p>
+          </div>
+          <button onClick={onClose} className="bg-slate-100 p-2.5 rounded-full"><XCircle size={18} /></button>
+        </div>
+
+        <div className="grid grid-cols-3 gap-3">
+          {Object.values(THEMES).map(t => (
+            <button
+              key={t.key}
+              onClick={() => onSelect(t.key)}
+              className={`rounded-2xl overflow-hidden transition-all active:scale-95 ${current === t.key ? 'ring-4 ring-violet-400 shadow-lg' : 'shadow-sm'}`}
+            >
+              {/* 預覽色塊 */}
+              <div className={`h-16 bg-gradient-to-br ${t.preview} flex items-center justify-center`}>
+                <span className="text-2xl">{t.label.split(' ')[0]}</span>
+              </div>
+              <div className="bg-white p-2 text-center border border-slate-100">
+                <p className="text-xs font-black text-slate-800">{t.label}</p>
+                <p className="text-[9px] text-slate-400 font-bold">{t.desc}</p>
+                {current === t.key && (
+                  <div className="flex items-center justify-center gap-1 mt-1">
+                    <Check size={10} className="text-violet-500" strokeWidth={3} />
+                    <span className="text-[9px] text-violet-500 font-black">使用中</span>
+                  </div>
+                )}
+              </div>
+            </button>
+          ))}
+        </div>
+
+        <div className="bg-slate-50 rounded-2xl p-3 border border-slate-100">
+          <p className="text-[11px] text-slate-500 font-bold text-center">
+            🔥 潮流 → 深色暗夜風，適合年輕用戶<br />
+            💼 專業 → 清爽亮色風，適合學習情境<br />
+            🌸 關懷 → 溫暖大字風，適合長輩使用
+          </p>
+        </div>
       </div>
     </div>
   );
