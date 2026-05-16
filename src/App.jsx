@@ -108,14 +108,61 @@ const PRODUCTS = [
 ];
 
 // ─────────────────────────────────────────────
+// 投資人儀表板數據
+// ─────────────────────────────────────────────
+const INVESTOR_DATA = {
+  monthly: [
+    { month: '1月', revenue: 58000,  cost: 113000, profit: -55000 },
+    { month: '2月', revenue: 82000,  cost: 115000, profit: -33000 },
+    { month: '3月', revenue: 130000, cost: 118000, profit:  12000 },
+    { month: '4月', revenue: 155000, cost: 120000, profit:  35000 },
+    { month: '5月', revenue: 178000, cost: 122000, profit:  56000 },
+    { month: '6月', revenue: 195000, cost: 125000, profit:  70000 },
+  ],
+  kpi: {
+    thisMonth:      178000,
+    lastMonth:      155000,
+    visitors:       1240,
+    netProfit:      56000,
+    totalInvested:  1360000,
+    totalRecovered: 95000,
+    breakEvenMonth: 23,
+    currentMonth:   5,
+  },
+  breakdown: [
+    { label: '咖啡輕食', value: 95000,  color: '#f97316', pct: 53 },
+    { label: '爬蟲銷售', value: 48000,  color: '#0f6e56', pct: 27 },
+    { label: '寵物食品', value: 20000,  color: '#ec4899', pct: 11 },
+    { label: '認證課程', value: 15000,  color: '#8b5cf6', pct:  9 },
+  ],
+  risks: [
+    { item: '動物醫療備用金', status: '充足', color: 'text-green-600' },
+    { item: '法規執照申請', status: '進行中', color: 'text-orange-500' },
+    { item: '爬蟲繁殖商合約', status: '洽談中', color: 'text-orange-500' },
+    { item: '醫院合作備忘錄', status: '待簽署', color: 'text-rose-500' },
+  ],
+};
+
+// ─────────────────────────────────────────────
 // 根元件
 // ─────────────────────────────────────────────
 export default function App() {
   const [tab, setTab] = useState('home');
   const [showCertInfo, setShowCertInfo] = useState(false);
   const [showPortrait, setShowPortrait] = useState(false);
+  const [showInvestor, setShowInvestor] = useState(false);
+  const [logoTaps, setLogoTaps] = useState(0);
+  const tapTimer = useRef(null);
   const [points, setPoints] = useState(1280);
   const addPoints = (n) => setPoints(p => p + n);
+
+  const handleLogoTap = () => {
+    const next = logoTaps + 1;
+    setLogoTaps(next);
+    clearTimeout(tapTimer.current);
+    if (next >= 5) { setShowInvestor(true); setLogoTaps(0); return; }
+    tapTimer.current = setTimeout(() => setLogoTaps(0), 2000);
+  };
 
   return (
     <div className="bg-gradient-to-br from-pink-100 via-purple-50 to-teal-50 min-h-screen flex items-center justify-center font-sans">
@@ -124,7 +171,7 @@ export default function App() {
         {/* 頂部狀態列 */}
         <div className="bg-[#0f6e56] text-white pt-6 pb-4 px-6 shadow-lg z-30 shrink-0">
           <div className="flex justify-between items-center mt-2">
-            <div>
+            <div onClick={handleLogoTap} className="cursor-pointer select-none">
               <h1 className="text-xl font-black tracking-tighter flex items-center gap-2">
                 <Sparkles size={20} className="text-pink-200 animate-pulse" /> CreaCert
               </h1>
@@ -159,8 +206,9 @@ export default function App() {
           <TabBtn icon={<ClipboardList />} label="日記" active={tab === 'diary'}  onClick={() => setTab('diary')} />
         </div>
 
-        {showCertInfo && <CertificationModal onClose={() => setShowCertInfo(false)} />}
-        {showPortrait && <PortraitModal      onClose={() => setShowPortrait(false)} />}
+        {showCertInfo  && <CertificationModal  onClose={() => setShowCertInfo(false)} />}
+        {showPortrait  && <PortraitModal       onClose={() => setShowPortrait(false)} />}
+        {showInvestor  && <InvestorDashboard   onClose={() => setShowInvestor(false)} />}
       </div>
     </div>
   );
@@ -1169,6 +1217,173 @@ function PortraitModal({ onClose }) {
           <button className="bg-[#3c2a21] text-[#f4ebd0] px-8 py-3 rounded-full font-black text-xs flex items-center gap-2 shadow-2xl uppercase tracking-widest">
             <ImageIcon size={16} /> Share to Threads
           </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ── 投資人儀表板 ──
+function InvestorDashboard({ onClose }) {
+  const d = INVESTOR_DATA;
+  const maxVal = 220000;
+  const roiPct = Math.min(Math.round((d.kpi.totalRecovered / d.kpi.totalInvested) * 100), 100);
+  const progressPct = Math.min(Math.round((d.kpi.currentMonth / d.kpi.breakEvenMonth) * 100), 100);
+  const momGrowth = Math.round(((d.kpi.thisMonth - d.kpi.lastMonth) / d.kpi.lastMonth) * 100);
+
+  return (
+    <div className="absolute inset-0 bg-slate-900 z-[100] flex flex-col overflow-hidden">
+      {/* Header */}
+      <div className="shrink-0 bg-gradient-to-r from-slate-800 to-slate-900 px-5 pt-10 pb-4 flex items-center justify-between border-b border-white/10">
+        <div>
+          <p className="text-white/40 text-[10px] font-black tracking-widest uppercase">🔒 INVESTOR ONLY</p>
+          <h2 className="text-white font-black text-lg">CreaCert 投資人報表</h2>
+          <p className="text-white/40 text-xs">2026年 5月 · 第 5 個月</p>
+        </div>
+        <button onClick={onClose} className="bg-white/10 p-2.5 rounded-full border border-white/20 active:scale-90 transition">
+          <XCircle size={22} className="text-white" />
+        </button>
+      </div>
+
+      <div className="flex-1 overflow-y-auto px-4 py-4 space-y-4">
+
+        {/* KPI 四宮格 */}
+        <div className="grid grid-cols-2 gap-3">
+          <div className="bg-gradient-to-br from-emerald-500 to-teal-600 rounded-2xl p-4">
+            <p className="text-white/70 text-[10px] font-bold uppercase tracking-wider">本月營收</p>
+            <p className="text-white font-black text-2xl mt-1">NT${(d.kpi.thisMonth/1000).toFixed(0)}K</p>
+            <p className="text-emerald-200 text-xs font-bold mt-1">↑ {momGrowth}% vs 上月</p>
+          </div>
+          <div className="bg-gradient-to-br from-violet-500 to-purple-600 rounded-2xl p-4">
+            <p className="text-white/70 text-[10px] font-bold uppercase tracking-wider">本月淨利</p>
+            <p className="text-white font-black text-2xl mt-1">NT${(d.kpi.netProfit/1000).toFixed(0)}K</p>
+            <p className="text-purple-200 text-xs font-bold mt-1">固定成本已覆蓋 ✓</p>
+          </div>
+          <div className="bg-gradient-to-br from-rose-500 to-pink-600 rounded-2xl p-4">
+            <p className="text-white/70 text-[10px] font-bold uppercase tracking-wider">本月來客</p>
+            <p className="text-white font-black text-2xl mt-1">{d.kpi.visitors.toLocaleString()}</p>
+            <p className="text-rose-200 text-xs font-bold mt-1">人次（+18% MoM）</p>
+          </div>
+          <div className="bg-gradient-to-br from-amber-500 to-orange-600 rounded-2xl p-4">
+            <p className="text-white/70 text-[10px] font-bold uppercase tracking-wider">總投資額</p>
+            <p className="text-white font-black text-xl mt-1">NT$136萬</p>
+            <p className="text-amber-200 text-xs font-bold mt-1">已回收 NT${(d.kpi.totalRecovered/1000).toFixed(0)}K</p>
+          </div>
+        </div>
+
+        {/* 回本進度 */}
+        <div className="bg-slate-800 rounded-2xl p-4 border border-white/10">
+          <div className="flex justify-between items-center mb-3">
+            <p className="text-white font-black text-sm">📈 回本進度</p>
+            <p className="text-white/60 text-xs">目標：第 {d.kpi.breakEvenMonth} 個月</p>
+          </div>
+          <div className="bg-slate-700 rounded-full h-4 overflow-hidden">
+            <div
+              className="h-full bg-gradient-to-r from-emerald-400 to-teal-400 rounded-full transition-all"
+              style={{ width: `${progressPct}%` }}
+            />
+          </div>
+          <div className="flex justify-between mt-2">
+            <p className="text-emerald-400 text-xs font-bold">第 {d.kpi.currentMonth} 個月（{progressPct}%）</p>
+            <p className="text-white/40 text-xs">預計 {d.kpi.breakEvenMonth - d.kpi.currentMonth} 個月後回本</p>
+          </div>
+        </div>
+
+        {/* 月營收 vs 支出 Bar Chart */}
+        <div className="bg-slate-800 rounded-2xl p-4 border border-white/10">
+          <p className="text-white font-black text-sm mb-4">💰 月收支趨勢</p>
+          <div className="flex items-end justify-between gap-1.5" style={{ height: 120 }}>
+            {d.monthly.map((m) => {
+              const revH = Math.round((m.revenue / maxVal) * 100);
+              const costH = Math.round((m.cost / maxVal) * 100);
+              const isPos = m.profit >= 0;
+              return (
+                <div key={m.month} className="flex-1 flex flex-col items-center gap-0.5">
+                  <div className="w-full flex items-end justify-center gap-0.5" style={{ height: 100 }}>
+                    <div
+                      className="flex-1 rounded-t-sm bg-emerald-400 opacity-90 transition-all"
+                      style={{ height: `${revH}%` }}
+                    />
+                    <div
+                      className="flex-1 rounded-t-sm bg-rose-400 opacity-70"
+                      style={{ height: `${costH}%` }}
+                    />
+                  </div>
+                  <p className="text-white/50 text-[9px] font-bold">{m.month}</p>
+                  <p className={`text-[9px] font-black ${isPos ? 'text-emerald-400' : 'text-rose-400'}`}>
+                    {isPos ? '+' : ''}{(m.profit / 1000).toFixed(0)}K
+                  </p>
+                </div>
+              );
+            })}
+          </div>
+          <div className="flex gap-4 mt-3">
+            <div className="flex items-center gap-1.5"><div className="w-3 h-2 rounded-sm bg-emerald-400" /><p className="text-white/50 text-[10px]">營收</p></div>
+            <div className="flex items-center gap-1.5"><div className="w-3 h-2 rounded-sm bg-rose-400" /><p className="text-white/50 text-[10px]">支出</p></div>
+          </div>
+        </div>
+
+        {/* 收入結構 */}
+        <div className="bg-slate-800 rounded-2xl p-4 border border-white/10">
+          <p className="text-white font-black text-sm mb-3">🥧 收入來源分佈（本月）</p>
+          <div className="space-y-2.5">
+            {d.breakdown.map((b) => (
+              <div key={b.label}>
+                <div className="flex justify-between mb-1">
+                  <p className="text-white/80 text-xs font-bold">{b.label}</p>
+                  <p className="text-white/60 text-xs">NT${(b.value/1000).toFixed(0)}K · {b.pct}%</p>
+                </div>
+                <div className="bg-slate-700 rounded-full h-2.5 overflow-hidden">
+                  <div className="h-full rounded-full" style={{ width: `${b.pct}%`, backgroundColor: b.color }} />
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* 損益明細表 */}
+        <div className="bg-slate-800 rounded-2xl p-4 border border-white/10">
+          <p className="text-white font-black text-sm mb-3">📋 損益明細（本月）</p>
+          <div className="space-y-2">
+            {[
+              { label: '總營收', val: 178000, color: 'text-emerald-400' },
+              { label: '食材/進貨', val: -52000, color: 'text-rose-400' },
+              { label: '租金', val: -50000, color: 'text-rose-400' },
+              { label: '人事', val: -35000, color: 'text-rose-400' },
+              { label: '水電+動物照護', val: -22000, color: 'text-rose-400' },
+              { label: '行銷雜費', val: -8000, color: 'text-rose-400' },
+            ].map((r) => (
+              <div key={r.label} className="flex justify-between items-center py-1.5 border-b border-white/5">
+                <p className="text-white/60 text-xs">{r.label}</p>
+                <p className={`text-xs font-black ${r.color}`}>
+                  {r.val > 0 ? '' : '-'}NT${Math.abs(r.val).toLocaleString()}
+                </p>
+              </div>
+            ))}
+            <div className="flex justify-between items-center pt-2">
+              <p className="text-white font-black text-sm">月淨利</p>
+              <p className="text-emerald-400 font-black text-sm">+NT$11,000</p>
+            </div>
+          </div>
+        </div>
+
+        {/* 風險監控 */}
+        <div className="bg-slate-800 rounded-2xl p-4 border border-white/10">
+          <p className="text-white font-black text-sm mb-3">⚠️ 風險監控</p>
+          <div className="space-y-2">
+            {d.risks.map((r) => (
+              <div key={r.item} className="flex justify-between items-center py-1.5 border-b border-white/5">
+                <p className="text-white/60 text-xs">{r.item}</p>
+                <p className={`text-xs font-black ${r.color}`}>{r.status}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* 備註 */}
+        <div className="bg-slate-700/50 rounded-xl p-3 text-center mb-4">
+          <p className="text-white/30 text-[10px]">本報表數據每月 1 日更新 · 僅供投資人參閱</p>
+          <p className="text-white/30 text-[10px] mt-0.5">CreaCert © 2026 · 機密文件</p>
         </div>
       </div>
     </div>
