@@ -182,12 +182,34 @@ const QUIZ_QUESTIONS = [
   { q: '貓咪尿液哪種顏色需立即就醫？',         options: ['淡黃色', '深黃色', '粉紅/紅色', '幾乎無色'],                             ans: 2 },
 ];
 
+// 積分賺取規則 (1pt ≈ NT$0.05)
+const POINTS_RULES = [
+  { action: '門市消費 NT$10',  pts: 1,   icon: '☕', note: '點餐/商品均適用' },
+  { action: '完成課程測驗',    pts: 100, icon: '📚', note: '每堂課一次' },
+  { action: '每日簽到打卡',    pts: 5,   icon: '📍', note: '連續7天額外+50pt' },
+  { action: '分享貼文到社群',  pts: 10,  icon: '📣', note: '每日上限30pt' },
+  { action: '到店體驗動物',    pts: 30,  icon: '🦎', note: '每次體驗後獲得' },
+  { action: 'PREMIUM 訂閱',   pts: 200, icon: '👑', note: '每月自動入帳' },
+];
+
+// 積分兌換表
+const POINTS_REDEEM = [
+  { name: '飲品折抵 NT$25',    pts: 500,  icon: '☕', tag: '最熱門' },
+  { name: '飲品折抵 NT$50',    pts: 1000, icon: '🥤', tag: '' },
+  { name: '免費拿鐵一杯',      pts: 2000, icon: '🎁', tag: '值回票價' },
+  { name: '爬蟲體驗升級',      pts: 1500, icon: '🦎', tag: '體驗加值' },
+  { name: '進階課程折扣券',    pts: 3000, icon: '📚', tag: 'NT$100 折抵' },
+  { name: '爬蟲購買折抵',      pts: 5000, icon: '🐍', tag: 'NT$250 折抵' },
+];
+
 const POINTS_HISTORY = [
   { id: 1, desc: '完成「貓咪營養學」測驗', pts: 100,  date: '05/12', type: 'earn' },
-  { id: 2, desc: '門市掃碼打卡',           pts: 20,   date: '05/13', type: 'earn' },
+  { id: 2, desc: '門市消費 NT$200',        pts: 20,   date: '05/13', type: 'earn' },
   { id: 3, desc: '完成「行為解讀」課程',   pts: 100,  date: '05/11', type: 'earn' },
-  { id: 4, desc: 'AR 濾鏡社群分享',        pts: 10,   date: '05/10', type: 'earn' },
-  { id: 5, desc: '領養費折抵使用',         pts: -200, date: '05/08', type: 'spend' },
+  { id: 4, desc: '社群分享打卡',           pts: 10,   date: '05/10', type: 'earn' },
+  { id: 5, desc: '兌換：飲品折抵 NT$25',   pts: -500, date: '05/08', type: 'spend' },
+  { id: 6, desc: '到店爬蟲體驗',           pts: 30,   date: '05/07', type: 'earn' },
+  { id: 7, desc: 'PREMIUM 訂閱月點',       pts: 200,  date: '05/01', type: 'earn' },
 ];
 
 const DIARY_ENTRIES = [
@@ -276,6 +298,19 @@ const INVESTOR_DATA = {
     { item: '爬蟲繁殖商合約', status: '洽談中', color: 'text-orange-500' },
     { item: '醫院合作備忘錄', status: '待簽署', color: 'text-rose-500' },
   ],
+  // APP 數位指標（廠商贊助 / 以量制價 的談判籌碼）
+  appStats: {
+    totalUsers:       847,
+    activeMonthly:    312,
+    subscribers:       89,   // 付費 PREMIUM/PRO
+    subscribeRevenue: 16700, // 89人 × 平均 NT$188
+    appOrders:        203,   // 本月 APP 點餐筆數
+    appOrderRevenue:  18270, // 203筆 × 平均 NT$90
+    pointsIssued:     84200, // 本月積分發出
+    pointsRedeemed:   31400, // 本月積分兌換 (折抵金額)
+    sponsorLeads:       3,   // 廠商詢問合作數
+    weeklyGrowth:      '+8.3%', // 週新增用戶
+  },
 };
 
 // ─────────────────────────────────────────────
@@ -1347,55 +1382,102 @@ function DiaryScreen({ points }) {
       {/* 積分帳戶 */}
       {section === 'points' && (
         <div className="space-y-4">
-          <div className="bg-[#534ab7] text-white rounded-[2.5rem] p-6 shadow-xl relative overflow-hidden">
+          {/* 積分總覽卡 */}
+          <div className="bg-gradient-to-br from-[#534ab7] to-purple-700 text-white rounded-[2.5rem] p-6 shadow-xl relative overflow-hidden">
             <div className="absolute right-0 top-0 opacity-10"><Trophy size={100} /></div>
-            <p className="text-sm opacity-70 font-bold mb-1">累積積分</p>
-            <p className="text-6xl font-black tracking-tighter">{points.toLocaleString()}<span className="text-xl opacity-50 ml-1">pt</span></p>
-            <div className="mt-4">
-              <div className="flex justify-between text-[10px] opacity-70 font-bold mb-1">
-                <span>領養費折抵進度（目標 2000 pt）</span>
+            <div className="flex items-start justify-between mb-4">
+              <div>
+                <p className="text-xs opacity-60 font-bold mb-1">我的積分</p>
+                <p className="text-6xl font-black tracking-tighter leading-none">{points.toLocaleString()}<span className="text-xl opacity-50 ml-1">pt</span></p>
+              </div>
+              <div className="bg-white/15 rounded-2xl px-3 py-2 text-right border border-white/20">
+                <p className="text-[10px] opacity-70 font-bold">折現價值</p>
+                <p className="text-lg font-black">NT${Math.floor(points * 0.05).toLocaleString()}</p>
+              </div>
+            </div>
+            {/* 下一個兌換目標 */}
+            <div className="bg-black/20 rounded-2xl p-3">
+              <div className="flex justify-between text-[10px] font-bold mb-2 opacity-80">
+                <span>🎯 下一個目標：免費拿鐵（2000 pt）</span>
                 <span>{Math.min(points, 2000)} / 2000</span>
               </div>
               <div className="h-2 bg-black/20 rounded-full overflow-hidden">
-                <div className="h-full bg-white rounded-full" style={{ width: `${Math.min((points / 2000) * 100, 100)}%` }} />
+                <div className="h-full bg-gradient-to-r from-yellow-300 to-orange-400 rounded-full transition-all" style={{ width: `${Math.min((points / 2000) * 100, 100)}%` }} />
               </div>
+              <p className="text-[10px] opacity-60 font-bold mt-1">還差 {Math.max(2000 - points, 0)} pt · 約消費 NT${Math.max(2000 - points, 0) * 10} 可達成</p>
             </div>
           </div>
 
-          {/* 積分兌換商城 */}
-          <div className="bg-white rounded-[2rem] border border-slate-100 shadow-sm p-5 space-y-3">
-            <h4 className="font-black text-slate-700 text-sm flex items-center gap-2"><Star size={16} className="text-yellow-500 fill-yellow-400" /> 積分兌換商城</h4>
-            {[
-              { name:'領養費折抵 NT$200', pts:500,  icon:'🏷️', enough: true },
-              { name:'爬蟲課程免費券',    pts:800,  icon:'📚', enough: true },
-              { name:'蜜袋鼯零食禮盒',   pts:1200, icon:'🎁', enough: true },
-              { name:'A 級認證加速券',   pts:2000, icon:'🥇', enough: false },
-            ].map(r => (
-              <div key={r.name} className="flex items-center justify-between py-2 border-b border-slate-50 last:border-0">
-                <div className="flex items-center gap-3">
-                  <span className="text-xl">{r.icon}</span>
-                  <div>
-                    <p className="text-sm font-black text-slate-700">{r.name}</p>
-                    <p className="text-[10px] text-[#534ab7] font-black">{r.pts.toLocaleString()} pt</p>
+          {/* 如何賺積分 */}
+          <div className="bg-white rounded-[2rem] border border-slate-100 shadow-sm overflow-hidden">
+            <div className="px-5 pt-5 pb-3 border-b border-slate-50 flex items-center justify-between">
+              <h4 className="font-black text-slate-800 text-sm flex items-center gap-2"><Zap size={16} className="text-yellow-500" /> 如何賺積分</h4>
+              <span className="text-[10px] text-slate-400 font-bold bg-slate-50 px-2 py-0.5 rounded-full">1pt ≒ NT$0.05</span>
+            </div>
+            <div className="divide-y divide-slate-50">
+              {POINTS_RULES.map(r => (
+                <div key={r.action} className="flex items-center gap-3 px-5 py-3">
+                  <span className="text-xl shrink-0">{r.icon}</span>
+                  <div className="flex-1 min-w-0">
+                    <p className="text-sm font-black text-slate-700">{r.action}</p>
+                    <p className="text-[10px] text-slate-400 font-bold">{r.note}</p>
                   </div>
+                  <span className="text-[#534ab7] font-black text-sm shrink-0">+{r.pts} pt</span>
                 </div>
-                <button className={`px-3 py-1.5 rounded-full text-xs font-black transition-all ${r.enough ? 'bg-[#534ab7] text-white active:scale-95' : 'bg-slate-100 text-slate-400 cursor-not-allowed'}`}>
-                  {r.enough ? '兌換' : '不足'}
-                </button>
-              </div>
-            ))}
+              ))}
+            </div>
           </div>
 
+          {/* 兌換商城 */}
           <div className="bg-white rounded-[2rem] border border-slate-100 shadow-sm overflow-hidden">
-            <h4 className="font-black text-slate-700 px-5 pt-5 pb-3 text-sm border-b border-slate-50">交易紀錄</h4>
+            <div className="px-5 pt-5 pb-3 border-b border-slate-50">
+              <h4 className="font-black text-slate-800 text-sm flex items-center gap-2"><Gift size={16} className="text-rose-500" /> 積分兌換</h4>
+              <p className="text-[10px] text-slate-400 font-bold mt-0.5">點數直接折抵消費，無到期日</p>
+            </div>
+            <div className="divide-y divide-slate-50">
+              {POINTS_REDEEM.map(r => {
+                const canRedeem = points >= r.pts;
+                return (
+                  <div key={r.name} className="flex items-center gap-3 px-5 py-3">
+                    <span className="text-xl shrink-0">{r.icon}</span>
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center gap-2">
+                        <p className="text-sm font-black text-slate-700">{r.name}</p>
+                        {r.tag && <span className="text-[9px] bg-orange-50 text-orange-500 font-black px-1.5 py-0.5 rounded-full border border-orange-100">{r.tag}</span>}
+                      </div>
+                      <div className="flex items-center gap-1 mt-0.5">
+                        <span className="text-[10px] text-[#534ab7] font-black">{r.pts.toLocaleString()} pt</span>
+                        <span className="text-[9px] text-slate-300">·</span>
+                        <span className="text-[10px] text-slate-400 font-bold">≒ NT${Math.floor(r.pts * 0.05)}</span>
+                      </div>
+                    </div>
+                    <button
+                      onClick={() => canRedeem && alert(`兌換成功！\n${r.name}\n請至門市出示此畫面`)}
+                      className={`px-3 py-1.5 rounded-full text-xs font-black transition-all shrink-0 ${canRedeem ? 'bg-[#534ab7] text-white active:scale-95 shadow-md' : 'bg-slate-100 text-slate-300 cursor-not-allowed'}`}>
+                      {canRedeem ? '立即兌換' : `差 ${r.pts - points} pt`}
+                    </button>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+
+          {/* 交易紀錄 */}
+          <div className="bg-white rounded-[2rem] border border-slate-100 shadow-sm overflow-hidden">
+            <h4 className="font-black text-slate-700 px-5 pt-5 pb-3 text-sm border-b border-slate-50 flex items-center gap-2">
+              <TrendingUp size={16} className="text-[#0f6e56]" /> 積分明細
+            </h4>
             {POINTS_HISTORY.map(item => (
-              <div key={item.id} className="flex items-center justify-between px-5 py-4 border-b border-slate-50 last:border-0">
-                <div>
-                  <p className="text-sm font-black text-slate-700">{item.desc}</p>
+              <div key={item.id} className="flex items-center gap-3 px-5 py-3 border-b border-slate-50 last:border-0">
+                <div className={`w-8 h-8 rounded-full flex items-center justify-center shrink-0 text-sm ${item.pts > 0 ? 'bg-[#0f6e56]/10' : 'bg-red-50'}`}>
+                  {item.pts > 0 ? '↑' : '↓'}
+                </div>
+                <div className="flex-1 min-w-0">
+                  <p className="text-sm font-black text-slate-700 leading-snug">{item.desc}</p>
                   <p className="text-[10px] text-slate-400 font-bold mt-0.5">{item.date}</p>
                 </div>
-                <span className={`font-black text-base ${item.pts > 0 ? 'text-[#0f6e56]' : 'text-red-500'}`}>
-                  {item.pts > 0 ? `+${item.pts}` : item.pts}
+                <span className={`font-black text-sm shrink-0 ${item.pts > 0 ? 'text-[#0f6e56]' : 'text-red-500'}`}>
+                  {item.pts > 0 ? `+${item.pts}` : item.pts} pt
                 </span>
               </div>
             ))}
@@ -1625,6 +1707,35 @@ function InvestorDashboard({ onClose }) {
                 <p className={`text-xs font-black ${r.color}`}>{r.status}</p>
               </div>
             ))}
+          </div>
+        </div>
+
+        {/* APP 數位指標 — 贊助談判籌碼 */}
+        <div className="bg-slate-800 rounded-2xl p-4 border border-white/10">
+          <p className="text-white font-black text-sm mb-1">📱 APP 用戶數據</p>
+          <p className="text-white/40 text-[10px] mb-3">廠商贊助 · 以量制價談判資料</p>
+          <div className="grid grid-cols-2 gap-2.5">
+            {[
+              { label: '總用戶數',     val: d.appStats.totalUsers.toLocaleString() + ' 人', color: 'text-sky-400' },
+              { label: '本月活躍',     val: d.appStats.activeMonthly + ' 人',             color: 'text-emerald-400' },
+              { label: '付費訂閱',     val: d.appStats.subscribers + ' 人',               color: 'text-violet-400' },
+              { label: '訂閱月營收',   val: 'NT$' + (d.appStats.subscribeRevenue/1000).toFixed(1) + 'K', color: 'text-violet-400' },
+              { label: 'APP 訂餐筆數', val: d.appStats.appOrders + ' 筆',                 color: 'text-orange-400' },
+              { label: '訂餐月金額',   val: 'NT$' + (d.appStats.appOrderRevenue/1000).toFixed(1) + 'K', color: 'text-orange-400' },
+              { label: '積分發出',     val: d.appStats.pointsIssued.toLocaleString() + ' pt', color: 'text-yellow-400' },
+              { label: '廠商詢問',     val: d.appStats.sponsorLeads + ' 家',              color: 'text-pink-400' },
+            ].map(m => (
+              <div key={m.label} className="bg-slate-700/60 rounded-xl p-3">
+                <p className="text-white/40 text-[9px] font-bold uppercase tracking-wider">{m.label}</p>
+                <p className={`font-black text-base mt-0.5 ${m.color}`}>{m.val}</p>
+              </div>
+            ))}
+          </div>
+          <div className="mt-3 bg-emerald-900/40 rounded-xl p-3 border border-emerald-500/20">
+            <p className="text-emerald-300 text-[10px] font-bold">
+              📈 周增長 {d.appStats.weeklyGrowth} · 預計3個月達 2,000 用戶<br />
+              💡 建議：用戶破 1,000 時啟動品牌廠商贊助談判
+            </p>
           </div>
         </div>
 
@@ -2070,7 +2181,27 @@ function PlansModal({ onClose }) {
             確認選擇「{PLANS.find(p => p.id === selected)?.name}」
           </button>
 
-          <p className="text-center text-[10px] text-slate-400 font-bold">可隨時取消 · 無隱藏費用 · 支援 Line Pay / 信用卡</p>
+          {/* 付款方式 */}
+          <div className="bg-slate-50 rounded-2xl p-4 border border-slate-100">
+            <p className="text-xs font-black text-slate-600 mb-3 flex items-center gap-2">
+              <ShieldCheck size={14} className="text-[#0f6e56]" /> 支援付款方式
+            </p>
+            <div className="grid grid-cols-3 gap-2">
+              {[
+                { label: 'LINE Pay', icon: '💚', note: '掃碼即付' },
+                { label: '信用卡', icon: '💳', note: 'Visa / MC' },
+                { label: '銀行轉帳', icon: '🏦', note: '確認後開通' },
+              ].map(m => (
+                <div key={m.label} className="bg-white rounded-xl p-2.5 text-center border border-slate-100 shadow-sm">
+                  <p className="text-xl">{m.icon}</p>
+                  <p className="text-[10px] font-black text-slate-700 mt-1">{m.label}</p>
+                  <p className="text-[9px] text-slate-400 font-bold">{m.note}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <p className="text-center text-[10px] text-slate-400 font-bold">可隨時取消 · 無隱藏費用 · 發票自動開立</p>
         </div>
       </div>
     </div>
