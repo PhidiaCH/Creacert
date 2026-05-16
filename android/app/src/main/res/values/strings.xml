@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">CreaCert</string>
+    <string name="title_activity_main">CreaCert</string>
+    <string name="package_name">com.creacert.app</string>
+    <string name="custom_url_scheme">com.creacert.app</string>
+</resources>

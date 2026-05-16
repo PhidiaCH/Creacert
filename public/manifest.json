@@ -1,27 +1,51 @@
 {
   "name": "CreaCert — Know Every Creature",
   "short_name": "CreaCert",
-  "description": "寵物認證 x 動物福利平台，貓狗爬蟲一站涵蓋",
+  "description": "異寵教育體驗 x 寵物認證平台，貓狗爬蟲一站涵蓋。Know Every Creature.",
   "start_url": "/",
+  "scope": "/",
   "display": "standalone",
   "orientation": "portrait",
   "theme_color": "#0f6e56",
-  "background_color": "#ffffff",
+  "background_color": "#0f6e56",
   "lang": "zh-TW",
+  "dir": "ltr",
+  "categories": ["lifestyle", "education", "health"],
   "icons": [
+    { "src": "icon-72.png",  "sizes": "72x72",   "type": "image/png" },
+    { "src": "icon-96.png",  "sizes": "96x96",   "type": "image/png" },
+    { "src": "icon-128.png", "sizes": "128x128", "type": "image/png" },
+    { "src": "icon-144.png", "sizes": "144x144", "type": "image/png" },
+    { "src": "icon-152.png", "sizes": "152x152", "type": "image/png" },
+    { "src": "icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "maskable" },
+    { "src": "icon-384.png", "sizes": "384x384", "type": "image/png" },
+    { "src": "icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ],
+  "shortcuts": [
     {
-      "src": "icon-192.svg",
-      "sizes": "192x192",
-      "type": "image/svg+xml",
-      "purpose": "any maskable"
+      "name": "動物圖鑑",
+      "short_name": "圖鑑",
+      "description": "瀏覽所有異寵",
+      "url": "/?tab=animals",
+      "icons": [{ "src": "icon-96.png", "sizes": "96x96" }]
     },
     {
-      "src": "icon-512.svg",
-      "sizes": "512x512",
-      "type": "image/svg+xml",
-      "purpose": "any maskable"
+      "name": "認證課程",
+      "short_name": "課程",
+      "description": "開始學習認證",
+      "url": "/?tab=courses",
+      "icons": [{ "src": "icon-96.png", "sizes": "96x96" }]
     }
   ],
-  "categories": ["lifestyle", "education", "health"],
-  "screenshots": []
+  "screenshots": [
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "form_factor": "narrow",
+      "label": "CreaCert 首頁"
+    }
+  ]
 }
