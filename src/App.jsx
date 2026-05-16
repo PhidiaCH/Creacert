@@ -564,7 +564,7 @@ function AnimalsScreen() {
       </div>
 
       {showAI && <AIMatchModal onClose={() => setShowAI(false)} />}
-      {activeVideo && <VideoModal videoQ={activeVideo.videoQ} title={`認識 ${activeVideo.name}`} subtitle={activeVideo.breed} onClose={() => setActiveVideo(null)} />}
+      {activeVideo && <VideoModal videoQ={activeVideo.videoQ} cover={activeVideo.img} title={`認識 ${activeVideo.name}`} subtitle={activeVideo.breed} onClose={() => setActiveVideo(null)} />}
     </div>
   );
 }
@@ -678,7 +678,7 @@ function CoursesScreen({ addPoints }) {
       ))}
 
       {activeQuiz && <QuizModal course={activeQuiz} onClose={() => setActiveQuiz(null)} onPass={() => handlePass(activeQuiz.id)} />}
-      {activeVideo && <VideoModal videoQ={activeVideo.videoQ} title={activeVideo.title} subtitle={activeVideo.desc} onClose={() => setActiveVideo(null)} />}
+      {activeVideo && <VideoModal videoQ={activeVideo.videoQ} cover={null} title={activeVideo.title} subtitle={activeVideo.desc} onClose={() => setActiveVideo(null)} />}
     </div>
   );
 }
@@ -724,35 +724,54 @@ function CommunityScreen() {
           <h3 className="font-black text-slate-800 flex items-center gap-2 text-base">
             <PlayCircle size={20} className="text-red-500" /> 萌寵短影音
           </h3>
-          <span className="text-[10px] text-slate-400 font-bold flex items-center gap-1"><Eye size={10} /> {REELS.reduce((s,r)=>s+parseFloat(r.views),0).toFixed(1)}萬 次觀看</span>
+          <div className="flex items-center gap-2">
+            <span className="text-[9px] font-black px-2 py-0.5 rounded-full bg-black text-white">TikTok</span>
+            <span className="text-[9px] font-black px-2 py-0.5 rounded-full bg-red-600 text-white">YouTube</span>
+          </div>
         </div>
         <div className="flex gap-3 overflow-x-auto scrollbar-hide pb-2 -mx-1 px-1">
           {REELS.map(reel => (
             <button key={reel.id} onClick={() => setActiveVideo(reel)}
-              className="shrink-0 w-32 rounded-[1.5rem] overflow-hidden relative group active:scale-95 transition-transform shadow-md">
-              <div className="relative h-52">
-                <img src={reel.cover} className="w-full h-full object-cover group-hover:scale-105 transition duration-500" alt={reel.title} />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/10 to-transparent" />
-                {/* Play overlay */}
-                <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition">
-                  <div className="bg-red-600/90 p-3 rounded-full"><Play size={18} className="text-white fill-white ml-0.5" /></div>
+              className="shrink-0 w-36 rounded-2xl overflow-hidden relative active:scale-95 transition-transform shadow-lg">
+              <div className="relative h-56">
+                <img src={reel.cover} className="w-full h-full object-cover" alt={reel.title} />
+                {/* 漸層遮罩 */}
+                <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-black/30" />
+                {/* 頂部平台圖示 */}
+                <div className="absolute top-2.5 left-2.5 flex gap-1.5">
+                  <div className="bg-black/70 backdrop-blur-sm px-2 py-0.5 rounded-full flex items-center gap-1">
+                    <span className="text-white text-[8px] font-black">♪</span>
+                    <span className="text-white text-[8px] font-black">TK</span>
+                  </div>
                 </div>
-                {/* Always-visible play icon small */}
-                <div className="absolute top-2 right-2 bg-black/50 p-1.5 rounded-full">
-                  <Play size={10} className="text-white fill-white" />
+                {/* 中央播放按鈕 */}
+                <div className="absolute inset-0 flex items-center justify-center">
+                  <div className="w-12 h-12 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center border-2 border-white/50 shadow-xl">
+                    <Play size={22} className="text-white ml-1" fill="white" />
+                  </div>
                 </div>
-                {/* Bottom info */}
+                {/* 右側互動 */}
+                <div className="absolute right-2 bottom-20 flex flex-col items-center gap-3">
+                  <div className="flex flex-col items-center">
+                    <Heart size={18} className="text-white fill-white" />
+                    <span className="text-white text-[8px] font-bold">{reel.views}</span>
+                  </div>
+                </div>
+                {/* 底部資訊 */}
                 <div className="absolute bottom-0 left-0 right-0 p-2.5">
                   <p className="text-white text-[10px] font-black leading-tight line-clamp-2">{reel.title}</p>
-                  <div className="flex items-center justify-between mt-1">
-                    <p className="text-white/60 text-[8px] font-bold">@{reel.creator}</p>
-                    <p className="text-white/60 text-[8px] font-bold">{reel.views}</p>
+                  <div className="flex items-center gap-1 mt-1.5">
+                    <div className="w-4 h-4 rounded-full bg-gradient-to-br from-pink-400 to-purple-500 flex items-center justify-center">
+                      <span className="text-white text-[6px] font-black">{reel.creator[0]}</span>
+                    </div>
+                    <p className="text-white/70 text-[9px] font-bold">@{reel.creator}</p>
                   </div>
                 </div>
               </div>
             </button>
           ))}
         </div>
+        <p className="text-[10px] text-slate-400 text-center mt-2 font-bold">點擊選擇平台觀看 · YouTube / TikTok / Instagram</p>
       </section>
 
       {/* 旗艦講座 Banner */}
@@ -849,7 +868,7 @@ function CommunityScreen() {
         </button>
       </section>
 
-      {activeVideo && <VideoModal videoQ={activeVideo.videoQ} title={activeVideo.title} subtitle={`@${activeVideo.creator} · ${activeVideo.views} 次觀看`} onClose={() => setActiveVideo(null)} />}
+      {activeVideo && <VideoModal videoQ={activeVideo.videoQ} cover={activeVideo.cover} title={activeVideo.title} subtitle={`@${activeVideo.creator} · ${activeVideo.views} 次觀看`} onClose={() => setActiveVideo(null)} />}
 
       {/* 商城 Modal */}
       {showShop && (
@@ -1391,11 +1410,24 @@ function InvestorDashboard({ onClose }) {
 }
 
 // ── 影片播放 Modal ──
-function VideoModal({ videoQ, title, subtitle, onClose }) {
+function VideoModal({ videoQ, cover, title, subtitle, onClose }) {
+  const ytUrl = `https://www.youtube.com/results?search_query=${encodeURIComponent(videoQ)}`;
+  const ttUrl = `https://www.tiktok.com/search?q=${encodeURIComponent(videoQ)}`;
+  const igUrl = `https://www.instagram.com/explore/tags/${encodeURIComponent(videoQ.replace(/\s+/g,''))}`;
+
   return (
-    <div className="fixed inset-0 bg-black z-[100] flex flex-col animate-in fade-in">
-      {/* 頂部控制列 */}
-      <div className="shrink-0 flex items-center justify-between px-5 pt-10 pb-4 bg-gradient-to-b from-black/80 to-transparent">
+    <div className="fixed inset-0 z-[100] flex flex-col" style={{background:'#000'}}>
+      {/* 背景封面圖 */}
+      <div className="absolute inset-0">
+        {cover
+          ? <img src={cover} className="w-full h-full object-cover" alt="" />
+          : <div className="w-full h-full bg-gradient-to-br from-[#0f6e56] to-slate-900" />
+        }
+        <div className="absolute inset-0 bg-gradient-to-b from-black/70 via-black/40 to-black/95" />
+      </div>
+
+      {/* 頂部 */}
+      <div className="relative shrink-0 flex items-center justify-between px-5 pt-11 pb-4">
         <div>
           <p className="text-white/50 text-[10px] font-black tracking-widest uppercase flex items-center gap-1.5">
             <Tv2 size={10} /> CreaCert 影音
@@ -1408,21 +1440,61 @@ function VideoModal({ videoQ, title, subtitle, onClose }) {
         </button>
       </div>
 
-      {/* YouTube 播放器 */}
-      <div className="flex-1 relative">
-        <iframe
-          src={`https://www.youtube.com/embed?listType=search&list=${encodeURIComponent(videoQ)}&controls=1&autoplay=1&playsinline=1&rel=0`}
-          className="absolute inset-0 w-full h-full"
-          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-          allowFullScreen
-          title={title}
-        />
+      {/* 中央播放提示 */}
+      <div className="relative flex-1 flex flex-col items-center justify-center gap-4 px-5">
+        <div className="w-24 h-24 rounded-full bg-white/10 backdrop-blur-sm border-2 border-white/30 flex items-center justify-center shadow-2xl">
+          <Play size={44} className="text-white ml-2" fill="white" />
+        </div>
+        <div className="text-center">
+          <p className="text-white font-black text-base">選擇平台觀看</p>
+          <p className="text-white/50 text-xs mt-1 max-w-[220px] leading-relaxed">"{videoQ}"</p>
+        </div>
       </div>
 
-      {/* 底部資訊 */}
-      <div className="shrink-0 bg-gradient-to-t from-black/80 to-transparent px-5 pt-4 pb-8 flex items-center justify-between">
-        <p className="text-white/40 text-[10px] font-bold">YouTube 影片 · 僅供教育用途</p>
-        <button onClick={onClose} className="text-white/60 text-xs font-black px-4 py-2 bg-white/10 rounded-full">關閉</button>
+      {/* 底部平台按鈕 */}
+      <div className="relative shrink-0 px-5 pb-14 space-y-3">
+        {/* YouTube */}
+        <a href={ytUrl} target="_blank" rel="noreferrer"
+           className="flex items-center gap-4 bg-red-600 hover:bg-red-500 rounded-2xl p-4 w-full active:scale-[0.98] transition-transform shadow-xl">
+          <div className="w-10 h-10 bg-white rounded-xl flex items-center justify-center shrink-0 shadow">
+            <span className="text-red-600 font-black text-lg">▶</span>
+          </div>
+          <div className="flex-1 text-left">
+            <p className="text-white font-black text-sm">YouTube 搜尋觀看</p>
+            <p className="text-red-200 text-[11px] mt-0.5">最豐富的教學影片資源</p>
+          </div>
+          <span className="text-white/60 text-xs">→</span>
+        </a>
+
+        {/* TikTok */}
+        <a href={ttUrl} target="_blank" rel="noreferrer"
+           className="flex items-center gap-4 bg-[#010101] border border-white/20 rounded-2xl p-4 w-full active:scale-[0.98] transition-transform shadow-xl">
+          <div className="w-10 h-10 bg-white rounded-xl flex items-center justify-center shrink-0 shadow">
+            <span className="font-black text-base">♪</span>
+          </div>
+          <div className="flex-1 text-left">
+            <p className="text-white font-black text-sm">TikTok 搜尋觀看</p>
+            <p className="text-white/40 text-[11px] mt-0.5">年輕飼主的短影音首選</p>
+          </div>
+          <span className="text-white/60 text-xs">→</span>
+        </a>
+
+        {/* Instagram */}
+        <a href={igUrl} target="_blank" rel="noreferrer"
+           className="flex items-center gap-4 bg-gradient-to-r from-purple-600 to-pink-500 rounded-2xl p-4 w-full active:scale-[0.98] transition-transform shadow-xl">
+          <div className="w-10 h-10 bg-white rounded-xl flex items-center justify-center shrink-0 shadow">
+            <span className="font-black text-base bg-gradient-to-br from-purple-600 to-pink-500 bg-clip-text text-transparent">IG</span>
+          </div>
+          <div className="flex-1 text-left">
+            <p className="text-white font-black text-sm">Instagram Reels</p>
+            <p className="text-pink-200 text-[11px] mt-0.5">社群精選寵物影片</p>
+          </div>
+          <span className="text-white/60 text-xs">→</span>
+        </a>
+
+        <button onClick={onClose} className="w-full text-white/40 text-xs font-bold py-2 text-center">
+          關閉
+        </button>
       </div>
     </div>
   );
