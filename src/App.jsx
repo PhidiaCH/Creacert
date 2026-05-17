@@ -6,7 +6,7 @@ import {
   Video, Activity, Lock, Trophy, Brain, PlusCircle, CheckCircle2,
   Play, PlayCircle, Tv2, Eye, Zap, Crown, Gift, TrendingUp,
   Flame, Target, Share2, ThumbsUp, MessageCircle, Bookmark,
-  ChevronRight, Check, Palette,
+  ChevronRight, Check, Palette, ShoppingCart, Utensils, Minus, Plus,
 } from 'lucide-react';
 
 // ─────────────────────────────────────────────
@@ -265,6 +265,28 @@ const PRODUCTS = [
 ];
 
 // ─────────────────────────────────────────────
+// 點餐菜單資料
+// ─────────────────────────────────────────────
+const MENU_ITEMS = [
+  // 飲品
+  { id:'d1', cat:'飲品', name:'招牌爬蟲拿鐵',   desc:'義式濃縮＋燕麥奶＋爬蟲拉花', price:130, emoji:'☕', tag:'招牌', tagColor:'bg-orange-100 text-orange-600', popular:true  },
+  { id:'d2', cat:'飲品', name:'蜜袋鼯燕麥拿鐵', desc:'特選燕麥奶・微甜',            price:140, emoji:'🥛', tag:'',   tagColor:'', popular:false },
+  { id:'d3', cat:'飲品', name:'鬃獅蜥美式',     desc:'深焙單品・無糖',              price:100, emoji:'🖤', tag:'',   tagColor:'', popular:false },
+  { id:'d4', cat:'飲品', name:'球蟒抹茶拿鐵',   desc:'宇治抹茶＋牛奶',             price:145, emoji:'🍵', tag:'新品', tagColor:'bg-emerald-100 text-emerald-600', popular:false },
+  { id:'d5', cat:'飲品', name:'爬蟲氣泡水',     desc:'天然果汁＋蘇打・無糖',        price:80,  emoji:'💚', tag:'',   tagColor:'', popular:false },
+  { id:'d6', cat:'飲品', name:'手沖黑咖啡',     desc:'單品莊園豆・每日現磨',        price:120, emoji:'☕', tag:'',   tagColor:'', popular:false },
+  // 輕食
+  { id:'f1', cat:'輕食', name:'野生感早午餐',   desc:'半熟蛋・全麥吐司・生菜沙拉', price:180, emoji:'🍳', tag:'熱門', tagColor:'bg-red-100 text-red-600',    popular:true  },
+  { id:'f2', cat:'輕食', name:'爬蟲形狀鬆餅',   desc:'比利時原味・附楓糖漿',        price:150, emoji:'🧇', tag:'',   tagColor:'', popular:false },
+  { id:'f3', cat:'輕食', name:'凱薩沙拉盤',     desc:'季節蔬菜・油醋醬・帕馬森',    price:120, emoji:'🥗', tag:'',   tagColor:'', popular:false },
+  { id:'f4', cat:'輕食', name:'蜜袋鼯三明治',   desc:'火雞肉・起司・全麥麵包',      price:160, emoji:'🥪', tag:'',   tagColor:'', popular:false },
+  // 甜點
+  { id:'s1', cat:'甜點', name:'爬蟲造型馬卡龍', desc:'4顆・抹茶＋草莓口味',         price:160, emoji:'🍬', tag:'限量', tagColor:'bg-purple-100 text-purple-600', popular:true  },
+  { id:'s2', cat:'甜點', name:'手作焦糖布丁',   desc:'每日新鮮製作',                price:80,  emoji:'🍮', tag:'',   tagColor:'', popular:false },
+  { id:'s3', cat:'甜點', name:'提拉米蘇',       desc:'義式正宗食譜',                price:120, emoji:'🍰', tag:'',   tagColor:'', popular:false },
+];
+
+// ─────────────────────────────────────────────
 // 投資人儀表板數據
 // ─────────────────────────────────────────────
 const INVESTOR_DATA = {
@@ -331,6 +353,21 @@ export default function App() {
   const [points, setPoints] = useState(1280);
   const addPoints = (n) => setPoints(p => p + n);
 
+  // 購物車（全域，讓 badge 跨頁顯示）
+  const [cartItems, setCartItems] = useState([]);
+  const cartCount = cartItems.reduce((s, x) => s + x.qty, 0);
+  const addToCart = (item) => setCartItems(prev => {
+    const ex = prev.find(x => x.id === item.id);
+    if (ex) return prev.map(x => x.id === item.id ? {...x, qty: x.qty + 1} : x);
+    return [...prev, {...item, qty: 1}];
+  });
+  const removeFromCart = (id) => setCartItems(prev => {
+    const ex = prev.find(x => x.id === id);
+    if (!ex || ex.qty <= 1) return prev.filter(x => x.id !== id);
+    return prev.map(x => x.id === id ? {...x, qty: x.qty - 1} : x);
+  });
+  const clearCart = () => setCartItems([]);
+
   const switchTheme = (key) => {
     setThemeKey(key);
     localStorage.setItem('cc_theme', key);
@@ -381,20 +418,29 @@ export default function App() {
 
         {/* 內容區 */}
         <div className={`flex-1 overflow-y-auto scrollbar-hide ${themeKey === 'young' ? 'bg-slate-900' : themeKey === 'senior' ? 'bg-amber-50' : 'bg-slate-50'}`}>
-          {tab === 'home'      && <PassportScreen setShowCertInfo={setShowCertInfo} setShowPortrait={setShowPortrait} addPoints={addPoints} setShowPlans={setShowPlans} streak={streak} />}
+          {tab === 'home'      && <PassportScreen setShowCertInfo={setShowCertInfo} setShowPortrait={setShowPortrait} addPoints={addPoints} setShowPlans={setShowPlans} streak={streak} points={points} />}
           {tab === 'animals'   && <AnimalsScreen />}
+          {tab === 'order'     && <OrderScreen cartItems={cartItems} addToCart={addToCart} removeFromCart={removeFromCart} clearCart={clearCart} addPoints={addPoints} />}
           {tab === 'courses'   && <CoursesScreen addPoints={addPoints} />}
           {tab === 'community' && <CommunityScreen />}
-          {tab === 'diary'     && <DiaryScreen points={points} />}
         </div>
 
         {/* 底部 Tab Bar */}
-        <div className={`shrink-0 w-full px-4 pt-3 pb-6 flex justify-between items-center z-40 ${theme.tabBg}`}>
-          <TabBtn icon={<Home />}          label="首頁"  active={tab==='home'}      onClick={() => setTab('home')}      theme={theme} />
-          <TabBtn icon={<Heart />}         label="圖鑑"  active={tab==='animals'}   onClick={() => setTab('animals')}   theme={theme} />
-          <TabBtn icon={<BookOpen />}      label="課程"  active={tab==='courses'}   onClick={() => setTab('courses')}   theme={theme} />
-          <TabBtn icon={<Users />}         label="生態圈" active={tab==='community'} onClick={() => setTab('community')} theme={theme} />
-          <TabBtn icon={<ClipboardList />} label="日記"  active={tab==='diary'}     onClick={() => setTab('diary')}     theme={theme} />
+        <div className={`shrink-0 w-full px-2 pt-2 pb-6 flex justify-around items-end z-40 ${theme.tabBg}`}>
+          <TabBtn icon={<Home />}       label="首頁"  active={tab==='home'}      onClick={() => setTab('home')}      theme={theme} />
+          <TabBtn icon={<Heart />}      label="圖鑑"  active={tab==='animals'}   onClick={() => setTab('animals')}   theme={theme} />
+          {/* 中央點餐按鈕 */}
+          <button onClick={() => setTab('order')} className="flex flex-col items-center -mt-5 relative">
+            <div className={`w-16 h-16 rounded-full flex items-center justify-center shadow-2xl transition-all active:scale-90 ${tab === 'order' ? 'bg-orange-500 ring-4 ring-orange-200' : 'bg-gradient-to-br from-orange-400 to-rose-500'}`}>
+              <Utensils size={28} className="text-white" strokeWidth={2.5} />
+            </div>
+            {cartCount > 0 && (
+              <div className="absolute -top-1 -right-1 bg-rose-500 text-white text-[9px] font-black w-5 h-5 rounded-full flex items-center justify-center shadow-lg border-2 border-white">{cartCount}</div>
+            )}
+            <span className={`text-[10px] mt-1 font-black ${tab === 'order' ? theme.tabActive : theme.tabInactive}`}>點餐</span>
+          </button>
+          <TabBtn icon={<BookOpen />}   label="課程"  active={tab==='courses'}   onClick={() => setTab('courses')}   theme={theme} />
+          <TabBtn icon={<Users />}      label="生態圈" active={tab==='community'} onClick={() => setTab('community')} theme={theme} />
         </div>
 
         {showCertInfo    && <CertificationModal onClose={() => setShowCertInfo(false)} />}
@@ -2254,6 +2300,193 @@ function ThemePickerModal({ onClose, current, onSelect }) {
           </p>
         </div>
       </div>
+    </div>
+  );
+}
+
+// ─────────────────────────────────────────────
+// Tab — 點餐系統
+// ─────────────────────────────────────────────
+function OrderScreen({ cartItems, addToCart, removeFromCart, clearCart, addPoints }) {
+  const [cat, setCat] = useState('全部');
+  const [showCheckout, setShowCheckout] = useState(false);
+  const [ordered, setOrdered] = useState(false);
+
+  const cats = ['全部', '飲品', '輕食', '甜點'];
+  const filtered = cat === '全部' ? MENU_ITEMS : MENU_ITEMS.filter(m => m.cat === cat);
+  const total = cartItems.reduce((s, x) => s + x.price * x.qty, 0);
+  const cartCount = cartItems.reduce((s, x) => s + x.qty, 0);
+
+  const handleOrder = () => {
+    addPoints(Math.floor(total / 10)); // 每消費 NT$10 = 1pt
+    clearCart();
+    setOrdered(true);
+    setShowCheckout(false);
+  };
+
+  if (ordered) return (
+    <div className="flex-1 flex flex-col items-center justify-center p-8 text-center animate-in fade-in">
+      <div className="text-8xl mb-6 animate-bounce">☕</div>
+      <h2 className="text-3xl font-black text-slate-900 mb-2">點餐成功！</h2>
+      <p className="text-slate-500 font-bold mb-1">預計 10–15 分鐘備餐</p>
+      <p className="text-slate-400 text-sm font-bold mb-8">取餐請至吧台叫號</p>
+      <div className="bg-[#0f6e56]/5 rounded-3xl p-5 border border-[#0f6e56]/10 mb-6 w-full max-w-xs">
+        <p className="text-sm font-black text-[#0f6e56] mb-2">✅ 本次消費 NT${total.toLocaleString()}</p>
+        <p className="text-xs text-slate-500 font-bold">已獲得 +{Math.floor(total / 10)} pt 積分</p>
+      </div>
+      <button onClick={() => setOrdered(false)} className="bg-[#0f6e56] text-white px-10 py-4 rounded-2xl font-black shadow-xl active:scale-95 transition">再點一次</button>
+    </div>
+  );
+
+  return (
+    <div className="flex flex-col h-full animate-in fade-in">
+      {/* 頁面標題 */}
+      <div className="bg-gradient-to-r from-orange-500 to-rose-500 text-white px-5 pt-5 pb-6 shrink-0">
+        <div className="flex items-center justify-between mb-1">
+          <div>
+            <h2 className="text-2xl font-black tracking-tight flex items-center gap-2">
+              <Utensils size={22} /> 今日點餐
+            </h2>
+            <p className="text-orange-100 text-xs font-bold mt-0.5">成大生醫卓群門市 · 現點現做</p>
+          </div>
+          <div className="text-right">
+            <p className="text-[10px] font-bold opacity-70">消費 NT$10</p>
+            <p className="text-xs font-black">= 1 積分 🎯</p>
+          </div>
+        </div>
+        {/* 今日特推 */}
+        <div className="bg-white/15 backdrop-blur-sm rounded-2xl p-3 mt-3 border border-white/20 flex items-center gap-3">
+          <span className="text-3xl">☕</span>
+          <div className="flex-1">
+            <p className="font-black text-sm">今日特推：招牌爬蟲拿鐵</p>
+            <p className="text-orange-100 text-[10px] font-bold">加爬蟲拉花 +NT$20 · 限時供應</p>
+          </div>
+          <button onClick={() => addToCart(MENU_ITEMS[0])} className="bg-white text-orange-500 font-black text-xs px-3 py-1.5 rounded-full active:scale-90 transition shadow-md">
+            + 加入
+          </button>
+        </div>
+      </div>
+
+      {/* 分類 Tab */}
+      <div className="bg-white px-4 py-3 flex gap-2 overflow-x-auto scrollbar-hide shrink-0 border-b border-slate-100">
+        {cats.map(c => (
+          <button key={c} onClick={() => setCat(c)}
+            className={`shrink-0 px-4 py-1.5 rounded-full text-xs font-black transition-all ${cat === c ? 'bg-orange-500 text-white shadow-md' : 'bg-slate-100 text-slate-500'}`}>
+            {c}
+          </button>
+        ))}
+      </div>
+
+      {/* 菜單列表 */}
+      <div className="flex-1 overflow-y-auto scrollbar-hide px-4 py-3 pb-28 space-y-2">
+        {filtered.map(item => {
+          const inCart = cartItems.find(x => x.id === item.id);
+          return (
+            <div key={item.id} className="bg-white rounded-2xl p-4 border border-slate-100 shadow-sm flex items-center gap-4">
+              {/* emoji 圖示 */}
+              <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-orange-50 to-amber-50 flex items-center justify-center text-4xl shrink-0 border border-orange-100">
+                {item.emoji}
+              </div>
+              {/* 資訊 */}
+              <div className="flex-1 min-w-0">
+                <div className="flex items-center gap-2 mb-0.5">
+                  <p className="font-black text-slate-800 text-sm">{item.name}</p>
+                  {item.tag && <span className={`text-[9px] font-black px-1.5 py-0.5 rounded-full shrink-0 ${item.tagColor}`}>{item.tag}</span>}
+                </div>
+                <p className="text-[11px] text-slate-400 font-bold leading-snug">{item.desc}</p>
+                <p className="text-orange-500 font-black text-base mt-1">NT${item.price}</p>
+              </div>
+              {/* 數量控制 */}
+              <div className="shrink-0 flex items-center gap-2">
+                {inCart ? (
+                  <>
+                    <button onClick={() => removeFromCart(item.id)}
+                      className="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center active:scale-90 transition">
+                      <Minus size={14} strokeWidth={3} className="text-slate-600" />
+                    </button>
+                    <span className="font-black text-slate-800 text-sm w-4 text-center">{inCart.qty}</span>
+                    <button onClick={() => addToCart(item)}
+                      className="w-8 h-8 rounded-full bg-orange-500 flex items-center justify-center active:scale-90 transition shadow-md">
+                      <Plus size={14} strokeWidth={3} className="text-white" />
+                    </button>
+                  </>
+                ) : (
+                  <button onClick={() => addToCart(item)}
+                    className="w-10 h-10 rounded-full bg-orange-500 flex items-center justify-center active:scale-90 transition shadow-lg">
+                    <Plus size={18} strokeWidth={3} className="text-white" />
+                  </button>
+                )}
+              </div>
+            </div>
+          );
+        })}
+      </div>
+
+      {/* 底部結帳浮動欄 */}
+      {cartCount > 0 && (
+        <div className="absolute bottom-20 left-0 right-0 px-4 z-30">
+          <button onClick={() => setShowCheckout(true)}
+            className="w-full bg-gradient-to-r from-orange-500 to-rose-500 text-white py-4 rounded-2xl font-black text-base shadow-2xl active:scale-[0.98] transition flex items-center justify-between px-6">
+            <div className="flex items-center gap-2">
+              <div className="bg-white/25 w-6 h-6 rounded-full flex items-center justify-center text-xs font-black">{cartCount}</div>
+              <span>查看訂單</span>
+            </div>
+            <span>NT${total.toLocaleString()} →</span>
+          </button>
+        </div>
+      )}
+
+      {/* 結帳 Modal */}
+      {showCheckout && (
+        <div className="fixed inset-0 bg-black/70 z-50 flex items-end animate-in slide-in-from-bottom">
+          <div className="bg-white rounded-t-[3rem] w-full max-w-md mx-auto p-6 pb-10 space-y-4">
+            <div className="flex items-center justify-between">
+              <h3 className="text-xl font-black text-slate-900">🧾 確認訂單</h3>
+              <button onClick={() => setShowCheckout(false)} className="bg-slate-100 p-2 rounded-full"><XCircle size={18} /></button>
+            </div>
+
+            {/* 訂單清單 */}
+            <div className="space-y-2 max-h-52 overflow-y-auto">
+              {cartItems.map(item => (
+                <div key={item.id} className="flex items-center justify-between py-2 border-b border-slate-50">
+                  <div className="flex items-center gap-3">
+                    <span className="text-xl">{item.emoji}</span>
+                    <div>
+                      <p className="font-black text-slate-800 text-sm">{item.name}</p>
+                      <p className="text-[10px] text-slate-400 font-bold">×{item.qty}</p>
+                    </div>
+                  </div>
+                  <p className="font-black text-slate-700">NT${(item.price * item.qty).toLocaleString()}</p>
+                </div>
+              ))}
+            </div>
+
+            {/* 總計 + 積分提示 */}
+            <div className="bg-orange-50 rounded-2xl p-4 border border-orange-100 flex items-center justify-between">
+              <div>
+                <p className="font-black text-slate-900 text-lg">NT${total.toLocaleString()}</p>
+                <p className="text-xs text-orange-600 font-bold">消費後獲得 +{Math.floor(total / 10)} pt</p>
+              </div>
+              <div className="text-right text-xs text-slate-500 font-bold">
+                <p>到店取餐</p>
+                <p>預計 10–15 分鐘</p>
+              </div>
+            </div>
+
+            {/* 付款方式 */}
+            <div className="grid grid-cols-3 gap-2">
+              {[['💚','LINE Pay'],['💳','信用卡'],['💵','現金']].map(([icon, label]) => (
+                <button key={label} onClick={handleOrder}
+                  className="bg-slate-50 border-2 border-slate-100 rounded-xl py-3 flex flex-col items-center gap-1 active:scale-95 transition hover:border-orange-300">
+                  <span className="text-2xl">{icon}</span>
+                  <span className="text-[10px] font-black text-slate-600">{label}</span>
+                </button>
+              ))}
+            </div>
+            <p className="text-center text-[10px] text-slate-400 font-bold">選擇付款方式即送出訂單</p>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
