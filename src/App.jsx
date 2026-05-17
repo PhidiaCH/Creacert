@@ -461,6 +461,7 @@ export default function App() {
   const [showPlans, setShowPlans] = useState(false);
   const [showThemePicker, setShowThemePicker] = useState(false);
   const [showFounderPlaybook, setShowFounderPlaybook] = useState(false);
+  const [showFounderPin, setShowFounderPin]           = useState(false);
   const [themeKey, setThemeKey] = useState(() => localStorage.getItem('cc_theme') || 'pro');
   const theme = THEMES[themeKey] || THEMES.pro;
   const [logoTaps, setLogoTaps] = useState(0);
@@ -566,6 +567,7 @@ export default function App() {
         {showCertInfo    && <CertificationModal points={points} onClose={() => setShowCertInfo(false)} />}
         {showPortrait    && <PortraitModal      onClose={() => setShowPortrait(false)} />}
         {showInvestor        && <InvestorDashboard  onClose={() => setShowInvestor(false)} />}
+        {showFounderPin      && <FounderPinModal     onClose={() => setShowFounderPin(false)} onUnlock={() => { setShowFounderPin(false); setShowFounderPlaybook(true); }} />}
         {showFounderPlaybook && <FounderPlaybook    onClose={() => setShowFounderPlaybook(false)} />}
         {showPlans       && <PlansModal         onClose={() => setShowPlans(false)} />}
         {showThemePicker && <ThemePickerModal   onClose={() => setShowThemePicker(false)} current={themeKey} onSelect={switchTheme} />}
@@ -797,7 +799,7 @@ function PassportScreen({ setShowCertInfo, setShowPortrait, addPoints, setShowPl
 
       {/* 創辦人工具列 */}
       <button
-        onClick={() => setShowFounderPlaybook(true)}
+        onClick={() => setShowFounderPin(true)}
         className="w-full bg-gradient-to-r from-slate-800 to-slate-700 text-white rounded-3xl p-4 flex items-center justify-between shadow-lg active:scale-95 transition mb-2"
       >
         <div className="flex items-center gap-3">
@@ -2011,6 +2013,89 @@ function PortraitModal({ onClose }) {
 }
 
 // ── 投資人儀表板 ──
+// ─────────────────────────────────────────────
+// 創辦人 PIN 解鎖
+// ─────────────────────────────────────────────
+const FOUNDER_PIN = '888888';
+function FounderPinModal({ onClose, onUnlock }) {
+  const [pin, setPin]       = useState('');
+  const [shake, setShake]   = useState(false);
+  const [error, setError]   = useState(false);
+
+  const press = (digit) => {
+    if (pin.length >= 6) return;
+    const next = pin + digit;
+    setPin(next);
+    setError(false);
+    if (next.length === 6) {
+      if (next === FOUNDER_PIN) {
+        setTimeout(onUnlock, 300);
+      } else {
+        setShake(true);
+        setError(true);
+        setTimeout(() => { setPin(''); setShake(false); }, 700);
+      }
+    }
+  };
+  const del = () => { setPin(p => p.slice(0, -1)); setError(false); };
+
+  return (
+    <div className="fixed inset-0 bg-black/90 z-[110] flex items-center justify-center p-8 animate-in fade-in">
+      <div className="w-full max-w-xs">
+        {/* Icon + title */}
+        <div className="text-center mb-8">
+          <div className="w-16 h-16 bg-amber-400/20 border-2 border-amber-400/40 rounded-3xl flex items-center justify-center mx-auto mb-4">
+            <ClipboardList size={28} className="text-amber-300" />
+          </div>
+          <h2 className="text-white text-xl font-black">創辦人手冊</h2>
+          <p className="text-white/40 text-xs font-bold mt-1">請輸入 6 位數密碼</p>
+        </div>
+
+        {/* PIN 點點顯示 */}
+        <div className={`flex justify-center gap-4 mb-8 ${shake ? 'animate-[wiggle_0.6s_ease-in-out]' : ''}`}
+          style={shake ? { animation: 'shake 0.6s ease-in-out' } : {}}>
+          {[0,1,2,3,4,5].map(i => (
+            <div key={i} className={`w-4 h-4 rounded-full border-2 transition-all ${
+              i < pin.length
+                ? error ? 'bg-red-500 border-red-500' : 'bg-amber-400 border-amber-400'
+                : 'border-white/30'
+            }`} />
+          ))}
+        </div>
+        {error && <p className="text-red-400 text-xs font-black text-center -mt-5 mb-6">密碼錯誤，請再試一次</p>}
+
+        {/* 數字鍵盤 */}
+        <div className="grid grid-cols-3 gap-3">
+          {[1,2,3,4,5,6,7,8,9,'','0','⌫'].map((k, i) => (
+            <button key={i}
+              onClick={() => k === '⌫' ? del() : k !== '' ? press(String(k)) : null}
+              className={`h-16 rounded-3xl font-black text-xl transition-all active:scale-90 ${
+                k === '' ? '' :
+                k === '⌫' ? 'bg-white/10 text-white/60 hover:bg-white/20' :
+                'bg-white/10 text-white hover:bg-white/20 border border-white/10'
+              }`}
+            >{k}</button>
+          ))}
+        </div>
+
+        {/* 取消 */}
+        <button onClick={onClose} className="w-full mt-5 py-3 text-white/40 text-sm font-bold">取消</button>
+      </div>
+
+      {/* shake keyframes inline */}
+      <style>{`
+        @keyframes shake {
+          0%,100%{transform:translateX(0)}
+          20%{transform:translateX(-8px)}
+          40%{transform:translateX(8px)}
+          60%{transform:translateX(-6px)}
+          80%{transform:translateX(6px)}
+        }
+      `}</style>
+    </div>
+  );
+}
+
 // ─────────────────────────────────────────────
 // 創辦人手冊
 // ─────────────────────────────────────────────
