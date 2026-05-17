@@ -184,6 +184,101 @@ const CERT_LEVELS = LEVEL_SYSTEM.slice(2, 5).map(l => ({
   level: l.badge, title: l.title, desc: '', color: l.color + ' text-white', privileges: l.privileges,
 }));
 
+// ── 創辦人手冊資料 ─────────────────────────────
+const FOUNDER_SOP = [
+  { phase: 1, title: '法規申請', emoji: '📋', weeks: '4–6 週', color: 'bg-blue-600',
+    steps: [
+      { id:'f1', title:'公司 / 商業登記',     note:'台南市政府經建局，約1-2週，費用NT$1,000左右' },
+      { id:'f2', title:'食品業者登錄',        note:'衛生局線上申請，咖啡輕食必備，約3個工作天' },
+      { id:'f3', title:'動物展演許可申請',    note:'台南市農業局，展演前1個月申請，每年更新一次' },
+      { id:'f4', title:'爬蟲展示物種聲明',    note:'申請時需列明展示物種清單，非保育類即可' },
+      { id:'f5', title:'消防 + 建築執照確認', note:'確認商業用途許可，28坪需備足消防設備' },
+    ]
+  },
+  { phase: 2, title: '空間設置', emoji: '🏗️', weeks: '4–8 週', color: 'bg-amber-500',
+    steps: [
+      { id:'f6', title:'動物展示區隔離設計',  note:'各物種獨立溫控空間，防止交叉感染，建議找寵物店裝潢師' },
+      { id:'f7', title:'咖啡設備採購安裝',    note:'半自動咖啡機NT$15-40萬，磨豆機NT$3-8萬，建議La Marzocco / Rancilio' },
+      { id:'f8', title:'環境控制系統',        note:'爬蟲區26-32°C，蜜袋鼯濕度60-70%，投資溫控設備約NT$5-10萬' },
+      { id:'f9', title:'監控 + POS 系統',    note:'24H動物監控，整合CreaCert APP點餐，建議Ipad POS' },
+    ]
+  },
+  { phase: 3, title: '動物引入', emoji: '🦎', weeks: '2–4 週', color: 'bg-[#0f6e56]',
+    steps: [
+      { id:'f10', title:'爬蟲供應商洽談',     note:'對方需持特定寵物業許可，CreaCert抽寄賣佣金20-25%' },
+      { id:'f11', title:'貓咪/犬隻合作協議', note:'與在地認養中心合作，正面形象 + 節省進貨成本' },
+      { id:'f12', title:'動物健康建檔',       note:'入店前獸醫評估，APP動物圖鑑頁面建立，含故事/影片' },
+    ]
+  },
+  { phase: 4, title: 'APP + 系統上線', emoji: '📱', weeks: '1–2 週', color: 'bg-violet-600',
+    steps: [
+      { id:'f13', title:'CreaCert 後台開通',  note:'聯絡總部設定門市帳號，商品菜單/動物/課程全部上架' },
+      { id:'f14', title:'會員初始設定',       note:'設定歡迎積分100pt，邀請第一批會員下載APP' },
+      { id:'f15', title:'試營運壓力測試',     note:'邀請50位親友先行體驗，蒐集問題後才正式開幕' },
+    ]
+  },
+];
+
+const FRANCHISE_TIERS = [
+  { name: '輕型加盟', badge: 'Lite', color: 'bg-slate-600',
+    fee: 380000, deposit: 50000, royaltyPct: 6, monthly: 12000,
+    area: '15–25 坪', animals: '貓犬為主',  training: '3 週課程',
+    includes: ['品牌授權使用', 'APP系統1年授權', '教育課程素材包', '開幕行銷支援'] },
+  { name: '標準加盟', badge: 'Standard', color: 'bg-[#0f6e56]',
+    fee: 680000, deposit: 100000, royaltyPct: 5, monthly: 18000,
+    area: '25–40 坪', animals: '貓犬 + 爬蟲', training: '4週課程 + 2週實習',
+    includes: ['品牌授權使用', 'APP系統2年授權', '完整教材 + 師資', '爬蟲供應商媒合', '季度稽核輔導', '開幕PR行銷包'],
+    recommended: true },
+  { name: '旗艦加盟', badge: 'Flagship', color: 'bg-gradient-to-r from-amber-500 to-rose-500',
+    fee: 1200000, deposit: 200000, royaltyPct: 4, monthly: 28000,
+    area: '40 坪以上', animals: '全物種 + 戶外體驗', training: '6週課程 + 全程陪跑1個月',
+    includes: ['品牌授權使用', 'APP系統3年授權', '設計裝潢顧問', '獨家物種供應優先', '月度策略會議', '全媒體行銷套組'] },
+];
+
+const TRAINING_WEEKS = [
+  { week: 1, icon: '🦎', title: '動物照護基礎',
+    topics: ['各物種基本飼育需求', '健康指標辨識 SOP', '緊急狀況處理流程', '動物壓力信號判讀'] },
+  { week: 2, icon: '🤝', title: '顧客體驗管理',
+    topics: ['互動安全引導話術', '攝影協助標準服務', '體驗預約接待SOP', '異常客訴即時處理'] },
+  { week: 3, icon: '☕', title: '咖啡 + 食品安全',
+    topics: ['基礎拿鐵拉花練習', '飲品配方標準化', '食品安全衛生法規', 'POS 系統操作'] },
+  { week: 4, icon: '📱', title: 'APP + 財務管理',
+    topics: ['CreaCert 後台操作', '積分/課程/會員管理', '日結帳務 + 庫存', '每月KPI追蹤回報'] },
+];
+
+const PROFIT_STRATEGIES = [
+  { rank: 1, icon: '🦎', tag: '立即可做', tagColor: 'bg-green-500',
+    title: '爬蟲體驗套餐化',
+    desc: '單次NT$350 → 「蛇蜥雙體驗」NT$580，客單提升 65%',
+    detail: '將兩隻爬蟲合併為套餐，成本幾乎不變，但客人感覺更值回票價。搭配拍照服務（IG打卡）讓分享率提升。',
+    margin: '毛利約 85%' },
+  { rank: 2, icon: '👑', tag: '高槓桿', tagColor: 'bg-violet-500',
+    title: '訂閱制 PREMIUM 擴大',
+    desc: 'NT$199/月，每位訂戶純利NT$120，目標1,000位 = 每月NT$12萬被動收入',
+    detail: '訂閱者平均消費是一般用戶的2.3倍（體驗、商城、課程），帶動所有收入線。先對已到店顧客推銷轉換。',
+    margin: '月收穩定、累積成長' },
+  { rank: 3, icon: '🏢', tag: '開發中', tagColor: 'bg-blue-500',
+    title: '企業包場體驗',
+    desc: '公司員旅 / 團建 2小時包場 NT$8,000–15,000，填補平日冷場時段',
+    detail: '台南科學園區 + 成大校區附近企業多，用LINE@主動接觸HR。提供「動物互動 + 輕食套餐」的整合方案，毛利高。',
+    margin: '毛利約 75%' },
+  { rank: 4, icon: '📱', tag: '高潛力', tagColor: 'bg-amber-500',
+    title: '線上課程延伸銷售',
+    desc: '實體課程錄製成線上版 NT$299/課，邊際成本近零',
+    detail: '全台有興趣飼育異寵的人遠超台南，線上課程打破地域限制。單次錄製，永久銷售，可設計「課程包」NT$699。',
+    margin: '毛利約 95%' },
+  { rank: 5, icon: '🤝', tag: '需流量先', tagColor: 'bg-rose-500',
+    title: '廠商贊助 + 冠名合作',
+    desc: '爬蟲食品 / 設備品牌贊助「月份明星動物」NT$15,000–30,000/月',
+    detail: '達到 App 3,000+ 用戶、IG 5,000+ 粉絲後才有議價空間。先聚焦在台灣爬蟲飼育品牌（如 ReptiZoo 等）。',
+    margin: '純被動收入' },
+  { rank: 6, icon: '🌐', tag: '長期最大', tagColor: 'bg-[#0f6e56]',
+    title: '加盟授權金 × 規模化',
+    desc: '每開1家加盟店 NT$38–120萬 + 每月權利金 NT$12,000–28,000',
+    detail: '開第2家加盟店前，先確保本店月淨利穩定達到NT$8萬以上。建立完整SOP手冊、品牌規範，讓加盟主照著做。目標3年內全台5家。',
+    margin: '規模後最大化' },
+];
+
 const COURSES = [
   { id: 1, tag: '貓咪基礎', title: '貓咪營養學',     desc: '主食、零食與補充品的選擇', duration: '45 分鐘', progress: 100, score: 85,  locked: false, paid: false, videoQ: 'cat nutrition food guide' },
   { id: 2, tag: '貓咪基礎', title: '行為解讀',       desc: '讀懂肢體語言與聲音溝通', duration: '50 分鐘', progress: 100, score: 90,  locked: false, paid: false, videoQ: 'cat body language behavior guide' },
@@ -365,6 +460,7 @@ export default function App() {
   const [showInvestor, setShowInvestor] = useState(false);
   const [showPlans, setShowPlans] = useState(false);
   const [showThemePicker, setShowThemePicker] = useState(false);
+  const [showFounderPlaybook, setShowFounderPlaybook] = useState(false);
   const [themeKey, setThemeKey] = useState(() => localStorage.getItem('cc_theme') || 'pro');
   const theme = THEMES[themeKey] || THEMES.pro;
   const [logoTaps, setLogoTaps] = useState(0);
@@ -438,7 +534,7 @@ export default function App() {
 
         {/* 內容區 */}
         <div className={`flex-1 overflow-y-auto scrollbar-hide ${themeKey === 'young' ? 'bg-slate-900' : themeKey === 'senior' ? 'bg-amber-50' : 'bg-slate-50'}`}>
-          {tab === 'home'      && <PassportScreen setShowCertInfo={setShowCertInfo} setShowPortrait={setShowPortrait} addPoints={addPoints} setShowPlans={setShowPlans} streak={streak} points={points} />}
+          {tab === 'home'      && <PassportScreen setShowCertInfo={setShowCertInfo} setShowPortrait={setShowPortrait} addPoints={addPoints} setShowPlans={setShowPlans} streak={streak} points={points} setShowFounderPlaybook={setShowFounderPlaybook} />}
           {tab === 'animals'   && <AnimalsScreen />}
           {tab === 'order'     && <OrderScreen cartItems={cartItems} addToCart={addToCart} removeFromCart={removeFromCart} clearCart={clearCart} addPoints={addPoints} />}
           {tab === 'courses'   && <CoursesScreen addPoints={addPoints} points={points} />}
@@ -469,7 +565,8 @@ export default function App() {
 
         {showCertInfo    && <CertificationModal points={points} onClose={() => setShowCertInfo(false)} />}
         {showPortrait    && <PortraitModal      onClose={() => setShowPortrait(false)} />}
-        {showInvestor    && <InvestorDashboard  onClose={() => setShowInvestor(false)} />}
+        {showInvestor        && <InvestorDashboard  onClose={() => setShowInvestor(false)} />}
+        {showFounderPlaybook && <FounderPlaybook    onClose={() => setShowFounderPlaybook(false)} />}
         {showPlans       && <PlansModal         onClose={() => setShowPlans(false)} />}
         {showThemePicker && <ThemePickerModal   onClose={() => setShowThemePicker(false)} current={themeKey} onSelect={switchTheme} />}
       </div>
@@ -491,7 +588,7 @@ function TabBtn({ icon, label, active, onClick, theme }) {
 // ─────────────────────────────────────────────
 // Tab 1 — 認證護照頁
 // ─────────────────────────────────────────────
-function PassportScreen({ setShowCertInfo, setShowPortrait, addPoints, setShowPlans, streak }) {
+function PassportScreen({ setShowCertInfo, setShowPortrait, addPoints, setShowPlans, streak, points = 0, setShowFounderPlaybook }) {
   const [showQR, setShowQR] = useState(false);
   const [showBooking, setShowBooking] = useState(false);
   const [showCafeMenu, setShowCafeMenu] = useState(false);
@@ -697,6 +794,23 @@ function PassportScreen({ setShowCertInfo, setShowPortrait, addPoints, setShowPl
           <p className="text-sm font-black text-slate-800">今日點餐</p>
         </button>
       </section>
+
+      {/* 創辦人工具列 */}
+      <button
+        onClick={() => setShowFounderPlaybook(true)}
+        className="w-full bg-gradient-to-r from-slate-800 to-slate-700 text-white rounded-3xl p-4 flex items-center justify-between shadow-lg active:scale-95 transition mb-2"
+      >
+        <div className="flex items-center gap-3">
+          <div className="bg-white/10 p-2.5 rounded-2xl border border-white/10">
+            <ClipboardList size={20} className="text-amber-300" />
+          </div>
+          <div className="text-left">
+            <p className="font-black text-sm">創辦人手冊</p>
+            <p className="text-[10px] opacity-60 font-bold">開店SOP · 加盟系統 · 獲利策略</p>
+          </div>
+        </div>
+        <ChevronRight size={18} className="opacity-40" />
+      </button>
 
       {showQR      && <QRModal      onClose={() => setShowQR(false)}      checkedIn={checkedIn} />}
       {showBooking && <BookingModal onClose={() => setShowBooking(false)} />}
@@ -1897,6 +2011,241 @@ function PortraitModal({ onClose }) {
 }
 
 // ── 投資人儀表板 ──
+// ─────────────────────────────────────────────
+// 創辦人手冊
+// ─────────────────────────────────────────────
+function FounderPlaybook({ onClose }) {
+  const [activeTab, setActiveTab] = useState('sop');
+  const [checked, setChecked]   = useState(() => {
+    try { return JSON.parse(localStorage.getItem('cc_sop') || '[]'); } catch { return []; }
+  });
+  const [openStrategy, setOpenStrategy] = useState(null);
+  const toggle = (id) => {
+    const next = checked.includes(id) ? checked.filter(x => x !== id) : [...checked, id];
+    setChecked(next);
+    localStorage.setItem('cc_sop', JSON.stringify(next));
+  };
+
+  const totalSteps   = FOUNDER_SOP.reduce((s, p) => s + p.steps.length, 0);
+  const doneSteps    = checked.length;
+  const progressPct  = Math.round((doneSteps / totalSteps) * 100);
+
+  return (
+    <div className="absolute inset-0 bg-slate-900 z-[100] flex flex-col overflow-hidden">
+      {/* Header */}
+      <div className="shrink-0 bg-gradient-to-r from-slate-800 to-slate-900 px-5 pt-10 pb-4 border-b border-white/10">
+        <div className="flex items-center justify-between mb-3">
+          <div>
+            <p className="text-white/40 text-[10px] font-black tracking-widest uppercase">🔒 FOUNDER MODE</p>
+            <h2 className="text-white text-2xl font-black tracking-tight mt-0.5">CreaCert 創辦人手冊</h2>
+          </div>
+          <button onClick={onClose} className="bg-white/10 p-2.5 rounded-2xl border border-white/10 text-white/60"><XCircle size={20} /></button>
+        </div>
+        {/* Tab Switcher */}
+        <div className="flex gap-2">
+          {[['sop','📋 開店SOP'],['franchise','🤝 加盟系統'],['profit','💰 獲利策略']].map(([k, label]) => (
+            <button key={k} onClick={() => setActiveTab(k)}
+              className={`px-3 py-1.5 rounded-full text-xs font-black transition-all ${activeTab === k ? 'bg-amber-400 text-slate-900' : 'bg-white/10 text-white/60'}`}>
+              {label}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      {/* Content */}
+      <div className="flex-1 overflow-y-auto">
+
+        {/* ── Tab 1: 開店SOP ── */}
+        {activeTab === 'sop' && (
+          <div className="p-5 space-y-5">
+            {/* 整體進度 */}
+            <div className="bg-white/5 rounded-3xl p-5 border border-white/10">
+              <div className="flex items-center justify-between mb-3">
+                <p className="text-white font-black">開店進度</p>
+                <span className="text-amber-300 font-black text-xl">{progressPct}%</span>
+              </div>
+              <div className="h-3 bg-white/10 rounded-full overflow-hidden">
+                <div className="h-full bg-gradient-to-r from-amber-400 to-orange-400 rounded-full transition-all" style={{ width: `${progressPct}%` }} />
+              </div>
+              <p className="text-white/40 text-[10px] font-bold mt-2">已完成 {doneSteps} / {totalSteps} 項目</p>
+            </div>
+
+            {/* 各階段清單 */}
+            {FOUNDER_SOP.map(phase => (
+              <div key={phase.phase} className="bg-white/5 rounded-3xl border border-white/10 overflow-hidden">
+                <div className={`${phase.color} px-5 py-3 flex items-center justify-between`}>
+                  <div className="flex items-center gap-2">
+                    <span className="text-xl">{phase.emoji}</span>
+                    <div>
+                      <p className="text-white font-black text-sm">Phase {phase.phase} · {phase.title}</p>
+                      <p className="text-white/70 text-[10px] font-bold">預估 {phase.weeks}</p>
+                    </div>
+                  </div>
+                  <span className="text-white/70 text-[10px] font-black bg-black/20 px-2 py-0.5 rounded-full">
+                    {phase.steps.filter(s => checked.includes(s.id)).length}/{phase.steps.length}
+                  </span>
+                </div>
+                <div className="divide-y divide-white/5">
+                  {phase.steps.map(step => (
+                    <button key={step.id} onClick={() => toggle(step.id)}
+                      className="w-full flex items-start gap-3 px-5 py-4 text-left hover:bg-white/5 transition active:bg-white/10">
+                      <div className={`shrink-0 mt-0.5 w-6 h-6 rounded-full border-2 flex items-center justify-center transition ${checked.includes(step.id) ? 'bg-green-500 border-green-500' : 'border-white/30'}`}>
+                        {checked.includes(step.id) && <Check size={12} className="text-white" />}
+                      </div>
+                      <div className="flex-1">
+                        <p className={`font-black text-sm transition ${checked.includes(step.id) ? 'text-white/40 line-through' : 'text-white'}`}>{step.title}</p>
+                        <p className="text-white/40 text-[10px] font-bold mt-0.5 leading-snug">{step.note}</p>
+                      </div>
+                    </button>
+                  ))}
+                </div>
+              </div>
+            ))}
+
+            {/* 法規警示卡 */}
+            <div className="bg-red-950/50 border border-red-500/30 rounded-3xl p-5">
+              <p className="text-red-400 font-black text-sm mb-2">⚠️ 重要法規提醒</p>
+              <div className="space-y-2 text-[11px] text-red-300/80 font-bold leading-snug">
+                <p>• 未申請動物展演許可即收體驗費 → 罰鍰 NT$5–25萬，動物可能被沒入</p>
+                <p>• 未持特定寵物業許可直接販賣動物 → 罰鍰 NT$10–300萬，強制停業</p>
+                <p>• 建議優先完成Phase 1，其餘邊裝潢邊跑申請</p>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* ── Tab 2: 加盟系統 ── */}
+        {activeTab === 'franchise' && (
+          <div className="p-5 space-y-5">
+            {/* 加盟方案卡 */}
+            {FRANCHISE_TIERS.map((tier, i) => (
+              <div key={i} className={`rounded-3xl overflow-hidden border ${tier.recommended ? 'border-amber-400 shadow-lg shadow-amber-400/20' : 'border-white/10'}`}>
+                <div className={`${tier.color} text-white p-5`}>
+                  <div className="flex items-start justify-between">
+                    <div>
+                      {tier.recommended && <span className="bg-amber-400 text-slate-900 text-[9px] font-black px-2 py-0.5 rounded-full mb-1.5 inline-block">⭐ 主推方案</span>}
+                      <p className="font-black text-xl">{tier.name}</p>
+                      <p className="text-white/70 text-xs font-bold mt-0.5">{tier.area} · {tier.animals}</p>
+                    </div>
+                    <div className="text-right">
+                      <p className="text-[10px] text-white/60 font-bold">加盟金</p>
+                      <p className="text-2xl font-black">NT${(tier.fee/10000).toFixed(0)}萬</p>
+                    </div>
+                  </div>
+                </div>
+                <div className="bg-white/5 p-5 space-y-4">
+                  {/* 費用明細 */}
+                  <div className="grid grid-cols-3 gap-2 text-center">
+                    {[['保證金', `NT$${(tier.deposit/10000).toFixed(0)}萬`], ['月權利金', `${tier.royaltyPct}% 營業額`], ['系統費', `NT$${(tier.monthly/1000).toFixed(0)}k/月`]].map(([k,v]) => (
+                      <div key={k} className="bg-white/5 rounded-2xl p-2.5">
+                        <p className="text-white/40 text-[9px] font-bold">{k}</p>
+                        <p className="text-white font-black text-xs mt-0.5">{v}</p>
+                      </div>
+                    ))}
+                  </div>
+                  {/* 培訓 */}
+                  <div className="flex items-center gap-2">
+                    <BookOpen size={13} className="text-amber-300 shrink-0" />
+                    <p className="text-white/70 text-xs font-bold">培訓：{tier.training}</p>
+                  </div>
+                  {/* 包含項目 */}
+                  <div className="space-y-1.5">
+                    {tier.includes.map(item => (
+                      <div key={item} className="flex items-center gap-2">
+                        <CheckCircle2 size={12} className="text-green-400 shrink-0" />
+                        <p className="text-white/70 text-xs font-bold">{item}</p>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            ))}
+
+            {/* 4週培訓課程 */}
+            <div className="bg-white/5 border border-white/10 rounded-3xl p-5">
+              <p className="text-white font-black mb-4 flex items-center gap-2"><BookOpen size={15} className="text-amber-300" /> 標準培訓課程（4週）</p>
+              <div className="space-y-3">
+                {TRAINING_WEEKS.map(w => (
+                  <div key={w.week} className="flex gap-3">
+                    <div className="bg-amber-400/20 border border-amber-400/30 text-amber-300 w-10 h-10 rounded-2xl flex flex-col items-center justify-center shrink-0 text-base">
+                      {w.icon}
+                    </div>
+                    <div className="flex-1">
+                      <p className="text-white font-black text-sm">第 {w.week} 週 · {w.title}</p>
+                      <div className="flex flex-wrap gap-1 mt-1.5">
+                        {w.topics.map(t => <span key={t} className="text-[9px] bg-white/10 text-white/60 px-2 py-0.5 rounded-full font-bold">{t}</span>)}
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+              <div className="mt-4 bg-amber-400/10 border border-amber-400/20 rounded-2xl p-3">
+                <p className="text-amber-300 text-[10px] font-bold">+ 培訓結束後 2 週到成大門市實習，再進行書面 + 實操考核，通過後才授予加盟資格</p>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* ── Tab 3: 獲利策略 ── */}
+        {activeTab === 'profit' && (
+          <div className="p-5 space-y-4">
+            <div className="bg-white/5 border border-white/10 rounded-3xl p-4">
+              <p className="text-white/50 text-[10px] font-black tracking-widest uppercase mb-1">獲利優先順序</p>
+              <p className="text-white font-bold text-sm leading-snug">依毛利率 + 可執行難度排序，建議由上往下逐步開展</p>
+            </div>
+            {PROFIT_STRATEGIES.map(s => (
+              <div key={s.rank} className="bg-white/5 border border-white/10 rounded-3xl overflow-hidden">
+                <button className="w-full flex items-start gap-4 p-5 text-left" onClick={() => setOpenStrategy(openStrategy === s.rank ? null : s.rank)}>
+                  <div className="bg-white/10 w-10 h-10 rounded-2xl flex items-center justify-center text-xl shrink-0">{s.icon}</div>
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center gap-2 flex-wrap mb-1">
+                      <span className="text-white/30 text-[10px] font-black">#{s.rank}</span>
+                      <span className={`${s.tagColor} text-white text-[9px] font-black px-2 py-0.5 rounded-full`}>{s.tag}</span>
+                    </div>
+                    <p className="text-white font-black text-sm">{s.title}</p>
+                    <p className="text-white/50 text-[10px] font-bold mt-0.5 leading-snug">{s.desc}</p>
+                    <p className="text-amber-300 text-[10px] font-black mt-1">{s.margin}</p>
+                  </div>
+                  <ChevronRight size={16} className={`text-white/30 shrink-0 transition-transform ${openStrategy === s.rank ? 'rotate-90' : ''}`} />
+                </button>
+                {openStrategy === s.rank && (
+                  <div className="px-5 pb-5">
+                    <div className="bg-white/5 rounded-2xl p-4 border border-white/10">
+                      <p className="text-white/70 text-xs font-bold leading-relaxed">{s.detail}</p>
+                    </div>
+                  </div>
+                )}
+              </div>
+            ))}
+
+            {/* 3年目標 */}
+            <div className="bg-gradient-to-br from-amber-900/50 to-orange-900/30 border border-amber-500/30 rounded-3xl p-5">
+              <p className="text-amber-300 font-black mb-4 flex items-center gap-2"><TrendingUp size={15} /> 3年擴張目標</p>
+              <div className="space-y-3">
+                {[
+                  { year: 'Y1', title: '穩固成大店', targets: ['月淨利 NT$8萬+', '訂閱用戶 300+', '完成SOP手冊', '申請商標'], color: 'bg-blue-500' },
+                  { year: 'Y2', title: '首家加盟店', targets: ['台南另一區或高雄', '加盟金收入NT$68萬', '線上課程上線', 'App用戶 2,000+'], color: 'bg-[#0f6e56]' },
+                  { year: 'Y3', title: '規模化 × 5', targets: ['全台5家加盟', '月被動收入NT$20萬+', '廠商贊助談妥', '考慮B輪融資'], color: 'bg-gradient-to-r from-amber-500 to-rose-500' },
+                ].map(y => (
+                  <div key={y.year} className="flex gap-3 items-start">
+                    <div className={`${y.color} text-white w-10 h-10 rounded-2xl flex items-center justify-center font-black text-xs shrink-0`}>{y.year}</div>
+                    <div className="flex-1">
+                      <p className="text-white font-black text-sm">{y.title}</p>
+                      <div className="flex flex-wrap gap-1.5 mt-1.5">
+                        {y.targets.map(t => <span key={t} className="text-[9px] bg-white/10 text-white/60 px-2 py-0.5 rounded-full font-bold">{t}</span>)}
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+
 function InvestorDashboard({ onClose }) {
   const d = INVESTOR_DATA;
   const maxVal = 220000;
