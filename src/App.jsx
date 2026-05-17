@@ -422,14 +422,16 @@ export default function App() {
           {tab === 'animals'   && <AnimalsScreen />}
           {tab === 'order'     && <OrderScreen cartItems={cartItems} addToCart={addToCart} removeFromCart={removeFromCart} clearCart={clearCart} addPoints={addPoints} />}
           {tab === 'courses'   && <CoursesScreen addPoints={addPoints} />}
-          {tab === 'community' && <CommunityScreen />}
+          {tab === 'shop'      && <ShopScreen addPoints={addPoints} />}
         </div>
 
-        {/* 底部 Tab Bar */}
+        {/* 底部 Tab Bar — 依收入來源排列 */}
         <div className={`shrink-0 w-full px-2 pt-2 pb-6 flex justify-around items-end z-40 ${theme.tabBg}`}>
-          <TabBtn icon={<Home />}       label="首頁"  active={tab==='home'}      onClick={() => setTab('home')}      theme={theme} />
-          <TabBtn icon={<Heart />}      label="圖鑑"  active={tab==='animals'}   onClick={() => setTab('animals')}   theme={theme} />
-          {/* 中央點餐按鈕 */}
+          {/* 首頁 */}
+          <TabBtn icon={<Home />}     label="首頁" active={tab==='home'}    onClick={() => setTab('home')}    theme={theme} />
+          {/* 圖鑑（爬蟲銷售 27%） */}
+          <TabBtn icon={<Heart />}    label="圖鑑" active={tab==='animals'} onClick={() => setTab('animals')} theme={theme} />
+          {/* 中央點餐（最大收入 53%） */}
           <button onClick={() => setTab('order')} className="flex flex-col items-center -mt-5 relative">
             <div className={`w-16 h-16 rounded-full flex items-center justify-center shadow-2xl transition-all active:scale-90 ${tab === 'order' ? 'bg-orange-500 ring-4 ring-orange-200' : 'bg-gradient-to-br from-orange-400 to-rose-500'}`}>
               <Utensils size={28} className="text-white" strokeWidth={2.5} />
@@ -439,8 +441,10 @@ export default function App() {
             )}
             <span className={`text-[10px] mt-1 font-black ${tab === 'order' ? theme.tabActive : theme.tabInactive}`}>點餐</span>
           </button>
-          <TabBtn icon={<BookOpen />}   label="課程"  active={tab==='courses'}   onClick={() => setTab('courses')}   theme={theme} />
-          <TabBtn icon={<Users />}      label="生態圈" active={tab==='community'} onClick={() => setTab('community')} theme={theme} />
+          {/* 商城（寵物食品 11%） */}
+          <TabBtn icon={<ShoppingCart />} label="商城" active={tab==='shop'}    onClick={() => setTab('shop')}    theme={theme} />
+          {/* 課程（認證 9%） */}
+          <TabBtn icon={<BookOpen />}     label="課程" active={tab==='courses'} onClick={() => setTab('courses')} theme={theme} />
         </div>
 
         {showCertInfo    && <CertificationModal onClose={() => setShowCertInfo(false)} />}
@@ -1288,6 +1292,140 @@ function CommunityScreen() {
               </div>
             )}
           </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
+// ─────────────────────────────────────────────
+// Tab — 商城（寵物食品 + 爬蟲用品）
+// ─────────────────────────────────────────────
+function ShopScreen({ addPoints }) {
+  const [cat, setCat] = useState('全部');
+  const [cart, setCart] = useState([]);
+  const [ordered, setOrdered] = useState(false);
+
+  const SHOP_CATS = ['全部', '爬蟲用品', '小動物', '貓狗', '保健品'];
+  const SHOP_ITEMS = [
+    { id:'p1', cat:'爬蟲用品', name:'爬蟲 UVB 全光譜燈',     brand:'ZooMed Pro',      price:890,  original:1200, emoji:'💡', tag:'A級推薦', tagColor:'bg-orange-100 text-orange-600' },
+    { id:'p2', cat:'爬蟲用品', name:'球蟒恆溫加熱墊',        brand:'ReptileHeat',     price:680,  original:850,  emoji:'🌡️', tag:'必備',   tagColor:'bg-slate-100 text-slate-600' },
+    { id:'p3', cat:'爬蟲用品', name:'爬蟲飼養箱（60cm）',    brand:'ExoTerra',        price:1580, original:2000, emoji:'🏠', tag:'套組省錢', tagColor:'bg-blue-100 text-blue-600' },
+    { id:'p4', cat:'小動物',   name:'蜜袋鼯高蛋白飼料',      brand:'GlideNutrition',  price:399,  original:499,  emoji:'🦘', tag:'熱銷No.1', tagColor:'bg-rose-100 text-rose-600' },
+    { id:'p5', cat:'小動物',   name:'蜜袋鼯滑翔籠（大型）',  brand:'GliderHome',      price:1280, original:1580, emoji:'🏡', tag:'',        tagColor:'' },
+    { id:'p6', cat:'貓狗',     name:'犬隻訓練零食包',        brand:'TrainSnack',      price:199,  original:250,  emoji:'🐶', tag:'認證推薦', tagColor:'bg-[#0f6e56]/10 text-[#0f6e56]' },
+    { id:'p7', cat:'貓狗',     name:'貓咪益生菌凍乾',        brand:'PetPro 台灣',     price:299,  original:350,  emoji:'🐱', tag:'新品',    tagColor:'bg-purple-100 text-purple-600' },
+    { id:'p8', cat:'保健品',   name:'全物種維生素滴劑',      brand:'NutriAll',        price:249,  original:320,  emoji:'💊', tag:'獸醫推薦', tagColor:'bg-blue-100 text-blue-600' },
+    { id:'p9', cat:'保健品',   name:'爬蟲鈣粉補充劑',        brand:'Rep-Cal',         price:180,  original:220,  emoji:'🦴', tag:'',        tagColor:'' },
+  ];
+
+  const filtered = cat === '全部' ? SHOP_ITEMS : SHOP_ITEMS.filter(x => x.cat === cat);
+  const addItem = (item) => setCart(c => {
+    const ex = c.find(x => x.id === item.id);
+    return ex ? c.map(x => x.id === item.id ? {...x, qty: x.qty+1} : x) : [...c, {...item, qty:1}];
+  });
+  const totalItems = cart.reduce((s,x) => s+x.qty, 0);
+  const totalPrice = cart.reduce((s,x) => s+x.price*x.qty, 0);
+
+  if (ordered) return (
+    <div className="flex-1 flex flex-col items-center justify-center p-8 text-center animate-in fade-in">
+      <div className="text-7xl mb-5">🎉</div>
+      <h2 className="text-2xl font-black text-slate-900 mb-2">訂單成立！</h2>
+      <p className="text-slate-500 font-bold text-sm mb-1">每週三到貨，到店取貨免運費</p>
+      <p className="text-slate-400 text-xs mb-8">取貨通知將發送到您的 LINE</p>
+      <div className="bg-[#0f6e56]/5 rounded-3xl p-5 border border-[#0f6e56]/10 mb-6 w-full max-w-xs">
+        <p className="text-sm font-black text-[#0f6e56]">NT${totalPrice.toLocaleString()} · {totalItems} 件</p>
+        <p className="text-xs text-slate-400 font-bold mt-1">已獲得 +{Math.floor(totalPrice / 10)} pt</p>
+      </div>
+      <button onClick={() => { setOrdered(false); setCart([]); }} className="bg-[#0f6e56] text-white px-10 py-4 rounded-2xl font-black shadow-xl active:scale-95 transition">繼續選購</button>
+    </div>
+  );
+
+  return (
+    <div className="flex flex-col h-full animate-in fade-in">
+      {/* 頁首 */}
+      <div className="bg-gradient-to-r from-[#0f6e56] to-teal-500 text-white px-5 pt-5 pb-6 shrink-0">
+        <div className="flex items-center justify-between mb-3">
+          <div>
+            <h2 className="text-2xl font-black tracking-tight flex items-center gap-2">
+              <ShoppingCart size={22} /> 寵物商城
+            </h2>
+            <p className="text-teal-100 text-xs font-bold mt-0.5">合作品牌認證 · 週三到店取貨</p>
+          </div>
+          <div className="bg-white/15 rounded-2xl px-3 py-2 text-right border border-white/20">
+            <p className="text-[10px] opacity-70 font-bold">免運費</p>
+            <p className="text-sm font-black">到店取貨</p>
+          </div>
+        </div>
+        {/* 到店取貨優惠橫幅 */}
+        <div className="bg-white/15 rounded-2xl p-3 flex items-center gap-3 border border-white/20">
+          <span className="text-2xl">🐾</span>
+          <div className="flex-1">
+            <p className="font-black text-sm">合作品牌・預購到店取</p>
+            <p className="text-teal-100 text-[10px] font-bold">省快遞費 · 現貨週三補貨 · PREMIUM 9折</p>
+          </div>
+        </div>
+      </div>
+
+      {/* 分類 */}
+      <div className="bg-white px-4 py-3 flex gap-2 overflow-x-auto scrollbar-hide shrink-0 border-b border-slate-100">
+        {SHOP_CATS.map(c => (
+          <button key={c} onClick={() => setCat(c)}
+            className={`shrink-0 px-4 py-1.5 rounded-full text-xs font-black transition-all ${cat === c ? 'bg-[#0f6e56] text-white shadow-md' : 'bg-slate-100 text-slate-500'}`}>
+            {c}
+          </button>
+        ))}
+      </div>
+
+      {/* 商品列表 */}
+      <div className="flex-1 overflow-y-auto scrollbar-hide px-4 py-3 pb-28 space-y-3">
+        {filtered.map(item => {
+          const discount = Math.round((1 - item.price / item.original) * 100);
+          const inCart = cart.find(x => x.id === item.id);
+          return (
+            <div key={item.id} className="bg-white rounded-2xl p-4 border border-slate-100 shadow-sm flex items-center gap-4">
+              <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-teal-50 to-emerald-50 flex items-center justify-center text-3xl shrink-0 border border-teal-100">
+                {item.emoji}
+              </div>
+              <div className="flex-1 min-w-0">
+                <div className="flex items-center gap-2 mb-0.5 flex-wrap">
+                  <p className="font-black text-slate-800 text-sm leading-snug">{item.name}</p>
+                  {item.tag && <span className={`text-[9px] font-black px-1.5 py-0.5 rounded-full shrink-0 ${item.tagColor}`}>{item.tag}</span>}
+                </div>
+                <p className="text-[10px] text-slate-400 font-bold">{item.brand}</p>
+                <div className="flex items-center gap-2 mt-1">
+                  <span className="text-[#0f6e56] font-black">NT${item.price}</span>
+                  <span className="text-slate-300 text-[10px] line-through">NT${item.original}</span>
+                  <span className="text-[9px] bg-rose-50 text-rose-500 font-black px-1 rounded">-{discount}%</span>
+                </div>
+              </div>
+              <div className="shrink-0">
+                {inCart ? (
+                  <div className="bg-[#0f6e56] text-white rounded-xl px-3 py-1.5 flex items-center gap-2">
+                    <button onClick={() => setCart(c => c.map(x => x.id === item.id ? {...x, qty: Math.max(0, x.qty-1)} : x).filter(x => x.qty > 0))} className="text-lg font-black leading-none">−</button>
+                    <span className="font-black text-sm w-4 text-center">{inCart.qty}</span>
+                    <button onClick={() => addItem(item)} className="text-lg font-black leading-none">+</button>
+                  </div>
+                ) : (
+                  <button onClick={() => addItem(item)} className="bg-[#0f6e56] text-white w-10 h-10 rounded-xl flex items-center justify-center text-xl font-black active:scale-90 transition shadow-md">+</button>
+                )}
+              </div>
+            </div>
+          );
+        })}
+      </div>
+
+      {/* 浮動結帳欄 */}
+      {totalItems > 0 && (
+        <div className="absolute bottom-20 left-0 right-0 px-4 z-30">
+          <button onClick={() => { addPoints(Math.floor(totalPrice/10)); setOrdered(true); }}
+            className="w-full bg-gradient-to-r from-[#0f6e56] to-teal-500 text-white py-4 rounded-2xl font-black text-base shadow-2xl active:scale-[0.98] transition flex items-center justify-between px-6">
+            <div className="flex items-center gap-2">
+              <div className="bg-white/25 w-6 h-6 rounded-full flex items-center justify-center text-xs font-black">{totalItems}</div>
+              <span>預購到店取貨</span>
+            </div>
+            <span>NT${totalPrice.toLocaleString()} →</span>
+          </button>
         </div>
       )}
     </div>
