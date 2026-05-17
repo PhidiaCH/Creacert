@@ -130,32 +130,38 @@ const ANIMALS = [
     img: PX(29993579),
     tags: ['#口袋精靈', '#夜行性', '#大眼萌物', '#A 級專屬'],
     story: '「啾！我是飛飛！水汪汪的大眼睛是我的招牌。我最喜歡在主人的口袋裡睡覺，因為我需要高蛋白飲食與攀爬空間，只有通過 A 級認證的飼主才能帶我回家喔！」',
-    care: 4, lifespan: '10–15 年', trialFee: 1200, size: '迷你', careNote: '需高蛋白飲食，夜行性，需滑翔空間', videoQ: 'sugar glider care guide pet', buyPrice: 8500, buyNote: '蜜袋鼯 · 需A級認證' },
+    care: 4, lifespan: '10–15 年', trialFee: 1200, size: '迷你', careNote: '需高蛋白飲食，夜行性，需滑翔空間', videoQ: 'sugar glider care guide pet',
+    expFee: 300, expNote: '30分鐘近距離互動體驗', buyPrice: 8500, buyNote: '蜜袋鼯寄賣 · 需A級認證', certRequired: 'A', courseHint: '爬蟲飼育認證' },
   { id: 2, name: '月亮', type: 'cat', typeName: '貓咪', breed: '黑白貓', status: '可認養', minLevel: 1,
     img: PX(29561296),
     tags: ['#優雅淑女', '#慢熟', '#靜態陪伴'],
     story: '「你好，我是月亮。我不需要太大空間，最適合高壓環境下工作的研究人員。給我一個窗台和溫柔的主人，我就很滿足了。」',
-    care: 2, lifespan: '12–16 年', trialFee: 800, size: '中型', careNote: '慢熟型，需安靜環境，適合獨居', videoQ: 'black white cat care tips adopt' },
+    care: 2, lifespan: '12–16 年', trialFee: 800, size: '中型', careNote: '慢熟型，需安靜環境，適合獨居', videoQ: 'black white cat care tips adopt',
+    expFee: 0, expNote: '門市互動免費', certRequired: 'C', courseHint: '貓咪基礎課程' },
   { id: 3, name: '小福', type: 'cat', typeName: '貓咪', breed: '橘貓', status: '試養中', minLevel: 1,
     img: PX(4641440),
     tags: ['#貪吃大叔', '#呼嚕聲超大', '#治癒系'],
     story: '「喵～只要聽到罐頭打開的聲音，我會用光速衝過來。我的呼嚕聲是全店最響的，可以舒緩你的考前焦慮！」',
-    care: 2, lifespan: '13–17 年', trialFee: 800, size: '中型', careNote: '親人貪吃，注意飲食控制避免肥胖', videoQ: 'orange tabby cat care daily routine' },
+    care: 2, lifespan: '13–17 年', trialFee: 800, size: '中型', careNote: '親人貪吃，注意飲食控制避免肥胖', videoQ: 'orange tabby cat care daily routine',
+    expFee: 0, expNote: '門市互動免費', certRequired: 'C', courseHint: '貓咪基礎課程' },
   { id: 4, name: '豆豆', type: 'dog', typeName: '犬隻', breed: '米格魯', status: '可認養', minLevel: 2,
     img: PX(8706369),
     tags: ['#精力充沛', '#嗅覺達人', '#戶外型'],
     story: '「汪！我有全世界最靈敏的鼻子，可以聞到 300 公尺外的零食。我需要每天散步，適合喜歡戶外活動的人！」',
-    care: 3, lifespan: '12–15 年', trialFee: 1000, size: '中型', careNote: '需每日散步 30 分鐘以上，嗅覺敏銳', videoQ: 'beagle dog care training exercise' },
+    care: 3, lifespan: '12–15 年', trialFee: 1000, size: '中型', careNote: '需每日散步 30 分鐘以上，嗅覺敏銳', videoQ: 'beagle dog care training exercise',
+    expFee: 0, expNote: '門市互動免費', certRequired: 'B', courseHint: '犬隻基礎服從' },
   { id: 5, name: '小綠', type: 'reptile', typeName: '爬蟲展示', breed: '鬃獅蜥', status: '可預約體驗', minLevel: 2,
     img: PX(6002806),
     tags: ['#冷靜達人', '#親人', '#適合初學者'],
     story: '「嗨，我是小綠。我是爬蟲界最親人的存在，喜歡被人抱著曬太陽。來門市摸摸我，說不定我們就有緣分！」',
-    care: 3, lifespan: '10–15 年', trialFee: 900, size: '小型', careNote: '需 UVB 燈源，每日溫度 28–38°C', videoQ: 'bearded dragon care beginner guide UVB', buyPrice: 5800, buyNote: '寄賣合作 · 店家認證' },
-  { id: 6, name: '小白', type: 'reptile', typeName: '爬蟲展示', breed: '白化球蟒', status: '店長飼養', minLevel: 3,
+    care: 3, lifespan: '10–15 年', trialFee: 900, size: '小型', careNote: '需 UVB 燈源，每日溫度 28–38°C', videoQ: 'bearded dragon care beginner guide UVB',
+    expFee: 250, expNote: '45分鐘上手體驗・可拍照', buyPrice: 5800, buyNote: '寄賣合作 · 店家認證', certRequired: 'B', courseHint: '爬蟲飼育認證' },
+  { id: 6, name: '小白', type: 'reptile', typeName: '爬蟲展示', breed: '白化球蟒', status: '可預約體驗', minLevel: 3,
     img: PX(29378244),
     tags: ['#稀有品種', '#溫馴', '#長壽夥伴'],
     story: '「我是小白，店長的珍貴夥伴。我可以活到 30 年，是一輩子的承諾。來門市體驗與蛇相處的奇妙感受吧！」',
-    care: 4, lifespan: '20–30 年', trialFee: 1500, size: '中型', careNote: '溫馴無毒，需 28°C 恆溫環境，月餵一次', videoQ: 'ball python care guide handling feeding', buyPrice: 15000, buyNote: '稀有白化 · 洽詢購買' },
+    care: 4, lifespan: '20–30 年', trialFee: 1500, size: '中型', careNote: '溫馴無毒，需 28°C 恆溫環境，月餵一次', videoQ: 'ball python care guide handling feeding',
+    expFee: 350, expNote: '60分鐘 VIP 蛇體驗・含解說', buyPrice: 15000, buyNote: '稀有白化 · 洽詢購買', certRequired: 'A', courseHint: '爬蟲飼育認證' },
 ];
 
 const CERT_LEVELS = [
@@ -766,29 +772,82 @@ function AnimalsScreen() {
           <p className="text-[10px] font-black text-slate-400 mb-2 tracking-[0.3em] uppercase">My Story</p>
           <p className="text-slate-600 leading-relaxed text-sm font-bold">{selected.story}</p>
         </div>
-        <div className="grid gap-3 pb-4">
-          {(selected.type === 'reptile' || selected.type === 'small_animal') ? (
-            <button className="w-full py-4 rounded-3xl font-black text-base shadow-xl active:scale-95 transition flex items-center justify-center gap-2 bg-[#0f6e56] text-white shadow-[#0f6e56]/20">
-              <Calendar size={20} /> 預約到店體驗（免費）
-            </button>
-          ) : (
-            <button className={`w-full py-4 rounded-3xl font-black text-base shadow-xl active:scale-95 transition flex items-center justify-center gap-2 ${
-              selected.status === '可認養' ? 'bg-[#0f6e56] text-white shadow-[#0f6e56]/20' : 'bg-slate-200 text-slate-500 cursor-not-allowed'}`}>
-              <ShieldCheck size={20} />
-              {selected.status === '可認養' ? `申請試養 (NT$${selected.trialFee})` : selected.status}
-            </button>
-          )}
-          {selected.buyPrice && (
-            <div className="bg-amber-50 border-2 border-amber-200 rounded-3xl p-4 flex items-center justify-between">
-              <div>
-                <p className="text-xs text-amber-600 font-bold">{selected.buyNote}</p>
-                <p className="text-xl font-black text-amber-800">NT${selected.buyPrice.toLocaleString()}</p>
+        {/* ── 金流漏斗 CTA ── */}
+        <div className="space-y-3 pb-4">
+
+          {/* 步驟 1：體驗預約（立即收入） */}
+          <div className="bg-gradient-to-r from-[#0f6e56] to-teal-500 rounded-3xl p-4 text-white shadow-xl">
+            <p className="text-[10px] font-black opacity-70 tracking-widest uppercase mb-1">Step 1 · 先來認識牠</p>
+            {selected.expFee > 0 ? (
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="font-black text-base leading-snug">{selected.expNote}</p>
+                  <p className="text-teal-100 text-xs font-bold mt-0.5">到店體驗 · 體驗費可折抵購買</p>
+                </div>
+                <button onClick={() => alert(`預約「${selected.name}」體驗\n\n費用：NT$${selected.expFee}\n內容：${selected.expNote}\n\n📍 成大生醫卓群門市\n✅ 體驗費可折抵購買金額`)}
+                  className="bg-white text-[#0f6e56] font-black text-sm px-4 py-2.5 rounded-2xl active:scale-95 transition shadow-md shrink-0 ml-3">
+                  預約 NT${selected.expFee}
+                </button>
               </div>
-              <button onClick={() => alert(`洽詢購買「${selected.name}」\n\n💰 售價：NT$${selected.buyPrice.toLocaleString()}\n📋 ${selected.buyNote}\n\n請至門市或LINE洽詢`)} className="bg-amber-500 text-white px-4 py-2 rounded-2xl font-black text-sm active:scale-95 transition shadow-md">洽詢購買</button>
+            ) : (
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="font-black text-base">{selected.expNote}</p>
+                  <p className="text-teal-100 text-xs font-bold mt-0.5">進門消費咖啡即可互動</p>
+                </div>
+                <button onClick={() => alert('歡迎到店互動！\n點一杯咖啡就能與牠相處 ☕')}
+                  className="bg-white text-[#0f6e56] font-black text-sm px-4 py-2.5 rounded-2xl active:scale-95 transition shadow-md shrink-0 ml-3">
+                  到店互動
+                </button>
+              </div>
+            )}
+          </div>
+
+          {/* 步驟 2：認證要求（引流課程） */}
+          {selected.certRequired && (
+            <div className={`rounded-3xl p-4 border-2 flex items-center gap-3 ${selected.minLevel <= 3 ? 'bg-amber-50 border-amber-200' : 'bg-slate-50 border-slate-200'}`}>
+              <div className={`w-10 h-10 rounded-2xl flex items-center justify-center font-black text-white shrink-0 ${
+                selected.certRequired === 'A' ? 'bg-orange-500' :
+                selected.certRequired === 'B' ? 'bg-[#534ab7]' : 'bg-slate-500'}`}>
+                {selected.certRequired}
+              </div>
+              <div className="flex-1 min-w-0">
+                <p className="font-black text-slate-800 text-sm">{selected.certRequired} 級認證才能帶牠回家</p>
+                <p className="text-xs text-slate-500 font-bold mt-0.5">先修「{selected.courseHint}」解鎖資格</p>
+              </div>
+              <button onClick={() => alert(`去修課吧！\n\n課程：${selected.courseHint}\n通過後即可申請${selected.certRequired}級認證\n→ 切換到「課程」Tab 開始學習`)}
+                className="bg-[#534ab7] text-white font-black text-xs px-3 py-2 rounded-xl active:scale-95 transition shrink-0 shadow-md">
+                去修課 →
+              </button>
             </div>
           )}
-          <button className="w-full bg-white text-[#534ab7] border-2 border-[#534ab7]/20 py-4 rounded-3xl font-black flex items-center justify-center gap-2">
-            <MapPin size={18} /> 到門市看看牠
+
+          {/* 步驟 3：試養 / 購買（大收入） */}
+          {selected.buyPrice ? (
+            <div className="bg-amber-50 border-2 border-amber-200 rounded-3xl p-4">
+              <p className="text-[10px] font-black text-amber-600 tracking-widest uppercase mb-2">Step 3 · 帶牠回家</p>
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-xs text-amber-600 font-bold">{selected.buyNote}</p>
+                  <p className="text-2xl font-black text-amber-800">NT${selected.buyPrice.toLocaleString()}</p>
+                  {selected.expFee > 0 && <p className="text-[10px] text-amber-500 font-bold">體驗費 NT${selected.expFee} 可折抵</p>}
+                </div>
+                <button onClick={() => alert(`洽詢購買「${selected.name}」\n\n💰 售價：NT$${selected.buyPrice.toLocaleString()}\n${selected.expFee > 0 ? `💡 體驗費 NT$${selected.expFee} 可折抵\n` : ''}📋 ${selected.buyNote}\n\n請至門市或 LINE 洽詢`)}
+                  className="bg-amber-500 text-white px-5 py-3 rounded-2xl font-black text-sm active:scale-95 transition shadow-md">
+                  洽詢購買
+                </button>
+              </div>
+            </div>
+          ) : (
+            <button className={`w-full py-4 rounded-3xl font-black text-base shadow-xl active:scale-95 transition flex items-center justify-center gap-2 ${
+              selected.status === '可認養' ? 'bg-[#0f6e56] text-white' : 'bg-slate-100 text-slate-400'}`}>
+              <ShieldCheck size={20} />
+              {selected.status === '可認養' ? `申請試養 NT$${selected.trialFee} / 14天` : selected.status}
+            </button>
+          )}
+
+          <button className="w-full bg-white text-[#534ab7] border-2 border-[#534ab7]/20 py-3.5 rounded-3xl font-black flex items-center justify-center gap-2 text-sm">
+            <MapPin size={16} /> 查看門市位置
           </button>
         </div>
       </div>
@@ -831,10 +890,27 @@ function AnimalsScreen() {
             <div className="p-4 text-center">
               <h3 className="font-black text-slate-800 text-base tracking-tighter">{a.name}</h3>
               <p className="text-[10px] text-slate-400 font-bold tracking-widest uppercase mt-0.5">{a.breed}</p>
-              <div className="flex gap-0.5 justify-center mt-1">
+              <div className="flex gap-0.5 justify-center mt-1.5">
                 {[1,2,3,4,5].map(i => (
                   <div key={i} className={`w-1.5 h-1.5 rounded-full ${i <= a.care ? 'bg-orange-400' : 'bg-slate-200'}`} />
                 ))}
+              </div>
+              {/* 體驗費 / 金流標籤 */}
+              <div className="mt-2">
+                {a.expFee > 0 ? (
+                  <span className="inline-block bg-[#0f6e56] text-white text-[9px] font-black px-2.5 py-1 rounded-full">
+                    體驗 NT${a.expFee}
+                  </span>
+                ) : (
+                  <span className="inline-block bg-slate-100 text-slate-500 text-[9px] font-black px-2.5 py-1 rounded-full">
+                    免費互動
+                  </span>
+                )}
+                {a.buyPrice && (
+                  <span className="inline-block ml-1 bg-amber-50 text-amber-700 text-[9px] font-black px-2 py-1 rounded-full border border-amber-200">
+                    可購買
+                  </span>
+                )}
               </div>
             </div>
           </div>
