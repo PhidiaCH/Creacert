@@ -1519,8 +1519,10 @@ function CommunityScreen() {
 // Tab — 商城（寵物食品 + 爬蟲用品）
 // ─────────────────────────────────────────────
 function ShopScreen({ addPoints }) {
-  const [cat, setCat] = useState('全部');
-  const [cart, setCart] = useState([]);
+  const [cat, setCat]         = useState('全部');
+  const [cart, setCart]       = useState([]);
+  const [showPay, setShowPay] = useState(false);
+  const [showLP, setShowLP]   = useState(false);
   const [ordered, setOrdered] = useState(false);
 
   const SHOP_CATS = ['全部', '爬蟲用品', '小動物', '貓狗', '保健品'];
@@ -1635,15 +1637,51 @@ function ShopScreen({ addPoints }) {
       {/* 浮動結帳欄 */}
       {totalItems > 0 && (
         <div className="absolute bottom-20 left-0 right-0 px-4 z-30">
-          <button onClick={() => { addPoints(Math.floor(totalPrice/10)); setOrdered(true); }}
+          <button onClick={() => setShowPay(true)}
             className="w-full bg-gradient-to-r from-[#0f6e56] to-teal-500 text-white py-4 rounded-2xl font-black text-base shadow-2xl active:scale-[0.98] transition flex items-center justify-between px-6">
             <div className="flex items-center gap-2">
               <div className="bg-white/25 w-6 h-6 rounded-full flex items-center justify-center text-xs font-black">{totalItems}</div>
-              <span>預購到店取貨</span>
+              <span>前往付款</span>
             </div>
             <span>NT${totalPrice.toLocaleString()} →</span>
           </button>
         </div>
+      )}
+
+      {/* 付款方式選擇 */}
+      {showPay && !showLP && (
+        <div className="fixed inset-0 bg-black/60 z-40 flex items-end animate-in fade-in">
+          <div className="bg-white w-full max-w-md mx-auto rounded-t-[3rem] p-6 pb-10 space-y-3">
+            <div className="flex items-center justify-between mb-2">
+              <div>
+                <h3 className="text-lg font-black text-slate-900">選擇付款方式</h3>
+                <p className="text-xs text-slate-400 font-bold mt-0.5">共 NT${totalPrice.toLocaleString()} · {totalItems} 件</p>
+              </div>
+              <button onClick={() => setShowPay(false)} className="text-slate-400"><XCircle size={22} /></button>
+            </div>
+            <button onClick={() => { setShowPay(false); setShowLP(true); }}
+              className="w-full bg-[#00B900] text-white py-4 rounded-2xl font-black flex items-center justify-center gap-2 shadow-lg active:scale-95 transition text-base">
+              <div className="bg-white rounded-lg px-2 py-0.5"><span className="text-[#00B900] font-black text-xs">LINE</span></div>
+              Pay · 行動支付
+            </button>
+            {[['💳','信用卡 / 電子票證'],['💵','到店取貨付現']].map(([icon, label]) => (
+              <button key={label} onClick={() => { addPoints(Math.floor(totalPrice/10)); setShowPay(false); setOrdered(true); }}
+                className="w-full bg-slate-50 border-2 border-slate-100 rounded-2xl py-3.5 font-black flex items-center justify-center gap-2 text-slate-700 active:scale-95 transition">
+                <span className="text-xl">{icon}</span> {label}
+              </button>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* LINE Pay */}
+      {showLP && (
+        <LinePaySheet
+          amount={totalPrice}
+          pointsEarned={Math.floor(totalPrice / 10)}
+          onPaid={() => { addPoints(Math.floor(totalPrice/10)); setShowLP(false); setOrdered(true); }}
+          onClose={() => setShowLP(false)}
+        />
       )}
     </div>
   );
@@ -1914,6 +1952,139 @@ function DiaryScreen({ points }) {
           </div>
         </div>
       )}
+    </div>
+  );
+}
+
+// ─────────────────────────────────────────────
+// LINE Pay 元件
+// ─────────────────────────────────────────────
+function FakeQR({ size = 160 }) {
+  const N = 21;
+  const c = Math.floor(size / N);
+  const S = c * N;
+  const finderAt = (r, col, br, bc) => {
+    const dr = r - br, dc = col - bc;
+    if (dr < 0 || dr > 6 || dc < 0 || dc > 6) return null;
+    if (dr === 0 || dr === 6 || dc === 0 || dc === 6) return true;
+    if (dr >= 2 && dr <= 4 && dc >= 2 && dc <= 4) return true;
+    return false;
+  };
+  const isBlack = (r, col) => {
+    const f = finderAt(r,col,0,0) ?? finderAt(r,col,0,14) ?? finderAt(r,col,14,0);
+    if (f !== null) return f;
+    if ((r <= 7 && col <= 7) || (r <= 7 && col >= 13) || (r >= 13 && col <= 7)) return false;
+    if (r === 6 && col >= 8 && col <= 12) return col % 2 === 0;
+    if (col === 6 && r >= 8 && r <= 12) return r % 2 === 0;
+    return ((r * 13 + col * 11 + r * col) % 4) < 2;
+  };
+  const rects = [];
+  for (let r = 0; r < N; r++) {
+    for (let col = 0; col < N; col++) {
+      if (isBlack(r, col)) rects.push(
+        <rect key={`${r}-${col}`} x={col*c+0.5} y={r*c+0.5} width={c-1} height={c-1} rx={1} />
+      );
+    }
+  }
+  return (
+    <svg width={S} height={S} viewBox={`0 0 ${S} ${S}`}>
+      <rect width={S} height={S} fill="white" />
+      <g fill="#000">{rects}</g>
+    </svg>
+  );
+}
+
+function LinePaySheet({ amount, onPaid, onClose, pointsEarned = 0 }) {
+  const [step, setStep] = useState('confirm'); // confirm | processing | success
+
+  const pay = () => {
+    setStep('processing');
+    setTimeout(() => setStep('success'), 2000);
+    setTimeout(() => onPaid(), 3200);
+  };
+
+  return (
+    <div className="fixed inset-0 z-[200] flex items-end justify-center animate-in fade-in">
+      <div className="absolute inset-0 bg-black/60" onClick={step === 'confirm' ? onClose : undefined} />
+      <div className="relative bg-white w-full max-w-md rounded-t-[3rem] overflow-hidden shadow-2xl animate-in slide-in-from-bottom">
+
+        {step === 'confirm' && (
+          <>
+            {/* LINE Pay 頭部 */}
+            <div className="bg-[#00B900] px-7 pt-8 pb-6 text-white">
+              <div className="flex items-center gap-3 mb-1">
+                <div className="bg-white rounded-xl px-2.5 py-1">
+                  <span className="text-[#00B900] font-black text-sm tracking-tight">LINE</span>
+                </div>
+                <span className="font-black text-2xl tracking-tight">Pay</span>
+              </div>
+              <p className="text-green-100 text-xs font-bold mt-1">安全快速 · 台灣最多人使用的行動支付</p>
+            </div>
+            {/* 金額 */}
+            <div className="px-7 py-5 border-b border-slate-100">
+              <p className="text-[10px] text-slate-400 font-black tracking-widest uppercase mb-1">付款金額</p>
+              <p className="text-4xl font-black text-slate-900 tracking-tight">NT$ {amount.toLocaleString()}</p>
+              {pointsEarned > 0 && (
+                <p className="text-sm text-[#00B900] font-bold mt-1.5">💚 付款後獲得 +{pointsEarned} pt 積分</p>
+              )}
+            </div>
+            {/* QR Code */}
+            <div className="px-7 py-5">
+              <div className="flex flex-col items-center mb-5">
+                <div className="border-4 border-[#00B900] rounded-2xl p-3 shadow-md mb-3">
+                  <FakeQR size={160} />
+                </div>
+                <p className="text-xs text-slate-500 font-bold">打開 LINE App → 掃一掃</p>
+              </div>
+              <div className="flex items-center gap-3 mb-4">
+                <div className="h-px flex-1 bg-slate-200" />
+                <p className="text-xs text-slate-400 font-bold">或</p>
+                <div className="h-px flex-1 bg-slate-200" />
+              </div>
+              <button onClick={pay}
+                className="w-full bg-[#00B900] text-white py-4 rounded-2xl font-black text-base shadow-xl active:scale-95 transition flex items-center justify-center gap-2">
+                <span className="text-xl">💚</span> 確認付款 NT${amount.toLocaleString()}
+              </button>
+              <div className="flex items-center justify-center gap-4 mt-3">
+                <button onClick={onClose} className="text-slate-400 text-sm font-bold py-2">取消</button>
+                <span className="text-slate-200">|</span>
+                <div className="flex items-center gap-1 text-slate-400 text-xs font-bold">
+                  <ShieldCheck size={12} className="text-[#00B900]" /> SSL 加密保護
+                </div>
+              </div>
+            </div>
+          </>
+        )}
+
+        {step === 'processing' && (
+          <div className="px-7 py-20 flex flex-col items-center text-center">
+            <div className="relative mb-8">
+              <div className="w-20 h-20 rounded-full border-4 border-[#00B900]/20 border-t-[#00B900] animate-spin" />
+              <div className="absolute inset-0 flex items-center justify-center">
+                <span className="text-2xl">💚</span>
+              </div>
+            </div>
+            <p className="font-black text-slate-900 text-xl mb-2">付款確認中…</p>
+            <p className="text-slate-400 text-sm font-bold">LINE Pay 安全驗證中，請稍候</p>
+          </div>
+        )}
+
+        {step === 'success' && (
+          <div className="px-7 py-20 flex flex-col items-center text-center">
+            <div className="w-24 h-24 bg-[#00B900] rounded-full flex items-center justify-center mb-6 shadow-2xl shadow-green-300">
+              <Check size={48} className="text-white" />
+            </div>
+            <p className="font-black text-slate-900 text-2xl mb-1">付款成功！</p>
+            <p className="text-[#00B900] font-black text-2xl mb-3">NT${amount.toLocaleString()}</p>
+            <p className="text-slate-400 text-sm font-bold">LINE Pay 扣款完成</p>
+            {pointsEarned > 0 && (
+              <div className="mt-4 bg-[#0f6e56]/5 rounded-2xl px-5 py-3 border border-[#0f6e56]/10">
+                <p className="text-[#0f6e56] text-sm font-black">✅ 已獲得 +{pointsEarned} pt 積分</p>
+              </div>
+            )}
+          </div>
+        )}
+      </div>
     </div>
   );
 }
@@ -3041,7 +3212,8 @@ function ThemePickerModal({ onClose, current, onSelect }) {
 function OrderScreen({ cartItems, addToCart, removeFromCart, clearCart, addPoints }) {
   const [cat, setCat] = useState('全部');
   const [showCheckout, setShowCheckout] = useState(false);
-  const [ordered, setOrdered] = useState(false);
+  const [showLinePay, setShowLinePay]   = useState(false);
+  const [ordered, setOrdered]           = useState(false);
 
   const cats = ['全部', '飲品', '輕食', '甜點'];
   const filtered = cat === '全部' ? MENU_ITEMS : MENU_ITEMS.filter(m => m.cat === cat);
@@ -3167,6 +3339,16 @@ function OrderScreen({ cartItems, addToCart, removeFromCart, clearCart, addPoint
         </div>
       )}
 
+      {/* LINE Pay */}
+      {showLinePay && (
+        <LinePaySheet
+          amount={total}
+          pointsEarned={Math.floor(total / 10)}
+          onPaid={() => { setShowLinePay(false); handleOrder(); }}
+          onClose={() => setShowLinePay(false)}
+        />
+      )}
+
       {/* 結帳 Modal */}
       {showCheckout && (
         <div className="fixed inset-0 bg-black/70 z-50 flex items-end animate-in slide-in-from-bottom">
@@ -3205,16 +3387,22 @@ function OrderScreen({ cartItems, addToCart, removeFromCart, clearCart, addPoint
             </div>
 
             {/* 付款方式 */}
-            <div className="grid grid-cols-3 gap-2">
-              {[['💚','LINE Pay'],['💳','信用卡'],['💵','現金']].map(([icon, label]) => (
+            <p className="text-[10px] text-slate-400 font-black tracking-widest uppercase">選擇付款方式</p>
+            <button
+              onClick={() => { setShowCheckout(false); setShowLinePay(true); }}
+              className="w-full bg-[#00B900] text-white py-4 rounded-2xl font-black text-base flex items-center justify-center gap-2 shadow-lg active:scale-95 transition">
+              <div className="bg-white rounded-lg px-2 py-0.5"><span className="text-[#00B900] font-black text-xs">LINE</span></div>
+              Pay · 掃碼付款
+            </button>
+            <div className="grid grid-cols-2 gap-2">
+              {[['💳','信用卡 / 電子票證'],['💵','現金取餐']].map(([icon, label]) => (
                 <button key={label} onClick={handleOrder}
-                  className="bg-slate-50 border-2 border-slate-100 rounded-xl py-3 flex flex-col items-center gap-1 active:scale-95 transition hover:border-orange-300">
+                  className="bg-slate-50 border-2 border-slate-100 rounded-xl py-3 flex flex-col items-center gap-1 active:scale-95 transition hover:border-slate-300">
                   <span className="text-2xl">{icon}</span>
                   <span className="text-[10px] font-black text-slate-600">{label}</span>
                 </button>
               ))}
             </div>
-            <p className="text-center text-[10px] text-slate-400 font-bold">選擇付款方式即送出訂單</p>
           </div>
         </div>
       )}
@@ -3224,8 +3412,10 @@ function OrderScreen({ cartItems, addToCart, removeFromCart, clearCart, addPoint
 
 // ── 今日點餐 Modal ──
 function CafeMenuModal({ onClose }) {
-  const [cart, setCart] = useState([]);
-  const [ordered, setOrdered] = useState(false);
+  const [cart, setCart]         = useState([]);
+  const [showPay, setShowPay]   = useState(false);
+  const [showLP, setShowLP]     = useState(false);
+  const [ordered, setOrdered]   = useState(false);
 
   const MENU = {
     drinks: [
@@ -3309,12 +3499,46 @@ function CafeMenuModal({ onClose }) {
 
         {cart.length > 0 && (
           <div className="fixed bottom-0 left-0 right-0 max-w-md mx-auto bg-white border-t-2 border-slate-100 px-5 py-4 z-20">
-            <button onClick={() => setOrdered(true)}
+            <button onClick={() => setShowPay(true)}
               className="w-full bg-[#0f6e56] text-white py-4 rounded-2xl font-black text-base shadow-xl active:scale-95 transition flex items-center justify-between px-6">
-              <span>確認點餐</span>
+              <span>前往付款</span>
               <span>NT${total.toLocaleString()} ({cart.reduce((s,x)=>s+x.qty,0)} 項)</span>
             </button>
           </div>
+        )}
+
+        {/* 付款方式選擇 */}
+        {showPay && !showLP && (
+          <div className="fixed inset-0 bg-black/60 z-30 flex items-end animate-in fade-in">
+            <div className="bg-white w-full rounded-t-[3rem] p-6 pb-10 space-y-3">
+              <div className="flex items-center justify-between mb-2">
+                <h3 className="text-lg font-black text-slate-900">選擇付款方式</h3>
+                <button onClick={() => setShowPay(false)} className="text-slate-400"><XCircle size={22} /></button>
+              </div>
+              <p className="text-xs text-slate-400 font-bold">共 NT${total.toLocaleString()}</p>
+              <button onClick={() => { setShowPay(false); setShowLP(true); }}
+                className="w-full bg-[#00B900] text-white py-4 rounded-2xl font-black flex items-center justify-center gap-2 shadow-lg active:scale-95 transition">
+                <div className="bg-white rounded-lg px-2 py-0.5"><span className="text-[#00B900] font-black text-xs">LINE</span></div>
+                Pay · 行動支付
+              </button>
+              {[['💳','信用卡 / 電子票證'],['💵','現場付現']].map(([icon, label]) => (
+                <button key={label} onClick={() => { setShowPay(false); setOrdered(true); }}
+                  className="w-full bg-slate-50 border-2 border-slate-100 rounded-2xl py-3.5 font-black flex items-center justify-center gap-2 text-slate-700 active:scale-95 transition">
+                  <span className="text-xl">{icon}</span> {label}
+                </button>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* LINE Pay */}
+        {showLP && (
+          <LinePaySheet
+            amount={total}
+            pointsEarned={Math.floor(total / 10)}
+            onPaid={() => { setShowLP(false); setOrdered(true); }}
+            onClose={() => setShowLP(false)}
+          />
         )}
       </div>
     </div>
