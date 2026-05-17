@@ -164,11 +164,25 @@ const ANIMALS = [
     expFee: 350, expNote: '60分鐘 VIP 蛇體驗・含解說', buyPrice: 15000, buyNote: '稀有白化 · 洽詢購買', certRequired: 'A', courseHint: '爬蟲飼育認證' },
 ];
 
-const CERT_LEVELS = [
-  { level: 'C', title: 'C 級基礎認證 (Lv.1)', desc: '掌握基本營養、環境安全。', color: 'bg-slate-200 text-slate-700', privileges: ['門市內互動權', '基礎講座參與', '貓咪試養申請'] },
-  { level: 'B', title: 'B 級專業認證 (Lv.2)', desc: '通過行為學測驗與實操考核。', color: 'bg-[#534ab7] text-white', privileges: ['14 天居家試養', '領養費 9 折', '犬隻/爬蟲互動'] },
-  { level: 'A', title: 'A 級大師認證 (Lv.3)', desc: '具備醫療處置與高階品種知識。', color: 'bg-orange-500 text-white', privileges: ['蜜袋鼯租借權', '金牌導師頭銜', '領養費 8 折'] },
+// ── 10 階等級系統 ──────────────────────────────
+const LEVEL_SYSTEM = [
+  { lv: 1,  title: '新手探索者', badge: '🐾', eng: 'Explorer',        pts: 0,     color: 'bg-slate-500',                          privileges: ['門市自由參觀', '基礎講座免費'] },
+  { lv: 2,  title: '動物愛好者', badge: '🌱', eng: 'Animal Lover',    pts: 200,   color: 'bg-teal-500',                           privileges: ['貓狗門市免費互動', '簽到獎勵×1.5'] },
+  { lv: 3,  title: 'C 級學員',  badge: '📖', eng: 'C Learner',       pts: 500,   color: 'bg-cyan-600',                           privileges: ['C 級認證考試資格', '課程早鳥通知'] },
+  { lv: 4,  title: 'C 級認證師', badge: '✅', eng: 'C Certified',     pts: 1000,  color: 'bg-[#534ab7]',                          privileges: ['貓咪 14 天試養', '課程 9 折優惠'] },
+  { lv: 5,  title: '爬蟲觀察者', badge: '🦎', eng: 'Reptile Watcher', pts: 2000,  color: 'bg-blue-600',                           privileges: ['爬蟲體驗優先預訂', '積分加成 +10%'] },
+  { lv: 6,  title: 'B 級認證師', badge: '🎓', eng: 'B Certified',     pts: 3500,  color: 'bg-violet-600',                         privileges: ['犬隻爬蟲全開放', '購買 8.5 折', '積分 +15%'] },
+  { lv: 7,  title: '異寵達人',  badge: '⭐', eng: 'Exotic Master',   pts: 5500,  color: 'bg-amber-500',                          privileges: ['蜜袋鼯 VIP 體驗', '活動早鳥票', '積分 +20%'] },
+  { lv: 8,  title: 'A 級認證師', badge: '🏆', eng: 'A Certified',     pts: 8000,  color: 'bg-orange-500',                         privileges: ['全物種完全解鎖', '購買 8 折', '金牌導師頭銜'] },
+  { lv: 9,  title: 'CreaCert 精英', badge: '👑', eng: 'CC Elite',    pts: 12000, color: 'bg-rose-600',                           privileges: ['贊助商活動邀請', '免費月訂閱 1 次/季', '積分 +25%'] },
+  { lv: 10, title: '生態大使',  badge: '🌟', eng: 'Ambassador',      pts: 20000, color: 'bg-gradient-to-r from-amber-500 to-rose-500', privileges: ['終身會員優惠', '聯名商品設計', 'VIP 限定活動'] },
 ];
+const getUserLevel  = (pts) => LEVEL_SYSTEM.reduce((acc, l) => pts >= l.pts ? l : acc, LEVEL_SYSTEM[0]);
+const getNextLevel  = (pts) => LEVEL_SYSTEM.find(l => l.pts > pts) || null;
+// kept for legacy refs
+const CERT_LEVELS = LEVEL_SYSTEM.slice(2, 5).map(l => ({
+  level: l.badge, title: l.title, desc: '', color: l.color + ' text-white', privileges: l.privileges,
+}));
 
 const COURSES = [
   { id: 1, tag: '貓咪基礎', title: '貓咪營養學',     desc: '主食、零食與補充品的選擇', duration: '45 分鐘', progress: 100, score: 85,  locked: false, paid: false, videoQ: 'cat nutrition food guide' },
@@ -409,7 +423,7 @@ export default function App() {
                 <span className="text-white text-[11px] font-black">{streak}</span>
               </div>
               <div className={`${theme.lvBadge} px-3 py-1 rounded-full text-sm font-bold flex items-center gap-1 cursor-pointer active:scale-95 transition`} onClick={() => setShowCertInfo(true)}>
-                <Award size={16} className="text-orange-300" /> Lv.3
+                <Award size={16} className="text-orange-300" /> Lv.{getUserLevel(points).lv} {getUserLevel(points).badge}
               </div>
               <div className={`${theme.ptBadge} px-3 py-1 rounded-full text-xs font-black shadow-inner`}>
                 {points.toLocaleString()} pt
@@ -427,7 +441,7 @@ export default function App() {
           {tab === 'home'      && <PassportScreen setShowCertInfo={setShowCertInfo} setShowPortrait={setShowPortrait} addPoints={addPoints} setShowPlans={setShowPlans} streak={streak} points={points} />}
           {tab === 'animals'   && <AnimalsScreen />}
           {tab === 'order'     && <OrderScreen cartItems={cartItems} addToCart={addToCart} removeFromCart={removeFromCart} clearCart={clearCart} addPoints={addPoints} />}
-          {tab === 'courses'   && <CoursesScreen addPoints={addPoints} />}
+          {tab === 'courses'   && <CoursesScreen addPoints={addPoints} points={points} />}
           {tab === 'shop'      && <ShopScreen addPoints={addPoints} />}
         </div>
 
@@ -453,7 +467,7 @@ export default function App() {
           <TabBtn icon={<BookOpen />}     label="課程" active={tab==='courses'} onClick={() => setTab('courses')} theme={theme} />
         </div>
 
-        {showCertInfo    && <CertificationModal onClose={() => setShowCertInfo(false)} />}
+        {showCertInfo    && <CertificationModal points={points} onClose={() => setShowCertInfo(false)} />}
         {showPortrait    && <PortraitModal      onClose={() => setShowPortrait(false)} />}
         {showInvestor    && <InvestorDashboard  onClose={() => setShowInvestor(false)} />}
         {showPlans       && <PlansModal         onClose={() => setShowPlans(false)} />}
@@ -550,7 +564,7 @@ function PassportScreen({ setShowCertInfo, setShowPortrait, addPoints, setShowPl
 
         {/* 三數據卡 */}
         <div className="grid grid-cols-3 gap-2 relative z-10 mb-4">
-          {[['已修課程','7'],['試養次數','3'],['累積積分','1280']].map(([k,v]) => (
+          {[['已修課程','7'],['試養次數','3'],['累積積分', points.toLocaleString()]].map(([k,v]) => (
             <div key={k} className="bg-black/10 rounded-2xl p-3 border border-white/10 text-center">
               <p className="text-[9px] opacity-60 mb-0.5">{k}</p>
               <p className="text-xl font-black">{v}</p>
@@ -926,7 +940,7 @@ function AnimalsScreen() {
 // ─────────────────────────────────────────────
 // Tab 3 — 課程頁
 // ─────────────────────────────────────────────
-function CoursesScreen({ addPoints }) {
+function CoursesScreen({ addPoints, points = 0 }) {
   const [activeQuiz, setActiveQuiz]     = useState(null);
   const [done, setDone]                 = useState(new Set([1, 2]));
   const [activeVideo, setActiveVideo]   = useState(null);
@@ -954,34 +968,45 @@ function CoursesScreen({ addPoints }) {
         </div>
       </div>
 
-      {/* 認證路徑圖 */}
+      {/* 10階等級路徑圖（橫向可滑） */}
       <div className="bg-white rounded-[2rem] p-5 border border-slate-100 shadow-sm">
-        <p className="text-xs font-black text-slate-400 tracking-widest uppercase mb-4">認證升級路徑</p>
-        <div className="flex items-center justify-between">
-          {[
-            { level:'C', label:'基礎認證', desc:'貓咪課程', color:'bg-slate-600', done:true },
-            { level:'B', label:'專業認證', desc:'行為+犬隻', color:'bg-[#534ab7]', done:true },
-            { level:'A', label:'大師認證', desc:'高階物種', color:'bg-orange-500', done:false },
-          ].map((c, i) => (
-            <React.Fragment key={c.level}>
-              <div className="flex flex-col items-center gap-1.5">
-                <div className={`w-12 h-12 rounded-2xl flex items-center justify-center font-black text-white text-lg shadow-md ${c.done ? c.color : 'bg-slate-200'} relative`}>
-                  {c.level}
-                  {c.done && <div className="absolute -top-1 -right-1 w-4 h-4 bg-green-500 rounded-full flex items-center justify-center"><CheckCircle2 size={10} className="text-white" /></div>}
+        <div className="flex items-center justify-between mb-3">
+          <p className="text-xs font-black text-slate-400 tracking-widest uppercase">成長等級路徑</p>
+          <span className="text-[10px] font-black text-[#0f6e56]">Lv.{getUserLevel(points).lv} / 10 {getUserLevel(points).badge}</span>
+        </div>
+        {/* 橫向捲動等級列 */}
+        <div className="flex items-end gap-0 overflow-x-auto scrollbar-hide pb-2">
+          {LEVEL_SYSTEM.map((l, i) => {
+            const isUnlocked = points >= l.pts;
+            const isCur      = getUserLevel(points).lv === l.lv;
+            return (
+              <React.Fragment key={l.lv}>
+                <div className="flex flex-col items-center gap-1 shrink-0">
+                  <div className={`w-11 h-11 rounded-2xl flex flex-col items-center justify-center shadow text-base leading-none relative transition
+                    ${isCur ? l.color + ' text-white ring-2 ring-offset-1 ring-[#0f6e56] scale-110' : isUnlocked ? l.color + ' text-white opacity-80' : 'bg-slate-100 text-slate-300'}`}>
+                    {l.badge}
+                    {isCur && <div className="absolute -top-2.5 text-[8px] font-black text-[#0f6e56] whitespace-nowrap">▼ 我</div>}
+                    {isUnlocked && !isCur && <div className="absolute -top-1 -right-1 w-3.5 h-3.5 bg-green-500 rounded-full flex items-center justify-center"><CheckCircle2 size={8} className="text-white" /></div>}
+                  </div>
+                  <p className="text-[8px] font-black text-slate-600 w-11 text-center leading-tight">{l.title}</p>
+                  <p className="text-[7px] text-slate-400 font-bold">{l.pts >= 1000 ? (l.pts/1000)+'k' : l.pts}pt</p>
                 </div>
-                <p className="text-[10px] font-black text-slate-700">{c.label}</p>
-                <p className="text-[9px] text-slate-400 font-bold">{c.desc}</p>
-              </div>
-              {i < 2 && (
-                <div className={`flex-1 h-1 mx-1 rounded-full ${i === 0 ? 'bg-gradient-to-r from-slate-600 to-[#534ab7]' : 'bg-slate-200'}`} />
-              )}
-            </React.Fragment>
-          ))}
+                {i < LEVEL_SYSTEM.length - 1 && (
+                  <div className={`w-4 h-1 rounded-full shrink-0 mb-7 ${isUnlocked && points >= LEVEL_SYSTEM[i+1]?.pts ? 'bg-[#0f6e56]' : isUnlocked ? 'bg-gradient-to-r from-[#0f6e56] to-slate-200' : 'bg-slate-200'}`} />
+                )}
+              </React.Fragment>
+            );
+          })}
         </div>
-        <div className="mt-4 bg-orange-50 rounded-2xl p-3 border border-orange-100 flex items-center gap-2">
-          <Trophy size={16} className="text-orange-600 shrink-0" />
-          <p className="text-[11px] font-bold text-orange-800">完成爬蟲課程即可解鎖 <span className="font-black">A 級大師認證</span>，獲得蜜袋鼯租借資格！</p>
-        </div>
+        {/* 下一等級提示 */}
+        {getNextLevel(points) && (
+          <div className="mt-3 bg-[#0f6e56]/5 rounded-2xl p-3 border border-[#0f6e56]/20 flex items-center gap-2">
+            <Trophy size={15} className="text-[#0f6e56] shrink-0" />
+            <p className="text-[10px] font-bold text-[#0f6e56]">
+              再累積 <span className="font-black">{(getNextLevel(points).pts - points).toLocaleString()} pt</span> 升到 <span className="font-black">{getNextLevel(points).badge} {getNextLevel(points).title}</span>，解鎖 {getNextLevel(points).privileges[0]}！
+            </p>
+          </div>
+        )}
       </div>
 
       {groups.map(({ tag, items }) => (
@@ -1655,17 +1680,31 @@ function DiaryScreen({ points }) {
                 <p className="text-lg font-black">NT${Math.floor(points * 0.05).toLocaleString()}</p>
               </div>
             </div>
-            {/* 下一個兌換目標 */}
-            <div className="bg-black/20 rounded-2xl p-3">
-              <div className="flex justify-between text-[10px] font-bold mb-2 opacity-80">
-                <span>🎯 下一個目標：免費拿鐵（2000 pt）</span>
-                <span>{Math.min(points, 2000)} / 2000</span>
-              </div>
-              <div className="h-2 bg-black/20 rounded-full overflow-hidden">
-                <div className="h-full bg-gradient-to-r from-yellow-300 to-orange-400 rounded-full transition-all" style={{ width: `${Math.min((points / 2000) * 100, 100)}%` }} />
-              </div>
-              <p className="text-[10px] opacity-60 font-bold mt-1">還差 {Math.max(2000 - points, 0)} pt · 約消費 NT${Math.max(2000 - points, 0) * 10} 可達成</p>
-            </div>
+            {/* 等級進度 */}
+            {(() => {
+              const cur  = getUserLevel(points);
+              const next = getNextLevel(points);
+              const pct  = next ? Math.min(((points - cur.pts) / (next.pts - cur.pts)) * 100, 100) : 100;
+              return (
+                <div className="bg-black/20 rounded-2xl p-3">
+                  <div className="flex items-center gap-2 mb-1">
+                    <span className="text-lg">{cur.badge}</span>
+                    <div className="flex-1">
+                      <div className="flex justify-between text-[10px] font-bold opacity-90">
+                        <span>Lv.{cur.lv} {cur.title}</span>
+                        {next && <span>→ Lv.{next.lv} {next.badge} {next.pts.toLocaleString()}pt</span>}
+                      </div>
+                    </div>
+                  </div>
+                  <div className="h-2 bg-black/20 rounded-full overflow-hidden">
+                    <div className="h-full bg-gradient-to-r from-yellow-300 to-orange-400 rounded-full transition-all" style={{ width: `${pct}%` }} />
+                  </div>
+                  <p className="text-[10px] opacity-60 font-bold mt-1">
+                    {next ? `還差 ${(next.pts - points).toLocaleString()} pt 升級 · 解鎖${next.privileges[0]}` : '🎉 已達最高等級！'}
+                  </p>
+                </div>
+              );
+            })()}
           </div>
 
           {/* 如何賺積分 */}
@@ -1766,27 +1805,71 @@ function DiaryScreen({ points }) {
 // ─────────────────────────────────────────────
 // Modals
 // ─────────────────────────────────────────────
-function CertificationModal({ onClose }) {
+function CertificationModal({ onClose, points = 0 }) {
+  const cur  = getUserLevel(points);
+  const next = getNextLevel(points);
+  const pct  = next ? Math.round(((points - cur.pts) / (next.pts - cur.pts)) * 100) : 100;
   return (
-    <div className="fixed inset-0 bg-black/80 z-[60] flex items-center justify-center p-6 animate-in fade-in">
-      <div className="bg-white rounded-[3rem] w-full max-w-sm p-8 relative shadow-2xl">
-        <button onClick={onClose} className="absolute top-7 right-7 text-slate-400"><XCircle /></button>
-        <div className="text-center mb-6"><ShieldCheck size={44} className="text-[#0f6e56] mx-auto mb-3" /><h2 className="text-2xl font-black">認證等級說明</h2></div>
-        <div className="space-y-3">
-          {CERT_LEVELS.map((c, i) => (
-            <div key={i} className={`flex gap-4 p-4 rounded-3xl border-2 ${c.level === 'A' ? 'bg-orange-50 border-orange-300/30' : 'bg-slate-50 border-slate-100'}`}>
-              <div className={`font-black w-10 h-10 rounded-xl flex items-center justify-center shrink-0 text-sm ${c.color}`}>{c.level}</div>
-              <div>
-                <p className="font-black text-sm">{c.title}</p>
-                <p className="text-[10px] text-slate-500 mt-0.5">{c.desc}</p>
-                <div className="flex flex-wrap gap-1 mt-2">
-                  {c.privileges.map(p => <span key={p} className="text-[9px] bg-white border border-slate-200 px-2 py-0.5 rounded-full font-bold text-slate-600">{p}</span>)}
+    <div className="fixed inset-0 bg-black/80 z-[60] flex items-center justify-center p-4 animate-in fade-in">
+      <div className="bg-white rounded-[3rem] w-full max-w-sm relative shadow-2xl flex flex-col max-h-[90vh]">
+        <div className="p-7 pb-4 shrink-0">
+          <button onClick={onClose} className="absolute top-6 right-6 text-slate-400"><XCircle /></button>
+          <div className="text-center mb-4">
+            <ShieldCheck size={40} className="text-[#0f6e56] mx-auto mb-2" />
+            <h2 className="text-2xl font-black">成長等級系統</h2>
+            <p className="text-xs text-slate-400 font-bold mt-0.5">10 個等級 · 解鎖更多特權</p>
+          </div>
+          {/* 目前等級卡 */}
+          <div className={`${cur.color} text-white rounded-2xl p-4 mb-4 flex items-center gap-4`}>
+            <div className="text-4xl">{cur.badge}</div>
+            <div className="flex-1">
+              <p className="text-[10px] opacity-70 font-black uppercase tracking-widest">目前等級 Lv.{cur.lv}</p>
+              <p className="text-xl font-black">{cur.title}</p>
+              {next && (
+                <>
+                  <div className="flex items-center justify-between mt-2 text-[10px] opacity-80 font-bold">
+                    <span>{points.toLocaleString()} pt</span><span>→ {next.pts.toLocaleString()} pt ({next.title})</span>
+                  </div>
+                  <div className="h-1.5 bg-white/20 rounded-full mt-1 overflow-hidden">
+                    <div className="h-full bg-white rounded-full transition-all" style={{ width: `${pct}%` }} />
+                  </div>
+                  <p className="text-[10px] opacity-70 font-bold mt-1">還差 {(next.pts - points).toLocaleString()} pt 升級</p>
+                </>
+              )}
+              {!next && <p className="text-xs opacity-80 font-bold mt-1">🎉 已達最高等級！</p>}
+            </div>
+          </div>
+        </div>
+        {/* 所有等級列表（可滾動） */}
+        <div className="overflow-y-auto px-7 pb-7 space-y-2">
+          {LEVEL_SYSTEM.map((l) => {
+            const isCur     = l.lv === cur.lv;
+            const isUnlocked = points >= l.pts;
+            return (
+              <div key={l.lv} className={`flex gap-3 p-3.5 rounded-2xl border-2 transition ${isCur ? 'border-[#0f6e56] bg-[#0f6e56]/5 shadow-md' : isUnlocked ? 'border-slate-100 bg-slate-50' : 'border-dashed border-slate-200 bg-white opacity-50'}`}>
+                {/* 等級徽章 */}
+                <div className={`${l.color} text-white w-11 h-11 rounded-xl flex flex-col items-center justify-center shrink-0 shadow-sm text-base leading-none`}>
+                  <span>{l.badge}</span>
+                  <span className="text-[8px] font-black opacity-80">{l.lv}</span>
+                </div>
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-center gap-1.5 flex-wrap">
+                    <p className="font-black text-sm text-slate-800">{l.title}</p>
+                    {isCur && <span className="bg-[#0f6e56] text-white text-[8px] font-black px-1.5 py-0.5 rounded-full">現在</span>}
+                    {!isCur && isUnlocked && <span className="bg-green-100 text-green-700 text-[8px] font-black px-1.5 py-0.5 rounded-full">✓ 已解鎖</span>}
+                  </div>
+                  <p className="text-[10px] text-slate-400 font-bold mt-0.5">{l.eng} · 需 {l.pts.toLocaleString()} pt</p>
+                  <div className="flex flex-wrap gap-1 mt-1.5">
+                    {l.privileges.map(p => (
+                      <span key={p} className={`text-[9px] px-2 py-0.5 rounded-full font-bold border ${isUnlocked ? 'bg-white border-slate-200 text-slate-600' : 'bg-slate-100 border-slate-100 text-slate-400'}`}>{p}</span>
+                    ))}
+                  </div>
                 </div>
               </div>
-            </div>
-          ))}
+            );
+          })}
+          <button onClick={onClose} className="w-full bg-slate-900 text-white py-4 rounded-2xl font-black mt-4 shadow-xl">繼續收集積分 💪</button>
         </div>
-        <button onClick={onClose} className="w-full bg-slate-900 text-white py-4 rounded-2xl font-black mt-6 shadow-xl">我了解了</button>
       </div>
     </div>
   );
