@@ -5,7 +5,8 @@ const config: CapacitorConfig = {
   appName: 'CreaCert',
   webDir: 'dist',
   server: {
-    androidScheme: 'https',
+    url: 'https://pawcert.vercel.app',
+    cleartext: false,
   },
   plugins: {
     SplashScreen: {
