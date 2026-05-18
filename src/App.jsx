@@ -537,7 +537,7 @@ export default function App() {
 
         {/* 內容區 */}
         <div className={`flex-1 overflow-y-auto scrollbar-hide ${themeKey === 'young' ? 'bg-slate-900' : themeKey === 'senior' ? 'bg-amber-50' : 'bg-slate-50'}`}>
-          {tab === 'home'      && <PassportScreen setShowCertInfo={setShowCertInfo} setShowPortrait={setShowPortrait} addPoints={addPoints} setShowPlans={setShowPlans} streak={streak} points={points} setShowFounderPlaybook={setShowFounderPlaybook} setShowStoreMap={setShowStoreMap} setTab={setTab} />}
+          {tab === 'home'      && <PassportScreen setShowCertInfo={setShowCertInfo} setShowPortrait={setShowPortrait} addPoints={addPoints} setShowPlans={setShowPlans} streak={streak} points={points} setShowFounderPlaybook={setShowFounderPlaybook} setShowFounderPin={setShowFounderPin} setShowStoreMap={setShowStoreMap} setTab={setTab} />}
           {tab === 'animals'   && <AnimalsScreen />}
           {tab === 'order'     && <OrderScreen cartItems={cartItems} addToCart={addToCart} removeFromCart={removeFromCart} clearCart={clearCart} addPoints={addPoints} />}
           {tab === 'courses'   && <CoursesScreen addPoints={addPoints} points={points} />}
@@ -593,7 +593,7 @@ function TabBtn({ icon, label, active, onClick, theme }) {
 // ─────────────────────────────────────────────
 // Tab 1 — 認證護照頁
 // ─────────────────────────────────────────────
-function PassportScreen({ setShowCertInfo, setShowPortrait, addPoints, setShowPlans, streak, points = 0, setShowFounderPlaybook, setShowStoreMap, setTab }) {
+function PassportScreen({ setShowCertInfo, setShowPortrait, addPoints, setShowPlans, streak, points = 0, setShowFounderPlaybook, setShowFounderPin, setShowStoreMap, setTab }) {
   const [showQR, setShowQR] = useState(false);
   const [showBooking, setShowBooking] = useState(false);
   const [showCafeMenu, setShowCafeMenu] = useState(false);
