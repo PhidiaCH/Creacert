@@ -503,8 +503,8 @@ export default function App() {
 
   return (
     <ThemeCtx.Provider value={theme}>
-    <div className={`${theme.appBg} min-h-screen flex items-center justify-center font-sans`}>
-      <div className={`w-full max-w-md h-[850px] max-h-screen relative overflow-hidden shadow-2xl sm:rounded-[2.5rem] sm:border-[10px] border-gray-900 flex flex-col ${themeKey === 'young' ? 'bg-slate-900' : 'bg-white'}`}>
+    <div className={`${theme.appBg} min-h-[100dvh] flex items-center justify-center font-sans`}>
+      <div className={`w-full max-w-md h-[850px] max-h-[100dvh] relative overflow-hidden shadow-2xl sm:rounded-[2.5rem] sm:border-[10px] border-gray-900 flex flex-col ${themeKey === 'young' ? 'bg-slate-900' : 'bg-white'}`}>
 
         {/* 頂部狀態列 */}
         <div className={`${theme.headerBg} text-white pt-6 pb-4 px-6 shadow-lg z-30 shrink-0`}>
