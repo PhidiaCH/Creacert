@@ -7,6 +7,7 @@ import {
   Play, PlayCircle, Tv2, Eye, Zap, Crown, Gift, TrendingUp,
   Flame, Target, Share2, ThumbsUp, MessageCircle, Bookmark,
   ChevronRight, Check, Palette, ShoppingCart, Utensils, Minus, Plus,
+  LayoutGrid,
 } from 'lucide-react';
 
 // ─────────────────────────────────────────────
@@ -462,6 +463,7 @@ export default function App() {
   const [showThemePicker, setShowThemePicker] = useState(false);
   const [showFounderPlaybook, setShowFounderPlaybook] = useState(false);
   const [showFounderPin, setShowFounderPin]           = useState(false);
+  const [showStoreMap, setShowStoreMap]               = useState(false);
   const [themeKey, setThemeKey] = useState(() => localStorage.getItem('cc_theme') || 'pro');
   const theme = THEMES[themeKey] || THEMES.pro;
   const [logoTaps, setLogoTaps] = useState(0);
@@ -535,7 +537,7 @@ export default function App() {
 
         {/* 內容區 */}
         <div className={`flex-1 overflow-y-auto scrollbar-hide ${themeKey === 'young' ? 'bg-slate-900' : themeKey === 'senior' ? 'bg-amber-50' : 'bg-slate-50'}`}>
-          {tab === 'home'      && <PassportScreen setShowCertInfo={setShowCertInfo} setShowPortrait={setShowPortrait} addPoints={addPoints} setShowPlans={setShowPlans} streak={streak} points={points} setShowFounderPlaybook={setShowFounderPlaybook} />}
+          {tab === 'home'      && <PassportScreen setShowCertInfo={setShowCertInfo} setShowPortrait={setShowPortrait} addPoints={addPoints} setShowPlans={setShowPlans} streak={streak} points={points} setShowFounderPlaybook={setShowFounderPlaybook} setShowStoreMap={setShowStoreMap} setTab={setTab} />}
           {tab === 'animals'   && <AnimalsScreen />}
           {tab === 'order'     && <OrderScreen cartItems={cartItems} addToCart={addToCart} removeFromCart={removeFromCart} clearCart={clearCart} addPoints={addPoints} />}
           {tab === 'courses'   && <CoursesScreen addPoints={addPoints} points={points} />}
@@ -571,6 +573,7 @@ export default function App() {
         {showFounderPlaybook && <FounderPlaybook    onClose={() => setShowFounderPlaybook(false)} />}
         {showPlans       && <PlansModal         onClose={() => setShowPlans(false)} />}
         {showThemePicker && <ThemePickerModal   onClose={() => setShowThemePicker(false)} current={themeKey} onSelect={switchTheme} />}
+        {showStoreMap    && <StoreMapModal      onClose={() => setShowStoreMap(false)} setTab={setTab} />}
       </div>
     </div>
     </ThemeCtx.Provider>
@@ -590,7 +593,7 @@ function TabBtn({ icon, label, active, onClick, theme }) {
 // ─────────────────────────────────────────────
 // Tab 1 — 認證護照頁
 // ─────────────────────────────────────────────
-function PassportScreen({ setShowCertInfo, setShowPortrait, addPoints, setShowPlans, streak, points = 0, setShowFounderPlaybook }) {
+function PassportScreen({ setShowCertInfo, setShowPortrait, addPoints, setShowPlans, streak, points = 0, setShowFounderPlaybook, setShowStoreMap, setTab }) {
   const [showQR, setShowQR] = useState(false);
   const [showBooking, setShowBooking] = useState(false);
   const [showCafeMenu, setShowCafeMenu] = useState(false);
@@ -786,14 +789,18 @@ function PassportScreen({ setShowCertInfo, setShowPortrait, addPoints, setShowPl
       </section>
 
       {/* 門市導流 */}
-      <section className="grid grid-cols-2 gap-4 pb-2">
-        <button onClick={handleCheckIn} className="bg-white rounded-3xl p-5 shadow-sm border border-slate-100 flex flex-col items-center gap-3 hover:border-[#0f6e56] transition-all group">
-          <div className="bg-[#0f6e56]/5 p-4 rounded-2xl text-[#0f6e56] group-hover:bg-[#0f6e56] group-hover:text-white transition-colors"><QrCode size={28} /></div>
-          <p className="text-sm font-black text-slate-800">門市掃碼打卡</p>
+      <section className="grid grid-cols-3 gap-3 pb-2">
+        <button onClick={handleCheckIn} className="bg-white rounded-3xl p-4 shadow-sm border border-slate-100 flex flex-col items-center gap-2 hover:border-[#0f6e56] transition-all group">
+          <div className="bg-[#0f6e56]/5 p-3 rounded-2xl text-[#0f6e56] group-hover:bg-[#0f6e56] group-hover:text-white transition-colors"><QrCode size={24} /></div>
+          <p className="text-xs font-black text-slate-800 text-center leading-tight">門市<br/>掃碼打卡</p>
         </button>
-        <button onClick={() => setShowCafeMenu(true)} className="bg-white rounded-3xl p-5 shadow-sm border border-slate-100 flex flex-col items-center gap-3 hover:border-orange-500 transition-all group">
-          <div className="bg-orange-50 p-4 rounded-2xl text-orange-600 group-hover:bg-orange-500 group-hover:text-white transition-colors"><Coffee size={28} /></div>
-          <p className="text-sm font-black text-slate-800">今日點餐</p>
+        <button onClick={() => setShowCafeMenu(true)} className="bg-white rounded-3xl p-4 shadow-sm border border-slate-100 flex flex-col items-center gap-2 hover:border-orange-500 transition-all group">
+          <div className="bg-orange-50 p-3 rounded-2xl text-orange-600 group-hover:bg-orange-500 group-hover:text-white transition-colors"><Coffee size={24} /></div>
+          <p className="text-xs font-black text-slate-800 text-center leading-tight">今日<br/>點餐</p>
+        </button>
+        <button onClick={() => setShowStoreMap && setShowStoreMap(true)} className="bg-white rounded-3xl p-4 shadow-sm border border-slate-100 flex flex-col items-center gap-2 hover:border-[#534ab7] transition-all group">
+          <div className="bg-[#534ab7]/5 p-3 rounded-2xl text-[#534ab7] group-hover:bg-[#534ab7] group-hover:text-white transition-colors"><LayoutGrid size={24} /></div>
+          <p className="text-xs font-black text-slate-800 text-center leading-tight">門市<br/>場域地圖</p>
         </button>
       </section>
 
@@ -3539,6 +3546,236 @@ function CafeMenuModal({ onClose }) {
             onPaid={() => { setShowLP(false); setOrdered(true); }}
             onClose={() => setShowLP(false)}
           />
+        )}
+      </div>
+    </div>
+  );
+}
+
+// ─────────────────────────────────────────────
+// 28坪門市地圖 — 資料 & 元件
+// ─────────────────────────────────────────────
+const STORE_ZONES = [
+  { id:'entrance', short:'入口打卡',   name:'入口 / QR 打卡站',      emoji:'🚪', area:1,
+    color:'bg-green-100',  border:'border-green-400',  text:'text-green-900',  hdr:'bg-green-500',
+    appLink:'首頁 → 門市掃碼打卡', tab:'home',
+    liveStatus:'🟢 開放中',
+    appFeatures:['QR 掃碼 +20pt','每日打卡','App 首次綁定'],
+    desc:'進門即掃碼，每日獲得 20 積分。App 新用戶可在此完成首次綁定，掃碼後自動觸發認證護照頁。' },
+  { id:'kitchen',  short:'廚房',       name:'廚房',                   emoji:'🍳', area:4,
+    color:'bg-gray-100',   border:'border-gray-400',   text:'text-gray-800',   hdr:'bg-gray-500',
+    appLink:'點餐 → 咖啡菜單', tab:'order',
+    liveStatus:'🟢 營業中',
+    appFeatures:['咖啡輕食點餐','爬蟲造型甜點','LINE Pay 結帳'],
+    desc:'供應招牌爬蟲拿鐵、輕食早午餐及造型馬卡龍。App 點餐訂單直接傳送廚房出單機，無須現金。' },
+  { id:'counter',  short:'櫃台',       name:'櫃台 / 收銀',            emoji:'💳', area:3,
+    color:'bg-orange-100', border:'border-orange-400', text:'text-orange-900', hdr:'bg-orange-500',
+    appLink:'首頁 → 方案訂閱', tab:'home',
+    liveStatus:'🟢 服務中',
+    appFeatures:['LINE Pay 結帳','會員掃碼享折扣','訂閱方案辦理','認證費收取','積分兌換'],
+    desc:'主要服務台。持 App 認證護照掃碼，系統自動套用等級折扣（C→9折 / B→85折 / A→8折）。試養與認證申請皆在此辦理。' },
+  { id:'shop',     short:'商品區',     name:'商品展示架',             emoji:'🛒', area:2,
+    color:'bg-purple-100', border:'border-purple-400', text:'text-purple-900', hdr:'bg-purple-500',
+    appLink:'商城 → 寵物用品', tab:'shop',
+    liveStatus:'🟢 開放選購',
+    appFeatures:['掃碼加入購物車','認證師推薦商品','積分折抵現金'],
+    desc:'UVB 燈具、寵物食品、益生菌等陳列。掃商品旁 QR 可直接加入 App 購物車，認證師會員享折扣。' },
+  { id:'courses',  short:'課程站',     name:'認證考試站',             emoji:'🎓', area:2,
+    color:'bg-blue-100',   border:'border-blue-400',   text:'text-blue-900',   hdr:'bg-blue-500',
+    appLink:'課程 → 認證測驗', tab:'courses',
+    liveStatus:'🟡 1 位使用中',
+    appFeatures:['App 測驗解鎖','iPad 上課','即時升級認證','QR 解鎖課程'],
+    desc:'4 台 iPad 考試座位。完成課程後可在此現場測驗，通過即時升級 App 認證等級並發放數位徽章。' },
+  { id:'live',     short:'直播角',     name:'直播 / 拍攝角',          emoji:'📹', area:1,
+    color:'bg-red-100',    border:'border-red-400',    text:'text-red-900',    hdr:'bg-red-500',
+    appLink:'首頁 → 直播開播', tab:'home',
+    liveStatus:'🟢 空閒・可用',
+    appFeatures:['App 直播 +20pt','AR 濾鏡 +10pt','短影音上傳 +30pt'],
+    desc:'環形補光燈＋動物主題背景板。開啟 App 直播功能獲積分，熱門時段額外獎勵。影片上傳至生態圈。' },
+  { id:'reptile',  short:'爬蟲艙',     name:'爬蟲展示艙',             emoji:'🦎', area:3,
+    color:'bg-teal-100',   border:'border-teal-400',   text:'text-teal-900',   hdr:'bg-teal-600',
+    appLink:'圖鑑 → 爬蟲', tab:'animals',
+    liveStatus:'🟢 小綠：可預約',
+    appFeatures:['B 級解鎖上手體驗','App 預約時段','掃解說牌獲知識 +5pt','A 級 VIP 互動'],
+    desc:'恆溫玻璃展示艙（28–38°C）展示鬃獅蜥與球蟒。B 級以上掃 App QR 可預約上手體驗（NT$250 起），解說牌掃描可獲取飼育知識積分。' },
+  { id:'cats',     short:'貓咪區',     name:'貓咪互動區',             emoji:'🐱', area:4,
+    color:'bg-pink-100',   border:'border-pink-400',   text:'text-pink-900',   hdr:'bg-pink-500',
+    appLink:'圖鑑 → 貓咪', tab:'animals',
+    liveStatus:'🟡 月亮＋小福 悠閒中',
+    appFeatures:['C 級免費入場','試養申請','日記記錄','互動打卡 +15pt'],
+    desc:'半開放式貓咪走廊。持 App C 級以上免費入場，掃門口 QR 完成互動打卡。互動後可直接在 App 圖鑑頁申請 14 天居家試養。' },
+  { id:'cafe',     short:'讀書區',     name:'咖啡座位 / 讀書區',      emoji:'☕', area:5,
+    color:'bg-amber-100',  border:'border-amber-400',  text:'text-amber-900',  hdr:'bg-amber-500',
+    appLink:'首頁 → 預約讀書艙', tab:'home',
+    liveStatus:'🟡 3 / 6 座使用中',
+    appFeatures:['App 預約時段','課程線上學習','積分折抵飲品','打卡 +20pt'],
+    desc:'6 個獨立讀書艙（附插座＋Wi-Fi），適合備考備賽。App 預約 Off-Peak 50pt/hr，飲品消費可用積分折抵，課程影片可在此播放學習。' },
+  { id:'small',    short:'蜜袋鼯',     name:'小動物 / 蜜袋鼯區',      emoji:'🦘', area:1,
+    color:'bg-rose-100',   border:'border-rose-400',   text:'text-rose-900',   hdr:'bg-rose-500',
+    appLink:'圖鑑 → 小動物', tab:'animals',
+    liveStatus:'🌙 飛飛：夜行休眠',
+    appFeatures:['A 級 VIP 專屬','App 預約互動 NT$300','試養租借資格'],
+    desc:'蜜袋鼯飛飛的恆溫夜行環境（22–24°C）。A 級認證師透過 App 預約 30 分鐘近距離互動，傍晚後最活躍，可申請租借資格。' },
+  { id:'back',     short:'後台',       name:'後台・廁所・倉儲',        emoji:'📦', area:2,
+    color:'bg-slate-100',  border:'border-slate-300',  text:'text-slate-500',  hdr:'bg-slate-400',
+    appLink: null, tab: null,
+    liveStatus:'🔒 員工區',
+    appFeatures:[],
+    desc:'備餐儲藏室、員工休息區，含客用衛生間一間。不對外開放。' },
+];
+
+function ZoneBlock({ z, selected, onSelect, flex = 1, borderRight = false }) {
+  const isActive = selected === z.id;
+  return (
+    <button
+      onClick={() => onSelect(isActive ? null : z.id)}
+      style={{ flex }}
+      className={[
+        'flex flex-col items-center justify-center transition-all duration-150 active:scale-95 select-none',
+        isActive ? `${z.hdr} text-white ring-2 ring-inset ring-white/40` : `${z.color} ${z.text}`,
+        borderRight ? 'border-r border-slate-200' : '',
+      ].join(' ')}
+    >
+      <span className="text-sm leading-none">{z.emoji}</span>
+      <span className="font-black text-[8px] leading-tight text-center px-0.5 mt-0.5">{z.short}</span>
+      {flex >= 3 && <span className="text-[7px] opacity-50 font-bold">{z.area}坪</span>}
+    </button>
+  );
+}
+
+function StoreMapModal({ onClose, setTab }) {
+  const [selected, setSelected] = useState(null);
+  const z = selected ? STORE_ZONES.find(x => x.id === selected) : null;
+
+  return (
+    <div className="fixed inset-0 bg-black/90 z-50 flex flex-col animate-in fade-in">
+      <div className="bg-[#0f6e56] text-white px-5 pt-8 pb-4 shrink-0">
+        <div className="flex justify-between items-center">
+          <div>
+            <h2 className="text-xl font-black flex items-center gap-2">
+              <MapPin size={20} /> 成大門市平面圖
+            </h2>
+            <p className="text-[10px] opacity-60 font-bold mt-0.5 tracking-widest uppercase">NCKU BIO-MED BUILDING 1F · 28坪 · 92.4 m²</p>
+          </div>
+          <button onClick={onClose} className="bg-white/10 p-2.5 rounded-full border border-white/20 active:scale-90 transition">
+            <XCircle size={20} />
+          </button>
+        </div>
+      </div>
+
+      <div className="flex-1 overflow-y-auto bg-slate-50 pb-6">
+        <p className="text-[10px] text-slate-400 font-bold text-center py-2">點選各區了解 App 連動功能</p>
+
+        {/* 平面圖 */}
+        <div className="mx-3 rounded-2xl overflow-hidden border-2 border-slate-300 bg-white shadow">
+          <div className="bg-slate-700 text-white text-[8px] font-black text-center py-1 tracking-widest">← 臨街面 STREET SIDE →</div>
+
+          {/* Row 1：入口 1坪 */}
+          <div className="flex border-b border-slate-200" style={{height:36}}>
+            <ZoneBlock z={STORE_ZONES.find(x=>x.id==='entrance')} selected={selected} onSelect={setSelected} flex={1} />
+          </div>
+
+          {/* Row 2：廚房4 + 櫃台3 */}
+          <div className="flex border-b border-slate-200" style={{height:72}}>
+            <ZoneBlock z={STORE_ZONES.find(x=>x.id==='kitchen')}  selected={selected} onSelect={setSelected} flex={4} borderRight />
+            <ZoneBlock z={STORE_ZONES.find(x=>x.id==='counter')}  selected={selected} onSelect={setSelected} flex={3} />
+          </div>
+
+          {/* Row 3：商品2 + 課程2 + 直播1 */}
+          <div className="flex border-b border-slate-200" style={{height:56}}>
+            <ZoneBlock z={STORE_ZONES.find(x=>x.id==='shop')}     selected={selected} onSelect={setSelected} flex={2} borderRight />
+            <ZoneBlock z={STORE_ZONES.find(x=>x.id==='courses')}  selected={selected} onSelect={setSelected} flex={2} borderRight />
+            <ZoneBlock z={STORE_ZONES.find(x=>x.id==='live')}     selected={selected} onSelect={setSelected} flex={1} />
+          </div>
+
+          {/* Row 4：爬蟲3 + 貓咪4 */}
+          <div className="flex border-b border-slate-200" style={{height:80}}>
+            <ZoneBlock z={STORE_ZONES.find(x=>x.id==='reptile')}  selected={selected} onSelect={setSelected} flex={3} borderRight />
+            <ZoneBlock z={STORE_ZONES.find(x=>x.id==='cats')}     selected={selected} onSelect={setSelected} flex={4} />
+          </div>
+
+          {/* Row 5：咖啡讀書 5坪 */}
+          <div className="flex border-b border-slate-200" style={{height:68}}>
+            <ZoneBlock z={STORE_ZONES.find(x=>x.id==='cafe')}     selected={selected} onSelect={setSelected} flex={1} />
+          </div>
+
+          {/* Row 6：小動物1 + 後台2 */}
+          <div className="flex" style={{height:44}}>
+            <ZoneBlock z={STORE_ZONES.find(x=>x.id==='small')}    selected={selected} onSelect={setSelected} flex={1} borderRight />
+            <ZoneBlock z={STORE_ZONES.find(x=>x.id==='back')}     selected={selected} onSelect={setSelected} flex={2} />
+          </div>
+
+          <div className="bg-slate-700 text-white text-[8px] font-black text-center py-1 tracking-widest">← 內部走廊 CORRIDOR →</div>
+        </div>
+
+        {/* 面積統計 */}
+        <div className="mx-3 mt-3 grid grid-cols-4 gap-2">
+          {[
+            {label:'動物互動', area:'9坪', color:'bg-pink-100 text-pink-700'},
+            {label:'餐飲休憩', area:'9坪', color:'bg-amber-100 text-amber-700'},
+            {label:'收銀服務', area:'6坪', color:'bg-orange-100 text-orange-700'},
+            {label:'教育認證', area:'4坪', color:'bg-blue-100 text-blue-700'},
+          ].map(s=>(
+            <div key={s.label} className={`${s.color} rounded-xl p-2 text-center`}>
+              <p className="text-base font-black">{s.area}</p>
+              <p className="text-[8px] font-bold opacity-70">{s.label}</p>
+            </div>
+          ))}
+        </div>
+
+        {/* 選中區域詳情 */}
+        {z && (
+          <div className="mx-3 mt-3 bg-white rounded-2xl border-2 shadow overflow-hidden animate-in slide-in-from-bottom-2" style={{borderColor:'#e2e8f0'}}>
+            <div className={`${z.hdr} px-4 py-3 flex items-center justify-between`}>
+              <div className="flex items-center gap-2">
+                <span className="text-2xl">{z.emoji}</span>
+                <div>
+                  <h3 className="text-white font-black text-sm">{z.name}</h3>
+                  <p className="text-white/70 text-[10px] font-bold">{z.area} 坪 · {z.liveStatus}</p>
+                </div>
+              </div>
+              <button onClick={()=>setSelected(null)} className="bg-white/20 p-1.5 rounded-full active:scale-90 transition">
+                <XCircle size={14} className="text-white"/>
+              </button>
+            </div>
+            <div className="p-4 space-y-3">
+              <p className="text-xs text-slate-600 leading-relaxed">{z.desc}</p>
+              {z.appFeatures.length > 0 && (
+                <div>
+                  <p className="text-[9px] font-black text-slate-400 tracking-widest uppercase mb-2">App 連動功能</p>
+                  <div className="flex flex-wrap gap-1.5">
+                    {z.appFeatures.map(f=>(
+                      <span key={f} className={`${z.color} ${z.text} text-[9px] font-black px-2 py-1 rounded-full border ${z.border}`}>{f}</span>
+                    ))}
+                  </div>
+                </div>
+              )}
+              {z.tab && z.appLink && (
+                <button
+                  onClick={() => { onClose(); setTab(z.tab); }}
+                  className={`w-full ${z.hdr} text-white py-3 rounded-xl font-black text-xs shadow active:scale-95 transition`}
+                >
+                  前往 App 功能：{z.appLink} →
+                </button>
+              )}
+            </div>
+          </div>
+        )}
+
+        {!z && (
+          <div className="mx-3 mt-3 grid grid-cols-1 gap-2">
+            <p className="text-[10px] font-black text-slate-400 tracking-widest uppercase text-center">各區虛實整合說明</p>
+            {STORE_ZONES.filter(x=>x.tab).map(x=>(
+              <div key={x.id} className={`${x.color} rounded-2xl px-4 py-3 flex items-center gap-3 border ${x.border}`}>
+                <span className="text-xl shrink-0">{x.emoji}</span>
+                <div className="flex-1 min-w-0">
+                  <p className={`font-black text-xs ${x.text}`}>{x.name} <span className="opacity-50 font-bold">· {x.area}坪</span></p>
+                  <p className="text-[9px] text-slate-500 font-bold truncate">{x.appFeatures.join(' · ')}</p>
+                </div>
+                <span className={`text-[8px] font-black ${x.text} opacity-60 shrink-0`}>{x.liveStatus}</span>
+              </div>
+            ))}
+          </div>
         )}
       </div>
     </div>
