@@ -131,38 +131,38 @@ const ANIMALS = [
     img: PX(29993579),
     tags: ['#口袋精靈', '#夜行性', '#大眼萌物', '#A 級專屬'],
     story: '「啾！我是飛飛！水汪汪的大眼睛是我的招牌。我最喜歡在主人的口袋裡睡覺，因為我需要高蛋白飲食與攀爬空間，只有通過 A 級認證的飼主才能帶我回家喔！」',
-    care: 4, lifespan: '10–15 年', trialFee: 1200, size: '迷你', careNote: '需高蛋白飲食，夜行性，需滑翔空間', videoQ: 'sugar glider care guide pet',
-    expFee: 300, expNote: '30分鐘近距離互動體驗', buyPrice: 8500, buyNote: '蜜袋鼯寄賣 · 需A級認證', certRequired: 'A', courseHint: '爬蟲飼育認證' },
+    care: 4, lifespan: '10–15 年', trialFee: 1500, size: '迷你', careNote: '需高蛋白飲食，夜行性，需滑翔空間', videoQ: 'sugar glider care guide pet',
+    expFee: 350, expNote: '30分鐘近距離互動體驗', buyPrice: 12000, buyNote: '蜜袋鼯寄賣 · 需A級認證', certRequired: 'A', courseHint: '爬蟲飼育認證' },
   { id: 2, name: '月亮', type: 'cat', typeName: '貓咪', breed: '黑白貓', status: '可認養', minLevel: 1,
     img: PX(29561296),
     tags: ['#優雅淑女', '#慢熟', '#靜態陪伴'],
     story: '「你好，我是月亮。我不需要太大空間，最適合高壓環境下工作的研究人員。給我一個窗台和溫柔的主人，我就很滿足了。」',
-    care: 2, lifespan: '12–16 年', trialFee: 800, size: '中型', careNote: '慢熟型，需安靜環境，適合獨居', videoQ: 'black white cat care tips adopt',
-    expFee: 0, expNote: '門市互動免費', certRequired: 'C', courseHint: '貓咪基礎課程' },
+    care: 2, lifespan: '12–16 年', trialFee: 900, size: '中型', careNote: '慢熟型，需安靜環境，適合獨居', videoQ: 'black white cat care tips adopt',
+    expFee: 0, expNote: '點餐低消即可互動', certRequired: 'C', courseHint: '貓咪基礎課程' },
   { id: 3, name: '小福', type: 'cat', typeName: '貓咪', breed: '橘貓', status: '試養中', minLevel: 1,
     img: PX(4641440),
     tags: ['#貪吃大叔', '#呼嚕聲超大', '#治癒系'],
     story: '「喵～只要聽到罐頭打開的聲音，我會用光速衝過來。我的呼嚕聲是全店最響的，可以舒緩你的考前焦慮！」',
-    care: 2, lifespan: '13–17 年', trialFee: 800, size: '中型', careNote: '親人貪吃，注意飲食控制避免肥胖', videoQ: 'orange tabby cat care daily routine',
-    expFee: 0, expNote: '門市互動免費', certRequired: 'C', courseHint: '貓咪基礎課程' },
+    care: 2, lifespan: '13–17 年', trialFee: 900, size: '中型', careNote: '親人貪吃，注意飲食控制避免肥胖', videoQ: 'orange tabby cat care daily routine',
+    expFee: 0, expNote: '點餐低消即可互動', certRequired: 'C', courseHint: '貓咪基礎課程' },
   { id: 4, name: '豆豆', type: 'dog', typeName: '犬隻', breed: '米格魯', status: '可認養', minLevel: 2,
     img: PX(8706369),
     tags: ['#精力充沛', '#嗅覺達人', '#戶外型'],
     story: '「汪！我有全世界最靈敏的鼻子，可以聞到 300 公尺外的零食。我需要每天散步，適合喜歡戶外活動的人！」',
-    care: 3, lifespan: '12–15 年', trialFee: 1000, size: '中型', careNote: '需每日散步 30 分鐘以上，嗅覺敏銳', videoQ: 'beagle dog care training exercise',
-    expFee: 0, expNote: '門市互動免費', certRequired: 'B', courseHint: '犬隻基礎服從' },
+    care: 3, lifespan: '12–15 年', trialFee: 1200, size: '中型', careNote: '需每日散步 30 分鐘以上，嗅覺敏銳', videoQ: 'beagle dog care training exercise',
+    expFee: 0, expNote: '點餐低消即可互動', certRequired: 'B', courseHint: '犬隻基礎服從' },
   { id: 5, name: '小綠', type: 'reptile', typeName: '爬蟲展示', breed: '鬃獅蜥', status: '可預約體驗', minLevel: 2,
     img: PX(6002806),
     tags: ['#冷靜達人', '#親人', '#適合初學者'],
     story: '「嗨，我是小綠。我是爬蟲界最親人的存在，喜歡被人抱著曬太陽。來門市摸摸我，說不定我們就有緣分！」',
-    care: 3, lifespan: '10–15 年', trialFee: 900, size: '小型', careNote: '需 UVB 燈源，每日溫度 28–38°C', videoQ: 'bearded dragon care beginner guide UVB',
-    expFee: 250, expNote: '45分鐘上手體驗・可拍照', buyPrice: 5800, buyNote: '寄賣合作 · 店家認證', certRequired: 'B', courseHint: '爬蟲飼育認證' },
+    care: 3, lifespan: '10–15 年', trialFee: 1200, size: '小型', careNote: '需 UVB 燈源，每日溫度 28–38°C', videoQ: 'bearded dragon care beginner guide UVB',
+    expFee: 300, expNote: '45分鐘上手體驗・可拍照', buyPrice: 6800, buyNote: '寄賣合作 · 店家認證', certRequired: 'B', courseHint: '爬蟲飼育認證' },
   { id: 6, name: '小白', type: 'reptile', typeName: '爬蟲展示', breed: '白化球蟒', status: '可預約體驗', minLevel: 3,
     img: PX(29378244),
     tags: ['#稀有品種', '#溫馴', '#長壽夥伴'],
     story: '「我是小白，店長的珍貴夥伴。我可以活到 30 年，是一輩子的承諾。來門市體驗與蛇相處的奇妙感受吧！」',
-    care: 4, lifespan: '20–30 年', trialFee: 1500, size: '中型', careNote: '溫馴無毒，需 28°C 恆溫環境，月餵一次', videoQ: 'ball python care guide handling feeding',
-    expFee: 350, expNote: '60分鐘 VIP 蛇體驗・含解說', buyPrice: 15000, buyNote: '稀有白化 · 洽詢購買', certRequired: 'A', courseHint: '爬蟲飼育認證' },
+    care: 4, lifespan: '20–30 年', trialFee: 2000, size: '中型', careNote: '溫馴無毒，需 28°C 恆溫環境，月餵一次', videoQ: 'ball python care guide handling feeding',
+    expFee: 450, expNote: '60分鐘 VIP 蛇體驗・含解說', buyPrice: 28000, buyNote: '稀有白化 · 洽詢購買', certRequired: 'A', courseHint: '爬蟲飼育認證' },
 ];
 
 // ── 10 階等級系統 ──────────────────────────────
@@ -286,7 +286,7 @@ const COURSES = [
   { id: 3, tag: '貓咪基礎', title: '環境安全設計',   desc: '打造貓咪友善的居家空間', duration: '40 分鐘', progress: 60,  score: null, locked: false, paid: false, videoQ: 'cat proof home environment setup' },
   { id: 4, tag: '貓咪進階', title: '醫療照護基礎',   desc: '識別常見症狀與緊急處置', duration: '90 分鐘', progress: 0,   score: null, locked: true,  paid: false, videoQ: 'cat health symptoms veterinary care' },
   { id: 5, tag: '貓咪進階', title: '行為矯正技術',   desc: '正向強化訓練方法',       duration: '75 分鐘', progress: 0,   score: null, locked: true,  paid: false, videoQ: 'cat positive reinforcement training clicker' },
-  { id: 6, tag: '爬蟲特別課程', title: '爬蟲飼育認證', desc: '鬃獅蜥、球蟒的完整照護', duration: '120 分鐘', progress: 0, score: null, locked: false, paid: true, price: 'NT$299', videoQ: 'bearded dragon ball python reptile care guide' },
+  { id: 6, tag: '爬蟲特別課程', title: '爬蟲飼育認證', desc: '鬃獅蜥、球蟒的完整照護', duration: '120 分鐘', progress: 0, score: null, locked: false, paid: true, price: 'NT$399', videoQ: 'bearded dragon ball python reptile care guide' },
   { id: 7, tag: '犬隻認證', title: '犬隻基礎服從',   desc: '基本口令訓練與社交化',   duration: '60 分鐘', progress: 30,  score: null, locked: false, paid: false, videoQ: 'dog basic obedience training sit stay' },
 ];
 
@@ -372,12 +372,12 @@ const REELS = [
 ];
 
 const PRODUCTS = [
-  { id:1, name:'蜜袋鼯高蛋白飼料', brand:'GlideNutrition', price:399, original:499, emoji:'🦘', tag:'熱銷No.1', tagColor:'bg-rose-100 text-rose-600' },
-  { id:2, name:'爬蟲 UVB 全光譜燈', brand:'ZooMed Pro', price:890, original:1200, emoji:'🦎', tag:'A級推薦', tagColor:'bg-orange-100 text-orange-600' },
-  { id:3, name:'貓咪益生菌凍乾', brand:'PetPro 台灣', price:299, original:350, emoji:'🐱', tag:'新品上市', tagColor:'bg-purple-100 text-purple-600' },
-  { id:4, name:'犬隻訓練零食包', brand:'TrainSnack', price:199, original:250, emoji:'🐶', tag:'認證推薦', tagColor:'bg-[#0f6e56]/10 text-[#0f6e56]' },
-  { id:5, name:'球蟒恆溫加熱墊', brand:'ReptileHeat', price:680, original:850, emoji:'🐍', tag:'必備', tagColor:'bg-slate-100 text-slate-600' },
-  { id:6, name:'全物種維生素滴劑', brand:'NutriAll', price:249, original:320, emoji:'💊', tag:'獸醫推薦', tagColor:'bg-blue-100 text-blue-600' },
+  { id:1, name:'蜜袋鼯高蛋白飼料', brand:'GlideNutrition', price:480, original:600, emoji:'🦘', tag:'熱銷No.1', tagColor:'bg-rose-100 text-rose-600' },
+  { id:2, name:'爬蟲 UVB 全光譜燈', brand:'ZooMed Pro', price:980, original:1350, emoji:'🦎', tag:'A級推薦', tagColor:'bg-orange-100 text-orange-600' },
+  { id:3, name:'貓咪益生菌凍乾', brand:'PetPro 台灣', price:320, original:390, emoji:'🐱', tag:'新品上市', tagColor:'bg-purple-100 text-purple-600' },
+  { id:4, name:'犬隻訓練零食包', brand:'TrainSnack', price:220, original:280, emoji:'🐶', tag:'認證推薦', tagColor:'bg-[#0f6e56]/10 text-[#0f6e56]' },
+  { id:5, name:'球蟒恆溫加熱墊', brand:'ReptileHeat', price:750, original:950, emoji:'🐍', tag:'必備', tagColor:'bg-slate-100 text-slate-600' },
+  { id:6, name:'全物種維生素滴劑', brand:'NutriAll', price:280, original:360, emoji:'💊', tag:'獸醫推薦', tagColor:'bg-blue-100 text-blue-600' },
 ];
 
 // ─────────────────────────────────────────────
@@ -385,21 +385,21 @@ const PRODUCTS = [
 // ─────────────────────────────────────────────
 const MENU_ITEMS = [
   // 飲品
-  { id:'d1', cat:'飲品', name:'招牌爬蟲拿鐵',   desc:'義式濃縮＋燕麥奶＋爬蟲拉花', price:130, emoji:'☕', tag:'招牌', tagColor:'bg-orange-100 text-orange-600', popular:true  },
-  { id:'d2', cat:'飲品', name:'蜜袋鼯燕麥拿鐵', desc:'特選燕麥奶・微甜',            price:140, emoji:'🥛', tag:'',   tagColor:'', popular:false },
-  { id:'d3', cat:'飲品', name:'鬃獅蜥美式',     desc:'深焙單品・無糖',              price:100, emoji:'🖤', tag:'',   tagColor:'', popular:false },
-  { id:'d4', cat:'飲品', name:'球蟒抹茶拿鐵',   desc:'宇治抹茶＋牛奶',             price:145, emoji:'🍵', tag:'新品', tagColor:'bg-emerald-100 text-emerald-600', popular:false },
-  { id:'d5', cat:'飲品', name:'爬蟲氣泡水',     desc:'天然果汁＋蘇打・無糖',        price:80,  emoji:'💚', tag:'',   tagColor:'', popular:false },
-  { id:'d6', cat:'飲品', name:'手沖黑咖啡',     desc:'單品莊園豆・每日現磨',        price:120, emoji:'☕', tag:'',   tagColor:'', popular:false },
+  { id:'d1', cat:'飲品', name:'招牌爬蟲拿鐵',   desc:'義式濃縮＋燕麥奶＋爬蟲拉花', price:150, emoji:'☕', tag:'招牌', tagColor:'bg-orange-100 text-orange-600', popular:true  },
+  { id:'d2', cat:'飲品', name:'蜜袋鼯燕麥拿鐵', desc:'特選燕麥奶・微甜',            price:160, emoji:'🥛', tag:'',   tagColor:'', popular:false },
+  { id:'d3', cat:'飲品', name:'鬃獅蜥美式',     desc:'深焙單品・無糖',              price:120, emoji:'🖤', tag:'',   tagColor:'', popular:false },
+  { id:'d4', cat:'飲品', name:'球蟒抹茶拿鐵',   desc:'宇治抹茶＋牛奶',             price:165, emoji:'🍵', tag:'新品', tagColor:'bg-emerald-100 text-emerald-600', popular:false },
+  { id:'d5', cat:'飲品', name:'爬蟲氣泡水',     desc:'天然果汁＋蘇打・無糖',        price:100, emoji:'💚', tag:'',   tagColor:'', popular:false },
+  { id:'d6', cat:'飲品', name:'手沖黑咖啡',     desc:'單品莊園豆・每日現磨',        price:140, emoji:'☕', tag:'',   tagColor:'', popular:false },
   // 輕食
-  { id:'f1', cat:'輕食', name:'野生感早午餐',   desc:'半熟蛋・全麥吐司・生菜沙拉', price:180, emoji:'🍳', tag:'熱門', tagColor:'bg-red-100 text-red-600',    popular:true  },
-  { id:'f2', cat:'輕食', name:'爬蟲形狀鬆餅',   desc:'比利時原味・附楓糖漿',        price:150, emoji:'🧇', tag:'',   tagColor:'', popular:false },
-  { id:'f3', cat:'輕食', name:'凱薩沙拉盤',     desc:'季節蔬菜・油醋醬・帕馬森',    price:120, emoji:'🥗', tag:'',   tagColor:'', popular:false },
-  { id:'f4', cat:'輕食', name:'蜜袋鼯三明治',   desc:'火雞肉・起司・全麥麵包',      price:160, emoji:'🥪', tag:'',   tagColor:'', popular:false },
+  { id:'f1', cat:'輕食', name:'野生感早午餐',   desc:'半熟蛋・全麥吐司・生菜沙拉', price:220, emoji:'🍳', tag:'熱門', tagColor:'bg-red-100 text-red-600',    popular:true  },
+  { id:'f2', cat:'輕食', name:'爬蟲形狀鬆餅',   desc:'比利時原味・附楓糖漿',        price:180, emoji:'🧇', tag:'',   tagColor:'', popular:false },
+  { id:'f3', cat:'輕食', name:'凱薩沙拉盤',     desc:'季節蔬菜・油醋醬・帕馬森',    price:160, emoji:'🥗', tag:'',   tagColor:'', popular:false },
+  { id:'f4', cat:'輕食', name:'蜜袋鼯三明治',   desc:'火雞肉・起司・全麥麵包',      price:200, emoji:'🥪', tag:'',   tagColor:'', popular:false },
   // 甜點
-  { id:'s1', cat:'甜點', name:'爬蟲造型馬卡龍', desc:'4顆・抹茶＋草莓口味',         price:160, emoji:'🍬', tag:'限量', tagColor:'bg-purple-100 text-purple-600', popular:true  },
-  { id:'s2', cat:'甜點', name:'手作焦糖布丁',   desc:'每日新鮮製作',                price:80,  emoji:'🍮', tag:'',   tagColor:'', popular:false },
-  { id:'s3', cat:'甜點', name:'提拉米蘇',       desc:'義式正宗食譜',                price:120, emoji:'🍰', tag:'',   tagColor:'', popular:false },
+  { id:'s1', cat:'甜點', name:'爬蟲造型馬卡龍', desc:'4顆・抹茶＋草莓口味',         price:180, emoji:'🍬', tag:'限量', tagColor:'bg-purple-100 text-purple-600', popular:true  },
+  { id:'s2', cat:'甜點', name:'手作焦糖布丁',   desc:'每日新鮮製作',                price:100, emoji:'🍮', tag:'',   tagColor:'', popular:false },
+  { id:'s3', cat:'甜點', name:'提拉米蘇',       desc:'義式正宗食譜',                price:150, emoji:'🍰', tag:'',   tagColor:'', popular:false },
 ];
 
 // ─────────────────────────────────────────────
@@ -1230,7 +1230,7 @@ function CommunityScreen() {
           <p className="font-black text-base leading-tight">爬蟲拿鐵</p>
           <p className="text-orange-100 text-xs mt-1 font-bold">加爬蟲拉花 +NT$20</p>
           <div className="flex items-end justify-between mt-3">
-            <p className="text-2xl font-black">NT$130</p>
+            <p className="text-2xl font-black">NT$150</p>
             <button onClick={() => alert('已加入！前往首頁「今日點餐」結帳')} className="bg-white/25 text-white text-[10px] font-black px-3 py-1.5 rounded-full active:scale-95 transition border border-white/30">點餐</button>
           </div>
         </div>
