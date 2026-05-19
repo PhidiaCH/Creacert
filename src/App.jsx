@@ -384,21 +384,25 @@ const PRODUCTS = [
 // 點餐菜單資料
 // ─────────────────────────────────────────────
 const MENU_ITEMS = [
+  // 套餐（成大學生最愛）
+  { id:'c1', cat:'套餐', name:'成大讀書套餐',   desc:'飲品任選＋吐司・平日14-17限定', price:249, emoji:'📚', tag:'學生最愛', tagColor:'bg-blue-100 text-blue-600', popular:true  },
+  { id:'c2', cat:'套餐', name:'爬蟲體驗套餐',   desc:'鬃獅蜥45分體驗＋招牌拿鐵',     price:420, emoji:'🦎', tag:'最划算', tagColor:'bg-orange-100 text-orange-600', popular:true  },
+  { id:'c3', cat:'套餐', name:'好友同遊套餐',   desc:'2杯飲品＋1份輕食・適合2人',     price:380, emoji:'👫', tag:'2人組合', tagColor:'bg-rose-100 text-rose-600', popular:false },
   // 飲品
   { id:'d1', cat:'飲品', name:'招牌爬蟲拿鐵',   desc:'義式濃縮＋燕麥奶＋爬蟲拉花', price:150, emoji:'☕', tag:'招牌', tagColor:'bg-orange-100 text-orange-600', popular:true  },
   { id:'d2', cat:'飲品', name:'蜜袋鼯燕麥拿鐵', desc:'特選燕麥奶・微甜',            price:160, emoji:'🥛', tag:'',   tagColor:'', popular:false },
-  { id:'d3', cat:'飲品', name:'鬃獅蜥美式',     desc:'深焙單品・無糖',              price:120, emoji:'🖤', tag:'',   tagColor:'', popular:false },
+  { id:'d3', cat:'飲品', name:'鬃獅蜥美式',     desc:'深焙單品・無糖・有插座可讀書', price:120, emoji:'🖤', tag:'讀書首選', tagColor:'bg-slate-100 text-slate-600', popular:false },
   { id:'d4', cat:'飲品', name:'球蟒抹茶拿鐵',   desc:'宇治抹茶＋牛奶',             price:165, emoji:'🍵', tag:'新品', tagColor:'bg-emerald-100 text-emerald-600', popular:false },
   { id:'d5', cat:'飲品', name:'爬蟲氣泡水',     desc:'天然果汁＋蘇打・無糖',        price:100, emoji:'💚', tag:'',   tagColor:'', popular:false },
-  { id:'d6', cat:'飲品', name:'手沖黑咖啡',     desc:'單品莊園豆・每日現磨',        price:140, emoji:'☕', tag:'',   tagColor:'', popular:false },
+  { id:'d6', cat:'飲品', name:'手沖黑咖啡',     desc:'單品莊園豆・每日現磨・不限時',  price:140, emoji:'☕', tag:'',   tagColor:'', popular:false },
   // 輕食
   { id:'f1', cat:'輕食', name:'野生感早午餐',   desc:'半熟蛋・全麥吐司・生菜沙拉', price:220, emoji:'🍳', tag:'熱門', tagColor:'bg-red-100 text-red-600',    popular:true  },
-  { id:'f2', cat:'輕食', name:'爬蟲形狀鬆餅',   desc:'比利時原味・附楓糖漿',        price:180, emoji:'🧇', tag:'',   tagColor:'', popular:false },
+  { id:'f2', cat:'輕食', name:'爬蟲形狀鬆餅',   desc:'比利時原味・附楓糖漿・IG必拍', price:180, emoji:'🧇', tag:'打卡', tagColor:'bg-pink-100 text-pink-600', popular:false },
   { id:'f3', cat:'輕食', name:'凱薩沙拉盤',     desc:'季節蔬菜・油醋醬・帕馬森',    price:160, emoji:'🥗', tag:'',   tagColor:'', popular:false },
   { id:'f4', cat:'輕食', name:'蜜袋鼯三明治',   desc:'火雞肉・起司・全麥麵包',      price:200, emoji:'🥪', tag:'',   tagColor:'', popular:false },
   // 甜點
-  { id:'s1', cat:'甜點', name:'爬蟲造型馬卡龍', desc:'4顆・抹茶＋草莓口味',         price:180, emoji:'🍬', tag:'限量', tagColor:'bg-purple-100 text-purple-600', popular:true  },
-  { id:'s2', cat:'甜點', name:'手作焦糖布丁',   desc:'每日新鮮製作',                price:100, emoji:'🍮', tag:'',   tagColor:'', popular:false },
+  { id:'s1', cat:'甜點', name:'爬蟲造型馬卡龍', desc:'4顆・抹茶＋草莓・限量打卡款',  price:180, emoji:'🍬', tag:'限量', tagColor:'bg-purple-100 text-purple-600', popular:true  },
+  { id:'s2', cat:'甜點', name:'手作焦糖布丁',   desc:'每日新鮮製作・甜點控必點',     price:100, emoji:'🍮', tag:'',   tagColor:'', popular:false },
   { id:'s3', cat:'甜點', name:'提拉米蘇',       desc:'義式正宗食譜',                price:150, emoji:'🍰', tag:'',   tagColor:'', popular:false },
 ];
 
@@ -514,6 +518,7 @@ export default function App() {
                 <Sparkles size={20} className="text-pink-200 animate-pulse" /> CreaCert
               </h1>
               <p className="text-[10px] font-bold uppercase tracking-widest" style={{color:'#f9a8d4'}}>Know Every Creature ✿</p>
+              <p className="text-[9px] font-bold opacity-60 mt-0.5">📍 台南成大・勝利路商圈</p>
             </div>
             <div className="flex items-center gap-2">
               {/* 連續天數 */}
@@ -802,6 +807,42 @@ function PassportScreen({ setShowCertInfo, setShowPortrait, addPoints, setShowPl
           <div className="bg-[#534ab7]/5 p-3 rounded-2xl text-[#534ab7] group-hover:bg-[#534ab7] group-hover:text-white transition-colors"><LayoutGrid size={24} /></div>
           <p className="text-xs font-black text-slate-800 text-center leading-tight">門市<br/>場域地圖</p>
         </button>
+      </section>
+
+      {/* 成大學生優惠 Banner */}
+      <section className="bg-gradient-to-r from-blue-600 to-indigo-600 rounded-[2rem] p-5 text-white shadow-xl">
+        <div className="flex items-center gap-2 mb-3">
+          <span className="text-xl">🎓</span>
+          <p className="font-black text-sm">成大學生專屬優惠</p>
+          <span className="bg-white/20 text-[9px] font-black px-2 py-0.5 rounded-full ml-auto">憑學生證</span>
+        </div>
+        <div className="space-y-2">
+          {[
+            { icon:'🦎', txt:'爬蟲體驗 9折・平日限定' },
+            { icon:'📚', txt:'讀書套餐 NT$249・14:00–17:00' },
+            { icon:'📱', txt:'APP 掃碼點餐・獲得雙倍積分' },
+            { icon:'👥', txt:'3人同行・其中1人免低消' },
+          ].map((item,i) => (
+            <div key={i} className="flex items-center gap-2 text-[11px] font-bold">
+              <span>{item.icon}</span>
+              <span className="opacity-90">{item.txt}</span>
+            </div>
+          ))}
+        </div>
+        <div className="mt-3 bg-white/10 rounded-2xl p-3 flex items-center gap-3">
+          <div className="bg-white rounded-xl p-2 flex flex-col items-center">
+            <div className="grid grid-cols-5 gap-[1px]">
+              {Array.from({length:25}).map((_,i)=>(
+                <div key={i} className={`w-2 h-2 rounded-[1px] ${[0,1,2,3,4,5,9,10,14,15,19,20,21,22,23,24,6,12,18].includes(i)?'bg-slate-800':'bg-white'}`} />
+              ))}
+            </div>
+          </div>
+          <div>
+            <p className="font-black text-xs">掃 QR 下載 APP</p>
+            <p className="text-[10px] opacity-70 font-bold">pawcert.vercel.app</p>
+            <p className="text-[9px] opacity-50 font-bold mt-0.5">線上點餐 · 預約體驗 · 集點</p>
+          </div>
+        </div>
       </section>
 
       {/* 創辦人工具列 */}
