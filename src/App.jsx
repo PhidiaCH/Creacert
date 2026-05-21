@@ -163,6 +163,25 @@ const ANIMALS = [
     story: '「我是小白，店長的珍貴夥伴。我可以活到 30 年，是一輩子的承諾。來門市體驗與蛇相處的奇妙感受吧！」',
     care: 4, lifespan: '20–30 年', trialFee: 2000, size: '中型', careNote: '溫馴無毒，需 28°C 恆溫環境，月餵一次', videoQ: 'ball python care guide handling feeding',
     expFee: 450, expNote: '60分鐘 VIP 蛇體驗・含解說', buyPrice: 28000, buyNote: '稀有白化 · 洽詢購買', certRequired: 'A', courseHint: '爬蟲飼育認證' },
+  // ── 貓咖啡廳店貓 ──
+  { id: 7, name: '拿鐵', type: 'cat', typeName: '貓咪', breed: '英國短毛貓', status: '今日出沒', minLevel: 1,
+    img: PX(1170986),
+    tags: ['#慵懶系', '#超親人', '#IG網紅貓'],
+    story: '「喵～我是拿鐵，全店最上相的那位。我喜歡窩在吧台旁邊看客人點餐，偶爾用爪子搭一下你的手臂。來找我拍照吧！」',
+    care: 2, lifespan: '12–17 年', trialFee: 0, size: '中型', careNote: '超親人，無攻擊性，適合第一次養貓的人', videoQ: 'british shorthair cat cafe cute daily',
+    expFee: 0, expNote: '點餐低消即可互動（貓咖啡廳入場費已含）', certRequired: 'C', courseHint: '貓咪基礎課程' },
+  { id: 8, name: '焦糖', type: 'cat', typeName: '貓咪', breed: '蘇格蘭折耳', status: '可預約互動', minLevel: 1,
+    img: PX(2071873),
+    tags: ['#折耳萌王', '#喜歡被抱', '#療癒系'],
+    story: '「我是焦糖，兩隻耳朵永遠折著，看起來永遠在苦惱什麼。但其實我最喜歡被人抱，尤其是考試週壓力大的成大學生們！」',
+    care: 2, lifespan: '11–14 年', trialFee: 0, size: '中型', careNote: '折耳貓需定期關節檢查，避免劇烈運動', videoQ: 'scottish fold cat cute behavior care',
+    expFee: 0, expNote: '點餐低消即可互動', certRequired: 'C', courseHint: '貓咪基礎課程' },
+  { id: 9, name: '奶蓋', type: 'cat', typeName: '貓咪', breed: '布偶貓', status: '試養中', minLevel: 2,
+    img: PX(45201),
+    tags: ['#藍眼睛', '#溫柔巨人', '#毛毛達人'],
+    story: '「我叫奶蓋，有著藍寶石眼睛和絲滑的毛。我不會主動跳到你腿上，但如果你靜靜坐著，我會自己走過來找你。試試看？」',
+    care: 3, lifespan: '12–17 年', trialFee: 1200, size: '大型', careNote: '長毛品種需每日梳毛，定期洗澡，親人溫馴', videoQ: 'ragdoll cat care grooming gentle',
+    expFee: 200, expNote: '30分鐘專屬相處時光・可拍照', buyPrice: 0, buyNote: '試養媒合中，洽詢領養', certRequired: 'B', courseHint: '貓咪進階課程' },
 ];
 
 // ── 10 階等級系統 ──────────────────────────────
@@ -3471,11 +3490,21 @@ function CafeMenuModal({ onClose }) {
       { id:'d2', name:'蜜袋鼯燕麥奶', sub:'特選燕麥奶・微甜', price:140, emoji:'🥛' },
       { id:'d3', name:'鬃獅蜥美式', sub:'深焙單品・無糖', price:100, emoji:'🖤' },
       { id:'d4', name:'球蟒抹茶拿鐵', sub:'宇治抹茶・牛奶', price:145, emoji:'🍵' },
+      { id:'d5', name:'貓掌拿鐵', sub:'手繪貓掌拉花・全脂牛奶', price:150, emoji:'🐾' },
+      { id:'d6', name:'奶蓋貓貓歐蕾', sub:'濃縮 + 鮮奶・奶蓋厚打', price:155, emoji:'🐱' },
+      { id:'d7', name:'焦糖貓咪霜降', sub:'焦糖醬・鮮奶油・冰沙底', price:160, emoji:'🍮' },
     ],
     food: [
       { id:'f1', name:'野生感早午餐', sub:'半熟蛋・吐司・沙拉', price:180, emoji:'🍳' },
       { id:'f2', name:'爬蟲形狀鬆餅', sub:'原味・附楓糖', price:150, emoji:'🧇' },
       { id:'f3', name:'輕食沙拉盤', sub:'季節蔬菜・油醋醬', price:120, emoji:'🥗' },
+      { id:'f4', name:'貓耳造型鬆餅', sub:'奶油・草莓醬・糖粉', price:160, emoji:'🐈' },
+      { id:'f5', name:'貓咪吐司拼盤', sub:'貓形壓模・水煮蛋・起司', price:170, emoji:'🍞' },
+    ],
+    cafe: [
+      { id:'c1', name:'貓咖啡廳入場券', sub:'不限時・含一杯飲品', price:280, emoji:'🎫' },
+      { id:'c2', name:'學生優惠入場', sub:'憑成大學生證・含飲品', price:220, emoji:'🎓' },
+      { id:'c3', name:'貓咪專屬體驗', sub:'30分鐘一對一・拍照留念', price:200, emoji:'📸' },
     ],
   };
 
@@ -3513,7 +3542,7 @@ function CafeMenuModal({ onClose }) {
           <button onClick={onClose} className="bg-slate-100 p-2.5 rounded-full"><XCircle size={20} /></button>
         </div>
         <div className="p-5 space-y-5 pb-36">
-          {[['飲品', MENU.drinks, '☕'],['輕食', MENU.food, '🍽️']].map(([label, items, icon]) => (
+          {[['飲品', MENU.drinks, '☕'],['輕食', MENU.food, '🍽️'],['貓咖啡廳', MENU.cafe, '🐾']].map(([label, items, icon]) => (
             <section key={label}>
               <h3 className="font-black text-slate-700 text-sm mb-3 flex items-center gap-2">
                 <span>{icon}</span> {label}
