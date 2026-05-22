@@ -900,10 +900,11 @@ const FILTERS = [
 ];
 
 function AnimalsScreen() {
-  const [selected, setSelected] = useState(null);
-  const [filter, setFilter]     = useState('all');
-  const [showAI, setShowAI]     = useState(false);
-  const [activeVideo, setActiveVideo] = useState(null);
+  const [selected, setSelected]         = useState(null);
+  const [filter, setFilter]             = useState('all');
+  const [showAI, setShowAI]             = useState(false);
+  const [activeVideo, setActiveVideo]   = useState(null);
+  const [showCatBooking, setShowCatBooking] = useState(false);
 
   const list = filter === 'all' ? ANIMALS : ANIMALS.filter(a => a.type === filter);
 
@@ -1070,6 +1071,18 @@ function AnimalsScreen() {
         ))}
       </div>
 
+      {/* 貓咖啡廳預約橫幅 */}
+      {(filter === 'cat' || filter === 'all') && (
+        <button onClick={() => setShowCatBooking(true)}
+          className="w-full bg-gradient-to-r from-orange-400 to-rose-400 rounded-[2rem] p-4 flex items-center justify-between text-white shadow-lg active:scale-95 transition">
+          <div className="text-left">
+            <p className="font-black text-base">🐾 貓咖啡廳預約</p>
+            <p className="text-[11px] opacity-90 font-bold mt-0.5">選日期 · 選時段 · LINE 直連店主</p>
+          </div>
+          <div className="bg-white/20 rounded-2xl px-4 py-2 text-xs font-black border border-white/30">立即預約</div>
+        </button>
+      )}
+
       <div className="grid grid-cols-2 gap-4">
         {list.map(a => (
           <div key={a.id} onClick={() => setSelected(a)} className="bg-white rounded-[2rem] overflow-hidden shadow-sm border border-slate-100 active:scale-95 transition group hover:border-[#0f6e56]/30 cursor-pointer">
@@ -1115,6 +1128,7 @@ function AnimalsScreen() {
       </div>
 
       {showAI && <AIMatchModal onClose={() => setShowAI(false)} />}
+      {showCatBooking && <CatCafeBookingModal onClose={() => setShowCatBooking(false)} />}
       {activeVideo && <VideoModal videoQ={activeVideo.videoQ} cover={activeVideo.img} title={`認識 ${activeVideo.name}`} subtitle={activeVideo.breed} onClose={() => setActiveVideo(null)} />}
     </div>
   );
@@ -2899,6 +2913,92 @@ function BookingModal({ onClose }) {
   );
 }
 
+// ── 貓咖啡廳預約 Modal ──
+const LINE_URL = 'https://line.me/R/ti/p/%2B886919165189';
+
+function CatCafeBookingModal({ onClose }) {
+  const today = new Date();
+  const days = Array.from({ length: 7 }, (_, i) => {
+    const d = new Date(today); d.setDate(today.getDate() + i + 1);
+    return { label: `${d.getMonth()+1}/${d.getDate()}（${['日','一','二','三','四','五','六'][d.getDay()]}）`, value: `${d.getMonth()+1}月${d.getDate()}日` };
+  });
+  const times = ['10:00', '11:00', '13:00', '14:00', '15:00', '16:00', '17:00'];
+  const [date, setDate]     = useState(days[0].value);
+  const [time, setTime]     = useState('');
+  const [people, setPeople] = useState(2);
+  const [note, setNote]     = useState('');
+
+  const handleConfirm = () => {
+    if (!time) return;
+    const msg = encodeURIComponent(`【貓咖啡廳預約】\n日期：${date}\n時間：${time}\n人數：${people} 人${note ? `\n備註：${note}` : ''}\n\n請幫我確認預約，謝謝！`);
+    window.open(`${LINE_URL}?text=${msg}`, '_blank');
+    onClose();
+  };
+
+  return (
+    <div className="fixed inset-0 bg-black/80 z-50 flex items-end justify-center animate-in fade-in">
+      <div className="bg-white rounded-t-[3rem] w-full p-6 space-y-5 shadow-2xl max-h-[85vh] overflow-y-auto">
+        <div className="flex justify-between items-center">
+          <div>
+            <h2 className="text-2xl font-black text-slate-800">🐱 貓咖啡廳預約</h2>
+            <p className="text-xs text-slate-400 font-bold mt-1">確認後將透過 LINE 聯繫店主</p>
+          </div>
+          <button onClick={onClose} className="p-3 bg-slate-100 rounded-full"><XCircle /></button>
+        </div>
+
+        {/* 日期 */}
+        <div>
+          <p className="text-xs font-black text-slate-500 mb-2 tracking-widest uppercase">選擇日期</p>
+          <div className="flex gap-2 overflow-x-auto scrollbar-hide pb-1">
+            {days.map(d => (
+              <button key={d.value} onClick={() => setDate(d.value)}
+                className={`shrink-0 px-4 py-2.5 rounded-2xl text-xs font-black transition-all border ${date === d.value ? 'bg-[#0f6e56] text-white border-[#0f6e56]' : 'bg-slate-50 text-slate-600 border-slate-200'}`}>
+                {d.label}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        {/* 時段 */}
+        <div>
+          <p className="text-xs font-black text-slate-500 mb-2 tracking-widest uppercase">選擇時段</p>
+          <div className="grid grid-cols-4 gap-2">
+            {times.map(t => (
+              <button key={t} onClick={() => setTime(t)}
+                className={`py-2.5 rounded-2xl text-xs font-black transition-all border ${time === t ? 'bg-orange-500 text-white border-orange-500' : 'bg-slate-50 text-slate-600 border-slate-200'}`}>
+                {t}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        {/* 人數 */}
+        <div>
+          <p className="text-xs font-black text-slate-500 mb-2 tracking-widest uppercase">人數</p>
+          <div className="flex items-center gap-4 bg-slate-50 rounded-2xl p-4 border border-slate-100">
+            <button onClick={() => setPeople(p => Math.max(1, p-1))} className="w-9 h-9 rounded-full bg-white border border-slate-200 font-black text-lg flex items-center justify-center shadow-sm">−</button>
+            <span className="flex-1 text-center font-black text-2xl text-slate-800">{people}</span>
+            <button onClick={() => setPeople(p => Math.min(8, p+1))} className="w-9 h-9 rounded-full bg-white border border-slate-200 font-black text-lg flex items-center justify-center shadow-sm">+</button>
+          </div>
+        </div>
+
+        {/* 備註 */}
+        <div>
+          <p className="text-xs font-black text-slate-500 mb-2 tracking-widest uppercase">備註（選填）</p>
+          <input value={note} onChange={e => setNote(e.target.value)} placeholder="例：有貓咪過敏、慶生需求…"
+            className="w-full border border-slate-200 rounded-2xl px-4 py-3 text-sm font-bold text-slate-700 outline-none focus:border-[#0f6e56]" />
+        </div>
+
+        <button onClick={handleConfirm} disabled={!time}
+          className={`w-full py-4 rounded-[2rem] font-black text-base shadow-xl transition-all flex items-center justify-center gap-2 ${time ? 'bg-[#06C755] text-white active:scale-95' : 'bg-slate-100 text-slate-400 cursor-not-allowed'}`}>
+          <span className="text-xl">💬</span> 透過 LINE 送出預約
+        </button>
+        <p className="text-center text-[10px] text-slate-400 font-bold -mt-2">將開啟 LINE 並自動填入預約資訊</p>
+      </div>
+    </div>
+  );
+}
+
 // ── 課程測驗 Modal ──
 function QuizModal({ course, onClose, onPass }) {
   const [cur, setCur]         = useState(0);
@@ -3278,9 +3378,10 @@ function ThemePickerModal({ onClose, current, onSelect }) {
 // ─────────────────────────────────────────────
 function OrderScreen({ cartItems, addToCart, removeFromCart, clearCart, addPoints }) {
   const [cat, setCat] = useState('全部');
-  const [showCheckout, setShowCheckout] = useState(false);
-  const [showLinePay, setShowLinePay]   = useState(false);
-  const [ordered, setOrdered]           = useState(false);
+  const [showCheckout, setShowCheckout]     = useState(false);
+  const [showLinePay, setShowLinePay]       = useState(false);
+  const [ordered, setOrdered]               = useState(false);
+  const [showCatBooking, setShowCatBooking] = useState(false);
 
   const cats = ['全部', '飲品', '輕食', '甜點'];
   const filtered = cat === '全部' ? MENU_ITEMS : MENU_ITEMS.filter(m => m.cat === cat);
@@ -3473,16 +3574,18 @@ function OrderScreen({ cartItems, addToCart, removeFromCart, clearCart, addPoint
           </div>
         </div>
       )}
+      {showCatBooking && <CatCafeBookingModal onClose={() => setShowCatBooking(false)} />}
     </div>
   );
 }
 
 // ── 今日點餐 Modal ──
 function CafeMenuModal({ onClose }) {
-  const [cart, setCart]         = useState([]);
-  const [showPay, setShowPay]   = useState(false);
-  const [showLP, setShowLP]     = useState(false);
-  const [ordered, setOrdered]   = useState(false);
+  const [cart, setCart]                     = useState([]);
+  const [showPay, setShowPay]               = useState(false);
+  const [showLP, setShowLP]                 = useState(false);
+  const [ordered, setOrdered]               = useState(false);
+  const [showCatBooking, setShowCatBooking] = useState(false);
 
   const MENU = {
     drinks: [
@@ -3544,9 +3647,15 @@ function CafeMenuModal({ onClose }) {
         <div className="p-5 space-y-5 pb-36">
           {[['飲品', MENU.drinks, '☕'],['輕食', MENU.food, '🍽️'],['貓咖啡廳', MENU.cafe, '🐾']].map(([label, items, icon]) => (
             <section key={label}>
-              <h3 className="font-black text-slate-700 text-sm mb-3 flex items-center gap-2">
-                <span>{icon}</span> {label}
-              </h3>
+              <div className="flex items-center justify-between mb-3">
+                <h3 className="font-black text-slate-700 text-sm flex items-center gap-2"><span>{icon}</span> {label}</h3>
+                {label === '貓咖啡廳' && (
+                  <button onClick={() => setShowCatBooking(true)}
+                    className="bg-[#06C755] text-white text-[10px] font-black px-3 py-1.5 rounded-full flex items-center gap-1 shadow-sm active:scale-95 transition">
+                    💬 LINE 預約
+                  </button>
+                )}
+              </div>
               <div className="space-y-2">
                 {items.map(item => {
                   const inCart = cart.find(x => x.id === item.id);
@@ -3617,6 +3726,7 @@ function CafeMenuModal({ onClose }) {
             onClose={() => setShowLP(false)}
           />
         )}
+        {showCatBooking && <CatCafeBookingModal onClose={() => setShowCatBooking(false)} />}
       </div>
     </div>
   );
