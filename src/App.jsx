@@ -1030,9 +1030,12 @@ function AnimalsScreen() {
                   <p className="text-2xl font-black text-amber-800">NT${selected.buyPrice.toLocaleString()}</p>
                   {selected.expFee > 0 && <p className="text-[10px] text-amber-500 font-bold">體驗費 NT${selected.expFee} 可折抵</p>}
                 </div>
-                <button onClick={() => alert(`洽詢購買「${selected.name}」\n\n💰 售價：NT$${selected.buyPrice.toLocaleString()}\n${selected.expFee > 0 ? `💡 體驗費 NT$${selected.expFee} 可折抵\n` : ''}📋 ${selected.buyNote}\n\n請至門市或 LINE 洽詢`)}
-                  className="bg-amber-500 text-white px-5 py-3 rounded-2xl font-black text-sm active:scale-95 transition shadow-md">
-                  洽詢購買
+                <button onClick={() => {
+                    const msg = encodeURIComponent(`【洽詢購買】${selected.name}（${selected.breed}）\n\n💰 售價：NT$${selected.buyPrice.toLocaleString()}${selected.expFee > 0 ? `\n💡 體驗費 NT$${selected.expFee} 可折抵` : ''}\n📋 ${selected.buyNote}\n\n請問目前還有嗎？謝謝！`);
+                    window.open(`${LINE_URL}?text=${msg}`, '_blank');
+                  }}
+                  className="bg-amber-500 text-white px-5 py-3 rounded-2xl font-black text-sm active:scale-95 transition shadow-md flex items-center gap-1.5">
+                  <span className="bg-white rounded px-1 py-0.5 text-[#06C755] font-black text-[10px]">LINE</span>洽詢購買
                 </button>
               </div>
             </div>
@@ -2914,7 +2917,7 @@ function BookingModal({ onClose }) {
 }
 
 // ── 貓咖啡廳預約 Modal ──
-const LINE_URL = 'https://line.me/R/ti/p/%2B886919165189';
+const LINE_URL = 'https://line.me/ti/p/RJhtFFxboN';
 
 function CatCafeBookingModal({ onClose }) {
   const today = new Date();
