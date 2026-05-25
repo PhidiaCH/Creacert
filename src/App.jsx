@@ -379,6 +379,9 @@ const COMMUNITY_POSTS = [
   { id:3, user:'店長 Leo', avatar:'🧑‍💼', tag:'CreaCert官方', img: PX(29378244),
     caption:'小白今天狀態超好！來門市的朋友都說摸了之後不再怕蛇了 🐍✨',
     likes:1203, comments:156, shares:89, saved:445, time:'1天前', challenge:'#克服恐懼' },
+  { id:4, user:'Kenji 黃冠華', avatar:'🧑‍🔬', tag:'CreaCert 爬蟲講師', img: PX(8733545),
+    caption:'今天帶著同學認識鬃獅蜥的發色機制，每一隻都有自己的個性！課後大家都捨不得放手 🦎🔬',
+    likes:876, comments:94, shares:61, saved:312, time:'3小時前', challenge:'#爬蟲教育' },
 ];
 
 // 短影音 Reels 資料
@@ -388,6 +391,7 @@ const REELS = [
   { id: 3, videoQ: 'beagle dog training sit command', title: '豆豆學會「坐下」啦！🐶', creator: '志豪',    views: '1.2萬', animal: '米格魯', cover: PX(8706369) },
   { id: 4, videoQ: 'bearded dragon sunbathing basking', title: '小綠曬太陽超享受 🦎',    creator: '雅婷',    views: '4.5萬', animal: '鬃獅蜥', cover: PX(6002806) },
   { id: 5, videoQ: 'ball python handling friendly snake', title: '摸蛇其實不可怕！🐍',     creator: '店長Leo', views: '15萬',  animal: '球蟒',   cover: PX(29378244) },
+  { id: 6, videoQ: 'bearded dragon color change morph care', title: '鬃獅蜥發色完全解密 🦎', creator: 'Kenji黃冠華', views: '6.8萬', animal: '鬃獅蜥', cover: PX(8733545) },
 ];
 
 const PRODUCTS = [
@@ -1214,6 +1218,17 @@ function CoursesScreen({ addPoints, points = 0 }) {
           <h3 className="font-black text-slate-700 text-sm mb-3 flex items-center gap-2">
             <span className="w-1.5 h-5 bg-[#0f6e56] rounded-full" />{tag}
           </h3>
+          {tag === '爬蟲特別課程' && (
+            <div className="mb-3 bg-gradient-to-r from-emerald-50 to-teal-50 border border-emerald-100 rounded-3xl p-4 flex items-center gap-3">
+              <div className="w-12 h-12 rounded-2xl bg-emerald-100 flex items-center justify-center text-2xl shrink-0">🧑‍🔬</div>
+              <div className="flex-1">
+                <p className="text-[10px] font-black text-emerald-600 tracking-widest uppercase">爬蟲課程主講</p>
+                <p className="text-sm font-black text-slate-800">Kenji 黃冠華</p>
+                <p className="text-[10px] text-slate-400 font-bold">鬃獅蜥 · 球蟒 · 爬蟲行為專家</p>
+              </div>
+              <span className="bg-emerald-600 text-white text-[9px] font-black px-2 py-1 rounded-full">CreaCert 認證</span>
+            </div>
+          )}
           <div className="space-y-3">
             {items.map(course => (
               <div key={course.id} className={`bg-white rounded-3xl p-5 border shadow-sm transition ${course.locked ? 'opacity-55 border-slate-100' : 'border-slate-100 hover:border-[#0f6e56]/30'}`}>
