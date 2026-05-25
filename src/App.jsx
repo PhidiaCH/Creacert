@@ -347,6 +347,37 @@ const POINTS_HISTORY = [
   { id: 7, desc: 'PREMIUM 訂閱月點',       pts: 200,  date: '05/01', type: 'earn' },
 ];
 
+const DEMO_USERS = [
+  {
+    id: 1, name: '陳瑭原', store: '成大生醫卓群店', role: 'A-Class Gold Mentor', roleZh: '榮譽導師',
+    avatar: '🧑', courses: 7, trials: 3, points: 1280,
+    pet: '飛飛', petType: '蜜袋鼯', petEmoji: '🦘',
+    progress: [['進階課程完成度', 70], ['總試養天數 (目標 30 天)', 60], ['持有認證時間 (目標 6 個月)', 85]],
+    cardGradient: 'from-rose-400 via-pink-500 to-fuchsia-600',
+  },
+  {
+    id: 2, name: 'Kenji 黃冠華', store: '成大生醫卓群店', role: 'B-Class Reptile Expert', roleZh: '爬蟲講師',
+    avatar: '🧑‍🔬', courses: 12, trials: 8, points: 3450,
+    pet: '小綠', petType: '鬃獅蜥', petEmoji: '🦎',
+    progress: [['爬蟲課程完成度', 95], ['總試養天數 (目標 30 天)', 88], ['持有認證時間 (目標 6 個月)', 100]],
+    cardGradient: 'from-emerald-500 via-teal-500 to-cyan-600',
+  },
+  {
+    id: 3, name: '雅婷', store: '台南東區門市', role: 'C Certified', roleZh: 'C 級認證師',
+    avatar: '👩', courses: 4, trials: 2, points: 780,
+    pet: '小橘', petType: '橘貓', petEmoji: '🐱',
+    progress: [['基礎課程完成度', 80], ['總試養天數 (目標 30 天)', 25], ['持有認證時間 (目標 6 個月)', 40]],
+    cardGradient: 'from-orange-400 via-amber-500 to-yellow-500',
+  },
+  {
+    id: 4, name: '店長 Leo', store: '成大生醫卓群店', role: 'A-Class Founder', roleZh: '創始店長',
+    avatar: '🧑‍💼', courses: 20, trials: 30, points: 9800,
+    pet: '小白', petType: '球蟒', petEmoji: '🐍',
+    progress: [['全課程完成度', 100], ['總試養天數 (目標 30 天)', 100], ['持有認證時間 (目標 6 個月)', 100]],
+    cardGradient: 'from-slate-700 via-slate-600 to-slate-500',
+  },
+];
+
 const DIARY_ENTRIES = [
   { day: 10, date: '05/13', title: '第一次爬到肩膀！',   content: '飛飛今天超勇敢，從手臂慢慢爬到我肩膀，停了好久。心跳加速但超感動…', mood: 5 },
   { day: 9,  date: '05/12', title: '飲食調整第一天',     content: '開始添加木瓜泥，飛飛有點猶豫但還是吃了一些。體重微增 2g，好兆頭。',  mood: 4 },
@@ -626,6 +657,9 @@ function PassportScreen({ setShowCertInfo, setShowPortrait, addPoints, setShowPl
   const [showBooking, setShowBooking] = useState(false);
   const [showCafeMenu, setShowCafeMenu] = useState(false);
   const [checkedIn, setCheckedIn] = useState(false);
+  const [activeUserId, setActiveUserId] = useState(1);
+  const [showUserPicker, setShowUserPicker] = useState(false);
+  const activeUser = DEMO_USERS.find(u => u.id === activeUserId) || DEMO_USERS[0];
   const [liveOn, setLiveOn] = useState(false);
   const [liveError, setLiveError] = useState('');
   const videoRef = useRef(null);
@@ -677,14 +711,25 @@ function PassportScreen({ setShowCertInfo, setShowPortrait, addPoints, setShowPl
   return (
     <div className="p-5 space-y-5 pb-6 animate-in fade-in slide-in-from-bottom-4">
 
+      {/* 使用者切換列 */}
+      <div className="flex gap-2 overflow-x-auto scrollbar-hide pb-1">
+        {DEMO_USERS.map(u => (
+          <button key={u.id} onClick={() => setActiveUserId(u.id)}
+            className={`shrink-0 flex items-center gap-2 px-3 py-2 rounded-2xl text-xs font-black transition-all border ${activeUserId === u.id ? 'bg-[#0f6e56] text-white border-[#0f6e56] shadow-md' : 'bg-white text-slate-500 border-slate-200'}`}>
+            <span className="text-base">{u.avatar}</span>
+            <span>{u.name}</span>
+          </button>
+        ))}
+      </div>
+
       {/* 數位護照卡 */}
-      <div className="rounded-[2.5rem] p-6 text-white shadow-2xl relative overflow-hidden bg-gradient-to-br from-rose-400 via-pink-500 to-fuchsia-600 border-2 border-white/20">
+      <div className={`rounded-[2.5rem] p-6 text-white shadow-2xl relative overflow-hidden bg-gradient-to-br ${activeUser.cardGradient} border-2 border-white/20`}>
         <div className="absolute -right-6 -top-6 opacity-10 rotate-12"><Award size={160} /></div>
         <div className="flex justify-between items-start mb-5">
           <div className="z-10">
-            <div className="bg-white/20 w-fit px-2 py-0.5 rounded text-[9px] font-black tracking-widest mb-1 uppercase">A-Class Gold Mentor</div>
-            <h3 className="text-3xl font-black tracking-tight">陳瑭原</h3>
-            <p className="text-xs opacity-80 mt-1">成大生醫卓群店 · 榮譽導師</p>
+            <div className="bg-white/20 w-fit px-2 py-0.5 rounded text-[9px] font-black tracking-widest mb-1 uppercase">{activeUser.role}</div>
+            <h3 className="text-3xl font-black tracking-tight">{activeUser.name}</h3>
+            <p className="text-xs opacity-80 mt-1">{activeUser.store} · {activeUser.roleZh}</p>
           </div>
           <div className="flex flex-col gap-2 z-10">
             <button onClick={() => setShowPortrait(true)} className="bg-white/20 p-2.5 rounded-2xl border border-white/30 active:scale-95 transition"><Camera size={20} /></button>
@@ -694,7 +739,7 @@ function PassportScreen({ setShowCertInfo, setShowPortrait, addPoints, setShowPl
 
         {/* 三數據卡 */}
         <div className="grid grid-cols-3 gap-2 relative z-10 mb-4">
-          {[['已修課程','7'],['試養次數','3'],['累積積分', points.toLocaleString()]].map(([k,v]) => (
+          {[['已修課程', activeUser.courses], ['試養次數', activeUser.trials], ['累積積分', activeUser.id === 1 ? points.toLocaleString() : activeUser.points.toLocaleString()]].map(([k,v]) => (
             <div key={k} className="bg-black/10 rounded-2xl p-3 border border-white/10 text-center">
               <p className="text-[9px] opacity-60 mb-0.5">{k}</p>
               <p className="text-xl font-black">{v}</p>
@@ -704,7 +749,7 @@ function PassportScreen({ setShowCertInfo, setShowPortrait, addPoints, setShowPl
 
         {/* 升級進度條 */}
         <div className="relative z-10 space-y-2">
-          {[['進階課程完成度', 70], ['總試養天數 (目標 30 天)', 60], ['持有認證時間 (目標 6 個月)', 85]].map(([label, val]) => (
+          {activeUser.progress.map(([label, val]) => (
             <div key={label}>
               <div className="flex justify-between text-[9px] text-white/70 font-bold mb-1"><span>{label}</span><span>{val}%</span></div>
               <div className="h-1.5 bg-black/20 rounded-full overflow-hidden">
