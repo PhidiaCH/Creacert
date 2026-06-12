@@ -75,48 +75,48 @@ const ThemeCtx = createContext(THEMES.pro);
 // 定價方案
 const PLANS = [
   {
-    id: 'free', name: '基礎探索', nameEn: 'FREE',
+    id: 'free', name: '單次入場', nameEn: 'WALK-IN',
     price: 0, unit: '',
     color: 'from-slate-400 to-slate-600',
     badge: null,
     features: [
-      '✅ 動物圖鑑瀏覽',
-      '✅ 基礎課程 3 堂',
-      '✅ 生態圈社群',
+      '✅ 貓咖自由入場（低消制）',
+      '✅ 貓咪圖鑑瀏覽',
+      '✅ 基礎貓咪課程 3 堂',
       '✅ 到店打卡集點',
-      '❌ 進階課程',
-      '❌ 認證考試',
-      '❌ 爬蟲預訂優先',
+      '❌ 無限次入場',
+      '❌ 認養申請資格',
+      '❌ 優先預約貓咪時段',
     ],
   },
   {
-    id: 'premium', name: '達人月票', nameEn: 'PREMIUM',
+    id: 'premium', name: '貓咖月票', nameEn: 'MONTHLY',
     price: 199, unit: '/月',
-    color: 'from-violet-500 to-purple-700',
+    color: 'from-rose-400 to-pink-600',
     badge: '最受歡迎',
     features: [
-      '✅ 全部課程無限看',
-      '✅ C / B 級認證考試',
-      '✅ 門市飲品 9 折',
-      '✅ 爬蟲體驗優先預約',
-      '✅ 寵物食品 9 折',
+      '✅ 當月無限次入場',
+      '✅ 全部貓咪課程無限看',
+      '✅ 飲品 9 折・輕食 9 折',
+      '✅ 優先預約指定貓咪時段',
+      '✅ 貓咪商品 9 折',
       '✅ 每月贈 200 點',
-      '❌ A / S / M 級認證',
+      '❌ 認養申請快速通道',
     ],
   },
   {
-    id: 'pro', name: '認證師年票', nameEn: 'PRO',
+    id: 'pro', name: '認養會員年票', nameEn: 'ADOPT',
     price: 1680, unit: '/年',
-    color: 'from-amber-400 to-orange-600',
+    color: 'from-amber-400 to-orange-500',
     badge: '省最多',
     features: [
-      '✅ 全部課程 + 所有認證',
+      '✅ 全年無限次入場',
+      '✅ 認養申請快速通道',
       '✅ 門市消費 8 折',
-      '✅ 爬蟲 VIP 預約通道',
-      '✅ 寵物食品 85 折',
+      '✅ 貓咪商品 85 折',
       '✅ 每月贈 500 點',
-      '✅ 專屬徽章 + 頭銜',
-      '✅ 優先新品體驗資格',
+      '✅ 專屬「認養導師」頭銜',
+      '✅ 新貓入住第一優先通知',
     ],
   },
 ];
@@ -186,16 +186,16 @@ const ANIMALS = [
 
 // ── 10 階等級系統 ──────────────────────────────
 const LEVEL_SYSTEM = [
-  { lv: 1,  title: '新手探索者', badge: '🐾', eng: 'Explorer',        pts: 0,     color: 'bg-slate-500',                          privileges: ['門市自由參觀', '基礎講座免費'] },
-  { lv: 2,  title: '動物愛好者', badge: '🌱', eng: 'Animal Lover',    pts: 200,   color: 'bg-teal-500',                           privileges: ['貓狗門市免費互動', '簽到獎勵×1.5'] },
-  { lv: 3,  title: 'C 級學員',  badge: '📖', eng: 'C Learner',       pts: 500,   color: 'bg-cyan-600',                           privileges: ['C 級認證考試資格', '課程早鳥通知'] },
-  { lv: 4,  title: 'C 級認證師', badge: '✅', eng: 'C Certified',     pts: 1000,  color: 'bg-[#534ab7]',                          privileges: ['貓咪 14 天試養', '課程 9 折優惠'] },
-  { lv: 5,  title: '爬蟲觀察者', badge: '🦎', eng: 'Reptile Watcher', pts: 2000,  color: 'bg-blue-600',                           privileges: ['爬蟲體驗優先預訂', '積分加成 +10%'] },
-  { lv: 6,  title: 'B 級認證師', badge: '🎓', eng: 'B Certified',     pts: 3500,  color: 'bg-violet-600',                         privileges: ['犬隻爬蟲全開放', '購買 8.5 折', '積分 +15%'] },
-  { lv: 7,  title: '異寵達人',  badge: '⭐', eng: 'Exotic Master',   pts: 5500,  color: 'bg-amber-500',                          privileges: ['蜜袋鼯 VIP 體驗', '活動早鳥票', '積分 +20%'] },
-  { lv: 8,  title: 'A 級認證師', badge: '🏆', eng: 'A Certified',     pts: 8000,  color: 'bg-orange-500',                         privileges: ['全物種完全解鎖', '購買 8 折', '金牌導師頭銜'] },
-  { lv: 9,  title: 'CreaCert 精英', badge: '👑', eng: 'CC Elite',    pts: 12000, color: 'bg-rose-600',                           privileges: ['贊助商活動邀請', '免費月訂閱 1 次/季', '積分 +25%'] },
-  { lv: 10, title: '生態大使',  badge: '🌟', eng: 'Ambassador',      pts: 20000, color: 'bg-gradient-to-r from-amber-500 to-rose-500', privileges: ['終身會員優惠', '聯名商品設計', 'VIP 限定活動'] },
+  { lv: 1,  title: '貓咖新客',   badge: '🐾', eng: 'Newcomer',       pts: 0,     color: 'bg-slate-500',   privileges: ['貓咖自由入場（低消制）', '基礎貓咪知識課程'] },
+  { lv: 2,  title: '貓咪朋友',   badge: '🌸', eng: 'Cat Friend',     pts: 200,   color: 'bg-pink-400',    privileges: ['簽到獎勵 ×1.5', '貓咪互動延長 15 分鐘'] },
+  { lv: 3,  title: '貓咖常客',   badge: '☕', eng: 'Regular',        pts: 500,   color: 'bg-amber-500',   privileges: ['飲品 9.5 折', '課程早鳥通知'] },
+  { lv: 4,  title: '貓咪導師',   badge: '📖', eng: 'Cat Mentor',     pts: 1000,  color: 'bg-[#534ab7]',   privileges: ['貓咪 14 天試養資格', '課程 9 折'] },
+  { lv: 5,  title: '認養候選人', badge: '🏠', eng: 'Adopter',        pts: 2000,  color: 'bg-blue-500',    privileges: ['認養申請開放', '積分加成 +10%'] },
+  { lv: 6,  title: '貓咪守護者', badge: '🎓', eng: 'Guardian',       pts: 3500,  color: 'bg-violet-600',  privileges: ['月票 9 折', '購物 8.5 折', '積分 +15%'] },
+  { lv: 7,  title: '貓咖達人',   badge: '⭐', eng: 'Connoisseur',    pts: 5500,  color: 'bg-rose-500',    privileges: ['VIP 包廂預約', '活動早鳥票', '積分 +20%'] },
+  { lv: 8,  title: '認養大使',   badge: '🏆', eng: 'Adopt Ambassador',pts: 8000, color: 'bg-orange-500',  privileges: ['永久 8 折消費', '金牌導師頭銜', '聯名活動優先'] },
+  { lv: 9,  title: 'CreaCert 精英', badge: '👑', eng: 'CC Elite',   pts: 12000, color: 'bg-rose-600',    privileges: ['免費月票 1 次/季', '贊助商活動邀請', '積分 +25%'] },
+  { lv: 10, title: '貓咖傳說',   badge: '🌟', eng: 'Legend',         pts: 20000, color: 'bg-gradient-to-r from-pink-500 to-rose-500', privileges: ['終身會員優惠', '聯名商品設計', 'VIP 限定活動'] },
 ];
 const getUserLevel  = (pts) => LEVEL_SYSTEM.reduce((acc, l) => pts >= l.pts ? l : acc, LEVEL_SYSTEM[0]);
 const getNextLevel  = (pts) => LEVEL_SYSTEM.find(l => l.pts > pts) || null;
@@ -300,13 +300,14 @@ const PROFIT_STRATEGIES = [
 ];
 
 const COURSES = [
-  { id: 1, tag: '貓咪基礎', title: '貓咪營養學',     desc: '主食、零食與補充品的選擇', duration: '45 分鐘', progress: 100, score: 85,  locked: false, paid: false, videoQ: 'cat nutrition food guide' },
-  { id: 2, tag: '貓咪基礎', title: '行為解讀',       desc: '讀懂肢體語言與聲音溝通', duration: '50 分鐘', progress: 100, score: 90,  locked: false, paid: false, videoQ: 'cat body language behavior guide' },
-  { id: 3, tag: '貓咪基礎', title: '環境安全設計',   desc: '打造貓咪友善的居家空間', duration: '40 分鐘', progress: 60,  score: null, locked: false, paid: false, videoQ: 'cat proof home environment setup' },
-  { id: 4, tag: '貓咪進階', title: '醫療照護基礎',   desc: '識別常見症狀與緊急處置', duration: '90 分鐘', progress: 0,   score: null, locked: true,  paid: false, videoQ: 'cat health symptoms veterinary care' },
-  { id: 5, tag: '貓咪進階', title: '行為矯正技術',   desc: '正向強化訓練方法',       duration: '75 分鐘', progress: 0,   score: null, locked: true,  paid: false, videoQ: 'cat positive reinforcement training clicker' },
-  { id: 6, tag: '爬蟲特別課程', title: '爬蟲飼育認證', desc: '鬃獅蜥、球蟒的完整照護', duration: '120 分鐘', progress: 0, score: null, locked: false, paid: true, price: 'NT$399', videoQ: 'bearded dragon ball python reptile care guide' },
-  { id: 7, tag: '犬隻認證', title: '犬隻基礎服從',   desc: '基本口令訓練與社交化',   duration: '60 分鐘', progress: 30,  score: null, locked: false, paid: false, videoQ: 'dog basic obedience training sit stay' },
+  { id: 1, tag: '貓咪基礎', title: '貓咪營養學',       desc: '主食、零食與補充品的選擇',     duration: '45 分鐘', progress: 100, score: 85,  locked: false, paid: false, videoQ: 'cat nutrition food guide' },
+  { id: 2, tag: '貓咪基礎', title: '行為解讀',         desc: '讀懂肢體語言與聲音溝通',       duration: '50 分鐘', progress: 100, score: 90,  locked: false, paid: false, videoQ: 'cat body language behavior guide' },
+  { id: 3, tag: '貓咪基礎', title: '環境安全設計',     desc: '打造貓咪友善的居家空間',       duration: '40 分鐘', progress: 60,  score: null, locked: false, paid: false, videoQ: 'cat proof home environment setup' },
+  { id: 4, tag: '貓咪基礎', title: '品種完全指南',     desc: '常見品種個性・照護差異總覽',   duration: '55 分鐘', progress: 0,   score: null, locked: false, paid: false, videoQ: 'cat breeds guide personality traits' },
+  { id: 5, tag: '貓咪進階', title: '醫療照護基礎',     desc: '識別常見症狀與緊急處置',       duration: '90 分鐘', progress: 0,   score: null, locked: true,  paid: false, videoQ: 'cat health symptoms veterinary care' },
+  { id: 6, tag: '貓咪進階', title: '行為矯正技術',     desc: '正向強化訓練・改善問題行為',   duration: '75 分鐘', progress: 0,   score: null, locked: true,  paid: false, videoQ: 'cat positive reinforcement training clicker' },
+  { id: 7, tag: '認養準備課程', title: '試養與認養全攻略', desc: '試養期注意事項・認養協議解析', duration: '60 分鐘', progress: 30,  score: null, locked: false, paid: false, videoQ: 'cat adoption guide first time owner' },
+  { id: 8, tag: '認養準備課程', title: '多貓家庭管理', desc: '多貓共處・領域衝突預防',       duration: '70 分鐘', progress: 0,   score: null, locked: false, paid: true,  price: 'NT$299', videoQ: 'multi cat household management tips' },
 ];
 
 const QUIZ_QUESTIONS = [
@@ -408,67 +409,67 @@ const DAILY_CHALLENGES = [
 
 // 社群貼文資料（加強版）
 const COMMUNITY_POSTS = [
-  { id:1, user:'陳瑭原', avatar:'🧑', tag:'蜜袋鼯新手', img: PX(29993579),
-    caption:'飛飛今天第一次自己爬到我肩膀！三個月的耐心終於換來這一刻 🥹',
-    likes:247, comments:38, shares:12, saved:89, time:'2小時前', challenge:'#萌寵日記' },
-  { id:2, user:'雅婷', avatar:'👩', tag:'爬蟲飼主', img: PX(6002806),
-    caption:'小綠曬太陽超享受！UVB 12小時是關鍵，爬蟲新手必看 🦎☀️',
-    likes:512, comments:67, shares:45, saved:203, time:'5小時前', challenge:'#爬蟲日常' },
-  { id:3, user:'店長 Leo', avatar:'🧑‍💼', tag:'CreaCert官方', img: PX(29378244),
-    caption:'小白今天狀態超好！來門市的朋友都說摸了之後不再怕蛇了 🐍✨',
-    likes:1203, comments:156, shares:89, saved:445, time:'1天前', challenge:'#克服恐懼' },
-  { id:4, user:'Kenji', avatar:'🧑‍🔬', tag:'CreaCert 爬蟲體驗師', img: PX(8733545),
-    caption:'今天帶著同學認識鬃獅蜥的發色機制，每一隻都有自己的個性！課後大家都捨不得放手 🦎🔬',
-    likes:876, comments:94, shares:61, saved:312, time:'3小時前', challenge:'#爬蟲教育' },
-  { id:5, user:'黃冠華', avatar:'🧑', tag:'米格魯飼主', img: PX(8706369),
-    caption:'豆豆今天考過「坐下」和「握手」！訓練 14 天終於有成果，超有成就感 🐶✨',
-    likes:534, comments:72, shares:33, saved:198, time:'6小時前', challenge:'#犬隻訓練' },
+  { id:1, user:'陳瑭原', avatar:'🧑', tag:'貓咖常客', img: PX(4641440),
+    caption:'小福今天一直跑來蹭我的手臂，在貓咖念書效率直接翻倍，壓力全消 🐱☕',
+    likes:347, comments:52, shares:18, saved:124, time:'2小時前', challenge:'#貓咖日常' },
+  { id:2, user:'雅婷', avatar:'👩', tag:'認養候選人', img: PX(1170986),
+    caption:'拿鐵今天居然自己走到我面前坐下！申請試養資格快審過，好期待帶牠回家 🥹',
+    likes:621, comments:83, shares:47, saved:289, time:'4小時前', challenge:'#認養日記' },
+  { id:3, user:'店長 Leo', avatar:'🧑‍💼', tag:'CreaCert 貓咖官方', img: PX(45201),
+    caption:'奶蓋今天正式開放試養媒合！藍眼睛布偶貓，性格溫柔，有緣快來 🐾✨',
+    likes:1543, comments:203, shares:112, saved:567, time:'1天前', challenge:'#等待回家' },
+  { id:4, user:'Kenji', avatar:'🧑‍🔬', tag:'貓咖達人', img: PX(2071873),
+    caption:'焦糖的折耳加上這個眼神⋯我每週都要來一次，已經辦月票了 😂 強烈推薦！',
+    likes:876, comments:94, shares:61, saved:312, time:'3小時前', challenge:'#月票值回票價' },
+  { id:5, user:'黃冠華', avatar:'🧑', tag:'貓咖新客', img: PX(29561296),
+    caption:'第一次來貓咖，月亮直接走過來坐在我腿上睡著了⋯我已經原地融化 🖤',
+    likes:489, comments:67, shares:29, saved:178, time:'6小時前', challenge:'#第一次貓咖' },
 ];
 
 // 短影音 Reels 資料
 const REELS = [
-  { id: 1, videoQ: 'sugar glider cute pet shoulder', title: '飛飛第一次爬上肩膀 🦘',  creator: '陳瑭原',  views: '2.3萬', animal: '蜜袋鼯', cover: PX(29993579) },
-  { id: 2, videoQ: 'orange tabby cat funny daily',   title: '小福的週日賴床日常 ☀️',  creator: '小美',    views: '8.1萬', animal: '橘貓',   cover: PX(4641440) },
-  { id: 3, videoQ: 'beagle dog training sit command', title: '豆豆學會「坐下」啦！🐶', creator: '志豪',    views: '1.2萬', animal: '米格魯', cover: PX(8706369) },
-  { id: 4, videoQ: 'bearded dragon sunbathing basking', title: '小綠曬太陽超享受 🦎',    creator: '雅婷',    views: '4.5萬', animal: '鬃獅蜥', cover: PX(6002806) },
-  { id: 5, videoQ: 'ball python handling friendly snake', title: '摸蛇其實不可怕！🐍',     creator: '店長Leo', views: '15萬',  animal: '球蟒',   cover: PX(29378244) },
-  { id: 6, videoQ: 'bearded dragon color change morph care', title: '鬃獅蜥發色完全解密 🦎', creator: 'Kenji', views: '6.8萬', animal: '鬃獅蜥', cover: PX(8733545) },
-  { id: 7, videoQ: 'beagle dog trick training handshake', title: '豆豆學握手只要 14 天！🐶', creator: '黃冠華', views: '3.1萬', animal: '米格魯', cover: PX(8706369) },
+  { id: 1, videoQ: 'orange tabby cat funny daily',          title: '小福的週日賴床日常 ☀️',   creator: '陳瑭原',  views: '8.1萬', animal: '橘貓',   cover: PX(4641440)  },
+  { id: 2, videoQ: 'black white cat calm peaceful window',  title: '月亮曬太陽超享受 🖤',     creator: '雅婷',    views: '5.3萬', animal: '黑白貓', cover: PX(29561296) },
+  { id: 3, videoQ: 'british shorthair cat cafe sit cute',   title: '拿鐵今天超黏人！☕',      creator: 'Kenji',   views: '12萬',  animal: '英短',   cover: PX(1170986)  },
+  { id: 4, videoQ: 'scottish fold cat eyes cute ear',       title: '焦糖的折耳特寫 😭💕',    creator: '黃冠華',  views: '6.2萬', animal: '折耳貓', cover: PX(2071873)  },
+  { id: 5, videoQ: 'ragdoll cat blue eyes fluffy gentle',   title: '奶蓋藍眼睛近距離 🐾',    creator: '店長Leo', views: '18萬',  animal: '布偶貓', cover: PX(45201)    },
+  { id: 6, videoQ: 'cat cafe study cozy atmosphere japan',  title: '貓咖讀書氛圍感 📚',      creator: '小美',    views: '9.4萬', animal: '貓咖',   cover: PX(1170986)  },
+  { id: 7, videoQ: 'cat adoption new home first day',       title: '奶蓋試養第一天回家 🏠',  creator: '陳瑭原',  views: '22萬',  animal: '布偶貓', cover: PX(45201)    },
 ];
 
 const PRODUCTS = [
-  { id:1, name:'蜜袋鼯高蛋白飼料', brand:'GlideNutrition', price:480, original:600, emoji:'🦘', tag:'熱銷No.1', tagColor:'bg-rose-100 text-rose-600' },
-  { id:2, name:'爬蟲 UVB 全光譜燈', brand:'ZooMed Pro', price:980, original:1350, emoji:'🦎', tag:'A級推薦', tagColor:'bg-orange-100 text-orange-600' },
-  { id:3, name:'貓咪益生菌凍乾', brand:'PetPro 台灣', price:320, original:390, emoji:'🐱', tag:'新品上市', tagColor:'bg-purple-100 text-purple-600' },
-  { id:4, name:'犬隻訓練零食包', brand:'TrainSnack', price:220, original:280, emoji:'🐶', tag:'認證推薦', tagColor:'bg-[#0f6e56]/10 text-[#0f6e56]' },
-  { id:5, name:'球蟒恆溫加熱墊', brand:'ReptileHeat', price:750, original:950, emoji:'🐍', tag:'必備', tagColor:'bg-slate-100 text-slate-600' },
-  { id:6, name:'全物種維生素滴劑', brand:'NutriAll', price:280, original:360, emoji:'💊', tag:'獸醫推薦', tagColor:'bg-blue-100 text-blue-600' },
+  { id:1, name:'貓咪益生菌凍乾',   brand:'PetPro 台灣',    price:320, original:390,  emoji:'🐱', tag:'熱銷No.1', tagColor:'bg-rose-100 text-rose-600' },
+  { id:2, name:'自動飲水機 2L',    brand:'PetSafe',        price:680, original:880,  emoji:'💧', tag:'獸醫推薦', tagColor:'bg-blue-100 text-blue-600' },
+  { id:3, name:'天然貓草零食包',   brand:'NatureCat',      price:180, original:220,  emoji:'🌿', tag:'新品上市', tagColor:'bg-emerald-100 text-emerald-600' },
+  { id:4, name:'貓咪關節保健粉',   brand:'VetPlus',        price:420, original:520,  emoji:'💊', tag:'認證推薦', tagColor:'bg-purple-100 text-purple-600' },
+  { id:5, name:'貓抓板 · 瓦楞紙', brand:'ScratchMe',      price:150, original:200,  emoji:'📦', tag:'必備',    tagColor:'bg-slate-100 text-slate-600' },
+  { id:6, name:'互動逗貓棒組合',   brand:'PlayCat',        price:240, original:300,  emoji:'🪄', tag:'店貓同款', tagColor:'bg-pink-100 text-pink-600' },
 ];
 
 // ─────────────────────────────────────────────
 // 點餐菜單資料
 // ─────────────────────────────────────────────
 const MENU_ITEMS = [
-  // 套餐（成大學生最愛）
-  { id:'c1', cat:'套餐', name:'成大讀書套餐',   desc:'飲品任選＋吐司・平日14-17限定', price:249, emoji:'📚', tag:'學生最愛', tagColor:'bg-blue-100 text-blue-600', popular:true  },
-  { id:'c2', cat:'套餐', name:'爬蟲體驗套餐',   desc:'鬃獅蜥45分體驗＋招牌拿鐵',     price:420, emoji:'🦎', tag:'最划算', tagColor:'bg-orange-100 text-orange-600', popular:true  },
-  { id:'c3', cat:'套餐', name:'好友同遊套餐',   desc:'2杯飲品＋1份輕食・適合2人',     price:380, emoji:'👫', tag:'2人組合', tagColor:'bg-rose-100 text-rose-600', popular:false },
+  // 套餐
+  { id:'c1', cat:'套餐', name:'成大讀書套餐',     desc:'飲品任選＋吐司・平日14-17限定',    price:249, emoji:'📚', tag:'學生最愛', tagColor:'bg-blue-100 text-blue-600',   popular:true  },
+  { id:'c2', cat:'套餐', name:'貓咪同桌套餐',     desc:'入場費＋招牌拿鐵・45分貓咪互動',   price:380, emoji:'🐱', tag:'最划算',  tagColor:'bg-rose-100 text-rose-600',   popular:true  },
+  { id:'c3', cat:'套餐', name:'好友同遊套餐',     desc:'2杯飲品＋1份輕食・適合2人',        price:380, emoji:'👫', tag:'2人組合', tagColor:'bg-pink-100 text-pink-600',   popular:false },
   // 飲品
-  { id:'d1', cat:'飲品', name:'招牌爬蟲拿鐵',   desc:'義式濃縮＋燕麥奶＋爬蟲拉花', price:150, emoji:'☕', tag:'招牌', tagColor:'bg-orange-100 text-orange-600', popular:true  },
-  { id:'d2', cat:'飲品', name:'蜜袋鼯燕麥拿鐵', desc:'特選燕麥奶・微甜',            price:160, emoji:'🥛', tag:'',   tagColor:'', popular:false },
-  { id:'d3', cat:'飲品', name:'鬃獅蜥美式',     desc:'深焙單品・無糖・有插座可讀書', price:120, emoji:'🖤', tag:'讀書首選', tagColor:'bg-slate-100 text-slate-600', popular:false },
-  { id:'d4', cat:'飲品', name:'球蟒抹茶拿鐵',   desc:'宇治抹茶＋牛奶',             price:165, emoji:'🍵', tag:'新品', tagColor:'bg-emerald-100 text-emerald-600', popular:false },
-  { id:'d5', cat:'飲品', name:'爬蟲氣泡水',     desc:'天然果汁＋蘇打・無糖',        price:100, emoji:'💚', tag:'',   tagColor:'', popular:false },
-  { id:'d6', cat:'飲品', name:'手沖黑咖啡',     desc:'單品莊園豆・每日現磨・不限時',  price:140, emoji:'☕', tag:'',   tagColor:'', popular:false },
+  { id:'d1', cat:'飲品', name:'貓爪卡布奇諾',     desc:'義式濃縮＋奶泡・貓爪拉花',         price:150, emoji:'☕', tag:'招牌',    tagColor:'bg-orange-100 text-orange-600', popular:true  },
+  { id:'d2', cat:'飲品', name:'奶蓋燕麥拿鐵',     desc:'特選燕麥奶・奶蓋貓耳造型',         price:165, emoji:'🥛', tag:'IG必拍', tagColor:'bg-pink-100 text-pink-600',   popular:true  },
+  { id:'d3', cat:'飲品', name:'月亮美式',         desc:'深焙單品・無糖・有插座可讀書',      price:120, emoji:'🖤', tag:'讀書首選',tagColor:'bg-slate-100 text-slate-600', popular:false },
+  { id:'d4', cat:'飲品', name:'小福抹茶拿鐵',     desc:'宇治抹茶＋牛奶・微甜',             price:165, emoji:'🍵', tag:'新品',    tagColor:'bg-emerald-100 text-emerald-600', popular:false },
+  { id:'d5', cat:'飲品', name:'焦糖氣泡水',       desc:'天然焦糖糖漿＋蘇打・無咖啡因',     price:110, emoji:'🧡', tag:'',        tagColor:'', popular:false },
+  { id:'d6', cat:'飲品', name:'手沖黑咖啡',       desc:'單品莊園豆・每日現磨・不限時',      price:140, emoji:'☕', tag:'',        tagColor:'', popular:false },
   // 輕食
-  { id:'f1', cat:'輕食', name:'野生感早午餐',   desc:'半熟蛋・全麥吐司・生菜沙拉', price:220, emoji:'🍳', tag:'熱門', tagColor:'bg-red-100 text-red-600',    popular:true  },
-  { id:'f2', cat:'輕食', name:'爬蟲形狀鬆餅',   desc:'比利時原味・附楓糖漿・IG必拍', price:180, emoji:'🧇', tag:'打卡', tagColor:'bg-pink-100 text-pink-600', popular:false },
-  { id:'f3', cat:'輕食', name:'凱薩沙拉盤',     desc:'季節蔬菜・油醋醬・帕馬森',    price:160, emoji:'🥗', tag:'',   tagColor:'', popular:false },
-  { id:'f4', cat:'輕食', name:'蜜袋鼯三明治',   desc:'火雞肉・起司・全麥麵包',      price:200, emoji:'🥪', tag:'',   tagColor:'', popular:false },
+  { id:'f1', cat:'輕食', name:'貓咖早午餐',       desc:'半熟蛋・全麥吐司・生菜沙拉',        price:220, emoji:'🍳', tag:'熱門',    tagColor:'bg-red-100 text-red-600',    popular:true  },
+  { id:'f2', cat:'輕食', name:'貓掌造型鬆餅',     desc:'比利時原味・附楓糖漿・IG必拍',      price:180, emoji:'🧇', tag:'打卡',    tagColor:'bg-pink-100 text-pink-600',  popular:true  },
+  { id:'f3', cat:'輕食', name:'凱薩沙拉盤',       desc:'季節蔬菜・油醋醬・帕馬森',          price:160, emoji:'🥗', tag:'',        tagColor:'', popular:false },
+  { id:'f4', cat:'輕食', name:'火雞肉三明治',     desc:'火雞肉・起司・全麥麵包',            price:200, emoji:'🥪', tag:'',        tagColor:'', popular:false },
   // 甜點
-  { id:'s1', cat:'甜點', name:'爬蟲造型馬卡龍', desc:'4顆・抹茶＋草莓・限量打卡款',  price:180, emoji:'🍬', tag:'限量', tagColor:'bg-purple-100 text-purple-600', popular:true  },
-  { id:'s2', cat:'甜點', name:'手作焦糖布丁',   desc:'每日新鮮製作・甜點控必點',     price:100, emoji:'🍮', tag:'',   tagColor:'', popular:false },
-  { id:'s3', cat:'甜點', name:'提拉米蘇',       desc:'義式正宗食譜',                price:150, emoji:'🍰', tag:'',   tagColor:'', popular:false },
+  { id:'s1', cat:'甜點', name:'貓咪造型馬卡龍',   desc:'4顆・抹茶＋草莓・限量打卡款',       price:180, emoji:'🍬', tag:'限量',    tagColor:'bg-purple-100 text-purple-600', popular:true  },
+  { id:'s2', cat:'甜點', name:'手作焦糖布丁',     desc:'每日新鮮製作・甜點控必點',           price:100, emoji:'🍮', tag:'',        tagColor:'', popular:false },
+  { id:'s3', cat:'甜點', name:'提拉米蘇',         desc:'義式正宗食譜・貓咖限定包裝',         price:150, emoji:'🍰', tag:'',        tagColor:'', popular:false },
 ];
 
 // ─────────────────────────────────────────────
@@ -495,15 +496,15 @@ const INVESTOR_DATA = {
   },
   breakdown: [
     { label: '咖啡輕食', value: 95000,  color: '#f97316', pct: 53 },
-    { label: '爬蟲銷售', value: 48000,  color: '#0f6e56', pct: 27 },
-    { label: '寵物食品', value: 20000,  color: '#ec4899', pct: 11 },
-    { label: '認證課程', value: 15000,  color: '#8b5cf6', pct:  9 },
+    { label: '月票會員', value: 48000,  color: '#ec4899', pct: 27 },
+    { label: '貓咪商品', value: 20000,  color: '#8b5cf6', pct: 11 },
+    { label: '認養課程', value: 15000,  color: '#0f6e56', pct:  9 },
   ],
   risks: [
-    { item: '動物醫療備用金', status: '充足', color: 'text-green-600' },
-    { item: '法規執照申請', status: '進行中', color: 'text-orange-500' },
-    { item: '爬蟲繁殖商合約', status: '洽談中', color: 'text-orange-500' },
-    { item: '醫院合作備忘錄', status: '待簽署', color: 'text-rose-500' },
+    { item: '貓咪醫療備用金',   status: '充足',  color: 'text-green-600' },
+    { item: '動物保護法規申請', status: '進行中', color: 'text-orange-500' },
+    { item: '認養機構合作協議', status: '洽談中', color: 'text-orange-500' },
+    { item: '獸醫定期駐店合約', status: '待簽署', color: 'text-rose-500' },
   ],
   // APP 數位指標（廠商贊助 / 以量制價 的談判籌碼）
   appStats: {
@@ -580,9 +581,9 @@ export default function App() {
           <div className="flex justify-between items-center mt-2">
             <div onClick={handleLogoTap} className="cursor-pointer select-none">
               <h1 className="text-xl font-black tracking-tighter flex items-center gap-2">
-                <Sparkles size={20} className="text-pink-200 animate-pulse" /> CreaCert
+                <Sparkles size={20} className="text-pink-200 animate-pulse" /> CreaCert 貓咖
               </h1>
-              <p className="text-[10px] font-bold uppercase tracking-widest" style={{color:'#f9a8d4'}}>Know Every Creature ✿</p>
+              <p className="text-[10px] font-bold uppercase tracking-widest" style={{color:'#f9a8d4'}}>每一隻貓，都值得被愛 🐾</p>
               <p className="text-[9px] font-bold opacity-60 mt-0.5">📍 台南成大・勝利路商圈</p>
             </div>
             <div className="flex items-center gap-2">
@@ -949,14 +950,13 @@ function PassportScreen({ setShowCertInfo, setShowPortrait, addPoints, setShowPl
 }
 
 // ─────────────────────────────────────────────
-// Tab 2 — 動物圖鑑
+// Tab 2 — 貓咪圖鑑
 // ─────────────────────────────────────────────
 const FILTERS = [
-  { key: 'all',          label: '全部' },
-  { key: 'cat',          label: '貓咪' },
-  { key: 'dog',          label: '犬隻' },
-  { key: 'reptile',      label: '爬蟲' },
-  { key: 'small_animal', label: '小動物' },
+  { key: 'all',   label: '全部貓咪' },
+  { key: 'cat',   label: '🐱 店貓' },
+  { key: 'adopt', label: '🏠 可認養' },
+  { key: 'trial', label: '🤍 試養中' },
 ];
 
 function AnimalsScreen() {
@@ -966,7 +966,10 @@ function AnimalsScreen() {
   const [activeVideo, setActiveVideo]   = useState(null);
   const [showCatBooking, setShowCatBooking] = useState(false);
 
-  const list = filter === 'all' ? ANIMALS : ANIMALS.filter(a => a.type === filter);
+  const list = filter === 'all' ? ANIMALS.filter(a => a.type === 'cat')
+    : filter === 'adopt' ? ANIMALS.filter(a => a.type === 'cat' && a.status === '可認養')
+    : filter === 'trial' ? ANIMALS.filter(a => a.type === 'cat' && a.status === '試養中')
+    : ANIMALS.filter(a => a.type === 'cat');
 
   if (selected) return (
     <div className="animate-in slide-in-from-right pb-6">
@@ -1118,7 +1121,7 @@ function AnimalsScreen() {
   return (
     <div className="p-5 space-y-5 pb-6 animate-in fade-in">
       <div className="flex items-center justify-between">
-        <h2 className="text-3xl font-black text-slate-800 tracking-tighter">生物圖鑑</h2>
+        <h2 className="text-3xl font-black text-slate-800 tracking-tighter">貓咪圖鑑</h2>
         <button onClick={() => setShowAI(true)} className="bg-[#534ab7] text-white px-3 py-2 rounded-2xl text-xs font-black flex items-center gap-1 shadow-md active:scale-95 transition">
           <Brain size={14} /> AI 配對
         </button>
@@ -1207,7 +1210,7 @@ function CoursesScreen({ addPoints, points = 0 }) {
 
   const handlePass = (id) => { setDone(prev => new Set([...prev, id])); addPoints(100); setActiveQuiz(null); };
 
-  const groups = ['貓咪基礎', '貓咪進階', '爬蟲特別課程', '犬隻認證'].map(tag => ({
+  const groups = ['貓咪基礎', '貓咪進階', '認養準備課程'].map(tag => ({
     tag, items: COURSES.filter(c => c.tag === tag),
   }));
 
@@ -1274,15 +1277,15 @@ function CoursesScreen({ addPoints, points = 0 }) {
           <h3 className="font-black text-slate-700 text-sm mb-3 flex items-center gap-2">
             <span className="w-1.5 h-5 bg-[#0f6e56] rounded-full" />{tag}
           </h3>
-          {tag === '爬蟲特別課程' && (
-            <div className="mb-3 bg-gradient-to-r from-emerald-50 to-teal-50 border border-emerald-100 rounded-3xl p-4 flex items-center gap-3">
-              <div className="w-12 h-12 rounded-2xl bg-emerald-100 flex items-center justify-center text-2xl shrink-0">🧑‍🔬</div>
+          {tag === '認養準備課程' && (
+            <div className="mb-3 bg-gradient-to-r from-rose-50 to-pink-50 border border-rose-100 rounded-3xl p-4 flex items-center gap-3">
+              <div className="w-12 h-12 rounded-2xl bg-rose-100 flex items-center justify-center text-2xl shrink-0">🧑‍💼</div>
               <div className="flex-1">
-                <p className="text-[10px] font-black text-emerald-600 tracking-widest uppercase">爬蟲課程主講</p>
-                <p className="text-sm font-black text-slate-800">Kenji</p>
-                <p className="text-[10px] text-slate-400 font-bold">鬃獅蜥 · 球蟒 · 爬蟲行為專家</p>
+                <p className="text-[10px] font-black text-rose-500 tracking-widest uppercase">認養課程主講</p>
+                <p className="text-sm font-black text-slate-800">店長 Leo</p>
+                <p className="text-[10px] text-slate-400 font-bold">貓咪認養 · 試養輔導 · 多貓管理</p>
               </div>
-              <span className="bg-emerald-600 text-white text-[9px] font-black px-2 py-1 rounded-full">CreaCert 認證</span>
+              <span className="bg-rose-500 text-white text-[9px] font-black px-2 py-1 rounded-full">CreaCert 認證</span>
             </div>
           )}
           <div className="space-y-3">
