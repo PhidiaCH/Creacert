@@ -542,24 +542,27 @@ export default function App() {
           {tab === 'order'     && <OrderScreen cartItems={cartItems} addToCart={addToCart} removeFromCart={removeFromCart} clearCart={clearCart} addPoints={addPoints} />}
           {tab === 'courses'   && <CoursesScreen addPoints={addPoints} points={points} />}
           {tab === 'shop'      && <ShopScreen addPoints={addPoints} />}
+          {tab === 'video'     && <VideoScreen />}
         </div>
 
         {/* 底部 Tab Bar — 依收入來源排列 */}
-        <div className={`shrink-0 w-full px-2 pt-2 pb-6 flex justify-around items-end z-40 ${theme.tabBg}`}>
+        <div className={`shrink-0 w-full px-1 pt-2 pb-6 flex justify-around items-end z-40 ${theme.tabBg}`}>
           {/* 首頁 */}
           <TabBtn icon={<Home />}     label="首頁" active={tab==='home'}    onClick={() => setTab('home')}    theme={theme} />
           {/* 圖鑑（爬蟲銷售 27%） */}
           <TabBtn icon={<Heart />}    label="圖鑑" active={tab==='animals'} onClick={() => setTab('animals')} theme={theme} />
           {/* 中央點餐（最大收入 53%） */}
           <button onClick={() => setTab('order')} className="flex flex-col items-center -mt-5 relative">
-            <div className={`w-16 h-16 rounded-full flex items-center justify-center shadow-2xl transition-all active:scale-90 ${tab === 'order' ? 'bg-orange-500 ring-4 ring-orange-200' : 'bg-gradient-to-br from-orange-400 to-rose-500'}`}>
-              <Utensils size={28} className="text-white" strokeWidth={2.5} />
+            <div className={`w-14 h-14 rounded-full flex items-center justify-center shadow-2xl transition-all active:scale-90 ${tab === 'order' ? 'bg-orange-500 ring-4 ring-orange-200' : 'bg-gradient-to-br from-orange-400 to-rose-500'}`}>
+              <Utensils size={24} className="text-white" strokeWidth={2.5} />
             </div>
             {cartCount > 0 && (
               <div className="absolute -top-1 -right-1 bg-rose-500 text-white text-[9px] font-black w-5 h-5 rounded-full flex items-center justify-center shadow-lg border-2 border-white">{cartCount}</div>
             )}
             <span className={`text-[10px] mt-1 font-black ${tab === 'order' ? theme.tabActive : theme.tabInactive}`}>點餐</span>
           </button>
+          {/* 影片區 */}
+          <TabBtn icon={<Video />}    label="影片" active={tab==='video'}   onClick={() => setTab('video')}   theme={theme} />
           {/* 商城（寵物食品 11%） */}
           <TabBtn icon={<ShoppingCart />} label="商城" active={tab==='shop'}    onClick={() => setTab('shop')}    theme={theme} />
           {/* 課程（認證 9%） */}
@@ -583,7 +586,7 @@ export default function App() {
 function TabBtn({ icon, label, active, onClick, theme }) {
   const t = theme || THEMES.pro;
   return (
-    <button onClick={onClick} className={`flex flex-col items-center justify-center w-14 transition-all duration-300 ${active ? `${t.tabActive} scale-110` : t.tabInactive}`}>
+    <button onClick={onClick} className={`flex flex-col items-center justify-center w-11 transition-all duration-300 ${active ? `${t.tabActive} scale-110` : t.tabInactive}`}>
       {React.cloneElement(icon, { size: 24, strokeWidth: active ? 2.5 : 2 })}
       <span className={`text-[10px] mt-1 font-black ${active ? 'opacity-100' : 'opacity-50'}`}>{label}</span>
     </button>
@@ -1183,6 +1186,211 @@ function CoursesScreen({ addPoints, points = 0 }) {
 
       {activeQuiz && <QuizModal course={activeQuiz} onClose={() => setActiveQuiz(null)} onPass={() => handlePass(activeQuiz.id)} />}
       {activeVideo && <VideoModal videoQ={activeVideo.videoQ} cover={null} title={activeVideo.title} subtitle={activeVideo.desc} onClose={() => setActiveVideo(null)} />}
+    </div>
+  );
+}
+
+// ─────────────────────────────────────────────
+// 影片區 — Claude Code 短影音研究室
+// ─────────────────────────────────────────────
+function VideoScreen() {
+  const [activeVideo, setActiveVideo] = useState(null);
+  const [expandedCategory, setExpandedCategory] = useState(null);
+
+  const categories = [
+    {
+      id: 'camera', num: '01', icon: '🎥', title: '平移與鏡頭運鏡',
+      color: 'from-blue-600 to-indigo-700',
+      items: [
+        '平移（橫搖）：鏡頭左右緩緩滑動，帶出空間感',
+        '推進：慢慢推近、停在近景製造張力，再俐落切回原狀',
+        '拉遠：從近景拉開，適合段落開頭的「換氣」',
+        '硬切拉近：講到重點啪一下放大強調',
+        '運鏡只在語氣加重的重點句才出現',
+      ],
+    },
+    {
+      id: 'color', num: '02', icon: '🎨', title: '畫面與調色',
+      color: 'from-violet-600 to-purple-700',
+      items: [
+        '橫式自動轉直式（16:9 → 9:16），真裁切對齊人臉、不變形',
+        '一鍵電影調色：暗角＋智慧飽和＋對比，視線集中到臉',
+        'LUT 套用：進一步提升影片質感，膚色不會變橘',
+      ],
+    },
+    {
+      id: 'text', num: '03', icon: '✍️', title: '文字與字卡特效',
+      color: 'from-orange-500 to-amber-600',
+      items: [
+        '開場大標（白＋橘雙行）',
+        '逐句字幕卡，關鍵字自動上橘色高亮，字級可調',
+        '重點時人頭上方跳出品牌色關鍵詞卡（橘膠囊／深墨）',
+        '蓋臉大字，把單一金句放到最大',
+        '下方固定頻道宣傳條＋圓形頭像',
+      ],
+    },
+    {
+      id: 'edit', num: '04', icon: '✂️', title: '剪輯步調',
+      color: 'from-emerald-600 to-teal-700',
+      items: [
+        '自動偵測並剪掉講話停頓，片子變緊湊',
+        '變速、整體淡入淡出',
+        '結尾俐落收一秒',
+      ],
+    },
+    {
+      id: 'audio', num: '05', icon: '🎵', title: '聲音',
+      color: 'from-rose-500 to-pink-600',
+      items: [
+        '背景配樂自動壓很低，只墊氣氛不蓋人聲',
+        '講話時自動再壓低音樂（ducking），人聲永遠清楚',
+      ],
+    },
+  ];
+
+  return (
+    <div className="pb-8 animate-in fade-in">
+      {/* Hero Banner */}
+      <div className="bg-gradient-to-br from-slate-900 via-slate-800 to-black pt-6 pb-8 px-5 relative overflow-hidden">
+        <div className="absolute right-4 top-4 text-[100px] opacity-5 leading-none select-none">🎬</div>
+        <div className="relative">
+          <div className="flex items-center gap-2 mb-3">
+            <span className="bg-red-500 text-white text-[9px] font-black px-2 py-0.5 rounded-full flex items-center gap-1">
+              <span className="w-1.5 h-1.5 bg-white rounded-full animate-pulse inline-block" /> REC
+            </span>
+            <span className="text-white/40 text-[10px] font-bold tracking-widest">Claude Code 研究室</span>
+          </div>
+          <h2 className="text-white font-black text-2xl leading-tight">
+            自動剪<br /><span className="text-orange-400">9:16 短影音</span>
+          </h2>
+          <p className="text-white/40 text-xs mt-2 leading-relaxed max-w-[260px]">
+            AI 輔助剪輯實驗 · 研究如何讓 Claude Code 自動產出短影音
+          </p>
+          <div className="flex gap-3 mt-5">
+            {[['5', '功能類別'], ['16+', '特效項目'], ['9:16', '輸出格式']].map(([v, l]) => (
+              <div key={l} className="bg-white/8 border border-white/10 rounded-xl px-3 py-2 text-center">
+                <p className="text-orange-400 font-black text-base leading-none">{v}</p>
+                <p className="text-white/30 text-[9px] font-bold mt-1">{l}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      <div className="p-5 space-y-5">
+        {/* 今日研究日誌 */}
+        <div className="bg-white rounded-[2rem] p-5 border border-slate-100 shadow-sm">
+          <div className="flex items-center justify-between mb-3">
+            <p className="font-black text-slate-800 text-sm flex items-center gap-1.5">📅 今日研究筆記</p>
+            <span className="text-[10px] text-slate-400 bg-slate-50 px-2 py-0.5 rounded-full font-bold">2026.06.25</span>
+          </div>
+          <p className="text-slate-700 text-sm leading-relaxed">
+            今天繼續研究 Claude Code 自動剪 9:16 短影音。發現還可以套用{' '}
+            <span className="font-black text-orange-500 bg-orange-50 px-1 rounded">LUT</span>{' '}
+            進一步提升影片的質感！
+          </p>
+          <p className="text-slate-500 text-xs mt-2 leading-relaxed">
+            瞭解了背後的操作邏輯，才能夠跟 AI 溝通。這樣反而讓我更想去學剪輯影音！
+          </p>
+          <div className="mt-3 pt-3 border-t border-slate-100 flex items-center gap-2">
+            <span className="text-xs text-slate-400 font-bold">備註：</span>
+            <span className="text-xs text-[#0f6e56] font-bold">今日練習成果影片放留言 👇</span>
+          </div>
+        </div>
+
+        {/* 功能清單 */}
+        <div>
+          <h3 className="font-black text-slate-800 text-base mb-3 flex items-center gap-2">
+            <Zap size={16} className="text-orange-500" /> 功能研究清單
+          </h3>
+          <div className="space-y-2.5">
+            {categories.map(cat => (
+              <div key={cat.id}>
+                <button
+                  className={`w-full bg-gradient-to-r ${cat.color} rounded-[1.5rem] p-4 text-left active:scale-[0.98] transition-transform shadow-md`}
+                  onClick={() => setExpandedCategory(expandedCategory === cat.id ? null : cat.id)}
+                >
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-3">
+                      <span className="text-xl">{cat.icon}</span>
+                      <div>
+                        <p className="text-white/50 text-[9px] font-black tracking-widest">{cat.num}</p>
+                        <p className="text-white font-black text-sm leading-tight">{cat.title}</p>
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <span className="text-white/50 text-[10px] font-bold">{cat.items.length} 項</span>
+                      <ChevronRight size={14} className={`text-white/50 transition-transform duration-200 ${expandedCategory === cat.id ? 'rotate-90' : ''}`} />
+                    </div>
+                  </div>
+                  {expandedCategory === cat.id && (
+                    <div className="mt-3 space-y-2">
+                      {cat.items.map((item, i) => (
+                        <div key={i} className="bg-black/25 rounded-xl p-2.5 flex items-start gap-2">
+                          <Check size={12} className="text-white/60 mt-0.5 shrink-0" />
+                          <p className="text-white/80 text-xs leading-snug">{item}</p>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </button>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* 示範影片 */}
+        <div>
+          <h3 className="font-black text-slate-800 text-base mb-3 flex items-center gap-2">
+            <PlayCircle size={18} className="text-red-500" /> 短影音示範
+          </h3>
+          <div className="flex gap-3 overflow-x-auto scrollbar-hide pb-2 -mx-1 px-1">
+            {REELS.map(reel => (
+              <button key={reel.id} onClick={() => setActiveVideo(reel)}
+                className="shrink-0 w-36 rounded-2xl overflow-hidden relative active:scale-95 transition-transform shadow-lg">
+                <div className="relative h-56">
+                  <img src={reel.cover} className="w-full h-full object-cover" alt={reel.title} />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-black/30" />
+                  <div className="absolute top-2 left-2">
+                    <div className="bg-orange-500/90 px-2 py-0.5 rounded-full">
+                      <span className="text-white text-[8px] font-black">9:16</span>
+                    </div>
+                  </div>
+                  <div className="absolute inset-0 flex items-center justify-center">
+                    <div className="w-12 h-12 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center border-2 border-white/50 shadow-xl">
+                      <Play size={22} className="text-white ml-1" fill="white" />
+                    </div>
+                  </div>
+                  <div className="absolute bottom-0 left-0 right-0 p-2.5">
+                    <p className="text-white text-[10px] font-black leading-tight line-clamp-2">{reel.title}</p>
+                    <p className="text-white/60 text-[9px] font-bold mt-1">@{reel.creator}</p>
+                  </div>
+                </div>
+              </button>
+            ))}
+          </div>
+          <p className="text-[10px] text-slate-400 text-center mt-2 font-bold">點擊選擇平台觀看 · YouTube / TikTok / Instagram</p>
+        </div>
+
+        {/* 研究心得 */}
+        <div className="bg-gradient-to-br from-[#0f6e56] to-teal-700 rounded-[2rem] p-5 text-white shadow-lg">
+          <p className="text-white/50 text-[9px] font-black tracking-widest uppercase mb-2">💡 研究心得</p>
+          <p className="font-black text-base leading-snug">"瞭解了背後的操作邏輯，才能夠跟 AI 溝通"</p>
+          <p className="text-white/60 text-xs mt-2 leading-relaxed">
+            學剪輯不只是工具，更是理解 AI 輸出的框架。掌握邏輯後，Claude Code 才是最強的剪輯助手。
+          </p>
+        </div>
+      </div>
+
+      {activeVideo && (
+        <VideoModal
+          videoQ={activeVideo.videoQ}
+          cover={activeVideo.cover}
+          title={activeVideo.title}
+          subtitle={`@${activeVideo.creator} · ${activeVideo.views} 次觀看`}
+          onClose={() => setActiveVideo(null)}
+        />
+      )}
     </div>
   );
 }
